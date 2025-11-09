@@ -162,9 +162,8 @@ void test_attachment_table(const pstsdk::node& message, const pstsdk::table& tc)
 void iterate(pstsdk::shared_db_ptr pdb)
 {
     using namespace std;
-    using namespace std::tr1;
     using namespace pstsdk;
-    std::tr1::shared_ptr<const nbt_page> nbt_root = pdb->read_nbt_root();
+    std::shared_ptr<const nbt_page> nbt_root = pdb->read_nbt_root();
     for(const_nodeinfo_iterator iter = nbt_root->begin();
             iter != nbt_root->end();
             ++iter)
@@ -258,7 +257,7 @@ void iterate(pstsdk::shared_db_ptr pdb)
 
         try{
             heap h(n);
-            std::tr1::shared_ptr<bth_node<pstsdk::ushort, disk::prop_entry> > bth = h.open_bth<pstsdk::ushort, disk::prop_entry>(h.get_root_id());
+            std::shared_ptr<bth_node<pstsdk::ushort, disk::prop_entry> > bth = h.open_bth<pstsdk::ushort, disk::prop_entry>(h.get_root_id());
          }
         catch(exception&)
         {
