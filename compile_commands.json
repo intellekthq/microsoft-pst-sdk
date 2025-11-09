@@ -1,0 +1,44 @@
+[
+{
+  "directory": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test",
+  "command": "/usr/bin/c++  -I/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk -I/opt/homebrew/include -Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x -arch arm64 -o CMakeFiles/pstsdk_test.dir/btreetest.cpp.o -c /Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/btreetest.cpp",
+  "file": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/btreetest.cpp",
+  "output": "test/CMakeFiles/pstsdk_test.dir/btreetest.cpp.o"
+},
+{
+  "directory": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test",
+  "command": "/usr/bin/c++  -I/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk -I/opt/homebrew/include -Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x -arch arm64 -o CMakeFiles/pstsdk_test.dir/databasetest.cpp.o -c /Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/databasetest.cpp",
+  "file": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/databasetest.cpp",
+  "output": "test/CMakeFiles/pstsdk_test.dir/databasetest.cpp.o"
+},
+{
+  "directory": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test",
+  "command": "/usr/bin/c++  -I/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk -I/opt/homebrew/include -Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x -arch arm64 -o CMakeFiles/pstsdk_test.dir/disktest.cpp.o -c /Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/disktest.cpp",
+  "file": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/disktest.cpp",
+  "output": "test/CMakeFiles/pstsdk_test.dir/disktest.cpp.o"
+},
+{
+  "directory": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test",
+  "command": "/usr/bin/c++  -I/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk -I/opt/homebrew/include -Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x -arch arm64 -o CMakeFiles/pstsdk_test.dir/highlevel.cpp.o -c /Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/highlevel.cpp",
+  "file": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/highlevel.cpp",
+  "output": "test/CMakeFiles/pstsdk_test.dir/highlevel.cpp.o"
+},
+{
+  "directory": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test",
+  "command": "/usr/bin/c++  -I/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk -I/opt/homebrew/include -Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x -arch arm64 -o CMakeFiles/pstsdk_test.dir/main.cpp.o -c /Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/main.cpp",
+  "file": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/main.cpp",
+  "output": "test/CMakeFiles/pstsdk_test.dir/main.cpp.o"
+},
+{
+  "directory": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test",
+  "command": "/usr/bin/c++  -I/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk -I/opt/homebrew/include -Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x -arch arm64 -o CMakeFiles/pstsdk_test.dir/pstlevel.cpp.o -c /Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/pstlevel.cpp",
+  "file": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/pstlevel.cpp",
+  "output": "test/CMakeFiles/pstsdk_test.dir/pstlevel.cpp.o"
+},
+{
+  "directory": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test",
+  "command": "/usr/bin/c++  -I/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk -I/opt/homebrew/include -Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x -arch arm64 -o CMakeFiles/pstsdk_test.dir/utiltest.cpp.o -c /Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/utiltest.cpp",
+  "file": "/Users/mach/workspace/duckdb-pst/microsoft-pst-sdk/sourceCode/fairport/trunk/test/utiltest.cpp",
+  "output": "test/CMakeFiles/pstsdk_test.dir/utiltest.cpp.o"
+}
+]
