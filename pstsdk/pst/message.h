@@ -17,6 +17,7 @@
 
 #include "pstsdk/ltp/propbag.h"
 #include "pstsdk/ltp/table.h"
+#include "pstsdk/mapitags.h"
 
 namespace pstsdk
 {
@@ -44,7 +45,7 @@ public:
     //! is too large for your tastes.
     //! \returns A vector of bytes
     std::vector<byte> get_bytes() const
-        { return m_bag.read_prop<std::vector<byte> >(0x3701); }
+        { return m_bag.read_prop<std::vector<byte> >(PR_ATTACH_DATA_OBJ); }
     //! \brief Open a stream of the attachment data
     //! 
     //! The returned stream device can be used to construct a proper stream:
@@ -55,7 +56,7 @@ public:
     //! Which can then be used as any iostream would be.
     //! \returns A stream device for the attachment data
     hnid_stream_device open_byte_stream()
-        { return m_bag.open_prop_stream(0x3701); }
+        { return m_bag.open_prop_stream(PR_ATTACH_DATA_OBJ); }
     //! \brief Read the size of this attachment
     //!
     //! The size returned here includes metadata, and as such will be
@@ -63,20 +64,20 @@ public:
     //! \sa attachment::content_size()
     //! \returns The size of the attachment object, in bytes
     size_t size() const
-        { return m_bag.read_prop<uint>(0xe20); }
+        { return m_bag.read_prop<uint>(PR_ATTACH_SIZE); }
     //! \brief Read the size of the content in this attachment
     //!
     //! The size here is just for the binary data of the attachment.
     //! \returns The size of the data stream of the attachment, in bytes
     size_t content_size() const
-        { return m_bag.size(0x3701); }
+        { return m_bag.size(PR_ATTACH_DATA_OBJ); }
     //! \brief Returns if this attachment is actually an embedded message
     //!
     //! If an attachment is a message, one should use open_as_message() to
     //! access the data rather than open_byte_stream() or similar.
     //! \returns true if this attachment is an attached message
     bool is_message() const
-        { return m_bag.read_prop<uint>(0x3705) == 5; }
+        { return m_bag.read_prop<uint>(PR_ATTACH_METHOD) == 5; }
     //! \brief Interpret this attachment as a message
     //! \pre is_message() == true
     //! \returns A message object
@@ -159,15 +160,15 @@ public:
     //! \brief Get the display name of this recipient
     //! \returns The recipient name
     std::wstring get_name() const
-        { return m_row.read_prop<std::wstring>(0x3001); }
+        { return m_row.read_prop<std::wstring>(PR_DISPLAY_NAME_W); }
     //! \brief Get the type of this recipient
     //! \returns The recipient type
     recipient_type get_type() const
-        { return static_cast<recipient_type>(m_row.read_prop<ulong>(0xc15)); }
+        { return static_cast<recipient_type>(m_row.read_prop<ulong>(PR_RECIPIENT_TYPE)); }
     //! \brief Get the address type of the recipient
     //! \returns The address type
     std::wstring get_address_type() const
-        { return m_row.read_prop<std::wstring>(0x3002); }
+        { return m_row.read_prop<std::wstring>(PR_ADDRTYPE_W); }
     //! \brief Get the email address of the recipient
     //! \returns The email address
     std::wstring get_email_address() const
@@ -179,11 +180,11 @@ public:
     //! \brief Get the name of the recipients account
     //! \returns The account name
     std::wstring get_account_name() const
-        { return m_row.read_prop<std::wstring>(0x3a00); }
+        { return m_row.read_prop<std::wstring>(PR_ACCOUNT_W); }
     //! \brief Checks to see if this recipient has an account name
     //! \returns true if get_account_name() doesn't throw
     bool has_account_name() const
-        { return m_row.prop_exists(0x3a00); }
+        { return m_row.prop_exists(PR_ACCOUNT_W); }
 
     // lower layer access
     //! \brief Get the property row underying this recipient object
@@ -271,7 +272,7 @@ public:
     //! \brief Get the body of this message
     //! \returns The message body as a string
     std::wstring get_body() const
-        { return m_bag.read_prop<std::wstring>(0x1000); }
+        { return m_bag.read_prop<std::wstring>(PR_BODY_W); }
     //! \brief Get the body of this message
     //! 
     //! The returned stream device can be used to construct a proper stream:
@@ -317,7 +318,7 @@ public:
     // \brief Get the total size of this message
     //! \returns The message size
     size_t size() const
-        { return m_bag.read_prop<slong>(0xe08); }
+        { return m_bag.read_prop<slong>(PR_MESSAGE_SIZE); }
     //! \brief Get the number of attachments on this message
     //! \returns The number of attachments
     size_t get_attachment_count() const;
@@ -387,11 +388,11 @@ inline std::wstring pstsdk::attachment::get_filename() const
 {
     try
     {
-        return m_bag.read_prop<std::wstring>(0x3707);
+        return m_bag.read_prop<std::wstring>(PR_ATTACH_LONG_FILENAME_W);
     } 
     catch(key_not_found<prop_id>&)
     {
-        return m_bag.read_prop<std::wstring>(0x3704);
+        return m_bag.read_prop<std::wstring>(PR_ATTACH_FILENAME_W);
     }
 }
 
@@ -467,7 +468,7 @@ inline size_t pstsdk::message::get_recipient_count() const
 
 inline std::wstring pstsdk::message::get_subject() const
 {
-    std::wstring buffer = m_bag.read_prop<std::wstring>(0x37);
+    std::wstring buffer = m_bag.read_prop<std::wstring>(PR_SUBJECT_W);
 
     if(buffer.size() && buffer[0] == message_subject_prefix_lead_byte)
     {

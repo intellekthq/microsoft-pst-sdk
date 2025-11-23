@@ -25,6 +25,7 @@
 #include "pstsdk/ltp/table.h"
 
 #include "pstsdk/pst/message.h"
+#include "pstsdk/mapitags.h"
 
 namespace pstsdk
 {
@@ -92,15 +93,15 @@ public:
     //! \brief Get the display name of this folder
     //! \returns The name of this folder
     std::wstring get_name() const
-        { return m_bag.read_prop<std::wstring>(0x3001); }
+        { return m_bag.read_prop<std::wstring>(PR_DISPLAY_NAME_W); }
     //! \brief Get the number of unread messages in this folder
     //! \returns The number of unread messages
     size_t get_unread_message_count() const
-        { return m_bag.read_prop<slong>(0x3603); }
+        { return m_bag.read_prop<slong>(PR_CONTENT_UNREAD); }
     //! \brief Get the number of messages in this folder
     //! \returns The number of messages
     size_t get_message_count() const
-        { return m_bag.read_prop<slong>(0x3602); }
+        { return m_bag.read_prop<slong>(PR_CONTENT_COUNT); }
 
     // lower layer access
     //! \brief Get the property bag backing this folder
@@ -259,21 +260,21 @@ public:
     // property access
     //! \copydoc search_folder::get_name()
     std::wstring get_name() const
-        { return m_bag.read_prop<std::wstring>(0x3001); }
+        { return m_bag.read_prop<std::wstring>(PR_DISPLAY_NAME_W); }
     //! \brief Get the number of sub folders in this folder
     //! \returns The number of subfolders
     size_t get_subfolder_count() const
         { return get_hierarchy_table().size(); } 
     //! \copydoc search_folder::get_unread_message_count()
     size_t get_unread_message_count() const
-        { return m_bag.read_prop<slong>(0x3603); }
+        { return m_bag.read_prop<slong>(PR_CONTENT_UNREAD); }
     //! \copydoc search_folder::get_message_count()
     size_t get_message_count() const
-        { return m_bag.read_prop<slong>(0x3602); }
+        { return m_bag.read_prop<slong>(PR_CONTENT_COUNT); }
     //! \brief Get the number of associated messages in this folder
     //! \returns The number of associated messages
     size_t get_associated_message_count() const
-        { return m_bag.read_prop<slong>(0x3617); }
+        { return m_bag.read_prop<slong>(PR_ASSOC_CONTENT_COUNT); }
 
     // lower layer access
     //! \copydoc search_folder::get_property_bag()
