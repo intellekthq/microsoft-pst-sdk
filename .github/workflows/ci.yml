@@ -36,6 +36,21 @@ jobs:
       if: runner.os == 'Windows'
       uses: ilammy/msvc-dev-cmd@v1
 
+    - name: Create cache directory
+      if: runner.os == 'Windows'
+      run: mkdir "$($env:LOCALAPPDATA)\choco-cache"
+
+    - name: Cache Tools
+      if: runner.os == 'Windows'
+      uses: actions/cache@v4
+      with:
+        path: "$($env:LOCALAPPDATA)\\choco-cache"
+        key: ${{ runner.os }}-temp-cache
+
+    - name: Set Choco cache path
+      if: runner.os == 'Windows'
+      run: choco config set cacheLocation "$($env:LOCALAPPDATA)\choco-cache"
+
     - name: Install dependencies (Windows)
       if: runner.os == 'Windows'
       run: |
