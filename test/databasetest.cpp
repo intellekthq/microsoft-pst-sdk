@@ -149,8 +149,8 @@ void test_node_stream(pstsdk::node n)
     using namespace std;
     using namespace pstsdk;
 
-    vector<byte> contents(n.size());
-    byte b;
+    vector<pstsdk::byte> contents(n.size());
+    pstsdk::byte b;
     int i = 0;
     node_stream stream(n.open_as_stream());
     stream.unsetf(ios::skipws);
@@ -162,7 +162,7 @@ void test_node_stream(pstsdk::node n)
 
     while(stream >> b)
     {
-        byte c = contents[i];
+        pstsdk::byte c = contents[i];
         assert(b == c);
         ++i;
     }

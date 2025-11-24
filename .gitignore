@@ -1,6 +1,5 @@
 /build
 compile_commands.json
-Makefile
 /test/pstsdk_test
 /test/leah_thumper.jpg
 *~

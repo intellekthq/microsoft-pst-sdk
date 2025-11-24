@@ -12,7 +12,7 @@ void test_block(pstsdk::file& file, pstsdk::disk::block_reference<T>& ref, pstsd
     using namespace std;
     size_t aligned_size = align_disk<T>(size);
 
-    std::vector<byte> buffer(aligned_size);
+    std::vector<pstsdk::byte> buffer(aligned_size);
     block_trailer<T>* bt = (block_trailer<T>*)(&buffer[0] + aligned_size - sizeof(block_trailer<T>));
 
     file.read(buffer, ref.ib);
@@ -29,7 +29,7 @@ void test_page(pstsdk::file& file, pstsdk::disk::block_reference<T> ref, pstsdk:
     using namespace pstsdk::disk;
     using namespace std;
 
-    std::vector<byte> buffer(page_size);
+    std::vector<pstsdk::byte> buffer(page_size);
     page<T>* ppage = (page<T>*)&buffer[0];
     file.read(buffer, ref.ib);
     
@@ -77,7 +77,7 @@ void test_disk_structures(pstsdk::file& file)
     using namespace pstsdk::disk;
     using namespace std;
 
-    std::vector<byte> buffer(sizeof(header<T>));
+    std::vector<pstsdk::byte> buffer(sizeof(header<T>));
     header<T>* pheader = (header<T>*)&buffer[0];
 
     file.read(buffer, 0); 

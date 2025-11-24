@@ -1,49 +1,60 @@
-# PST File Format SDK in C#
+# pstsdk
 
-This is the Microsoft PST SDK hosted by CodePlex here. The contents of the sub-directories are from the `pstsdk.zip` file available using the `download archive` button.
+pstsdk is a library for reading PST-format email archives.  It currently supports little-endian systems with modern C++ compilers. This fork continues from the `trunk` dir in the original CodePlex dump from the upstream repo. The original documentation and issues are available in [/doc](doc).
 
-http://pstsdk.codeplex.com/
+**Important Links:**
+- [MS-PST](doc/[MS-PST].pdf) - PST Spec v20100627
+- [For Developers](doc/quick_start_devs.md) - Working on pstsdk itself
+- [For Users](doc/quick_start_users.md) - Using pstsdk in your project
+- [Big Issues](doc/big_issues.md) - Known issues and limitations
 
-**Note: CodePlex End of Life**
+This is a fork with the following changes:
+- Build with `-std=c++17`
+- `mapitags.h` [from WINE](https://gitlab.winehq.org/atticf/wine/-/blob/master/include/mapitags.h)
 
-CodePlex was moved into "Archive only" mode on December 15, 2017. This project has not yet been migrated to Microsoft's new location on GtiHub: https://github.com/Microsoft
+## Building
 
-https://blogs.msdn.microsoft.com/bharry/2017/03/31/shutting-down-codeplex/
+##### Windows
 
-CodePlex does not have a file viewer and the wiki appears to be offline so this mirror was created.
+```
+choco install cmake ninja make boost-msvc-14.3 -y
+make
+```
 
-Some differences to date:
+#### macOS
 
-* This expands the `sourceCode` folder from a zip file so the contents can be browsed.
+pstsdk can be built using the default clang distribution shipped with Xcode. Install
+libiconv and boost from brew, then make.
 
-## Background
+```bash
+brew install boost libiconv
+make
+```
 
-You can read about this SDK here:
+#### Linux
 
-https://www.infoq.com/news/2010/05/Outlook-PST-View-Tool-and-SDK
+Ubuntu
 
-> Three months ago Microsoft released the Outlook PST Specification documentation allowing developers to create server/desktop applications processing PST content without having to install Outlook. On May 24th, Microsoft announced two new open source projects,  PST Data Structure View Tool and PST File Format SDK, making the creation of such applications even easier.
-> 
-> Developers could access PST file content through the Messaging API (MAPI) via the Outlook Object Model since 2007. In February 2010, Microsoft released the complete Outlook PST File Format Structure specification in an attempt to help interoperability with other document processing systems. (The details were presented by InfoQ at that time.) The recently released PST Data Structure View Tool and PST File Format SDK offer a starting point for writing PST applications without having to deal with internal details of PST files.
-> 
-> The PST Data Structure View Tool is a MFC/C++ graphical tool developers can use to understand the internal organization of data in PST files. The PST File Format SDK is a cross-platform C++ library which offers read access to all items stored in a PST file. Microsoft promises to add writing capabilities in the near future.
-> 
-> Microsoft explains that opening up PST helps interoperability for clients with heterogeneous document systems and those having large amounts of archived PST data. Now, they can search through the PST data, extract and process it in various ways.
-> 
-> Both projects have been released under the Apache license.
+```bash
+apt-get install -y build-essential cmake ninja-build libboost-all-dev
+make
+```
 
-https://blogs.msdn.microsoft.com/usisvde/2010/06/11/pst-file-format-sdk-released/
+#### Running the unit tests
 
-Author: [John Wiese](https://social.msdn.microsoft.com/profile/John+Wiese)
+You can run the unit tests as follows:
 
-> The Outlook team has announced the availability of the new PST File Format SDK.  The SDK is available at on codeplex: PST File Format SDK
-> 
-> You can read a little more at the Outlook team blog here: Announcing the PST File Format SDK
+    CTEST_OUTPUT_ON_FAILURE=1 make test
 
-https://blogs.technet.microsoft.com/port25/2010/05/24/new-open-source-projects-foster-interop-with-outlook-pst-data-files/
+The unit tests should pass on all supported platforms.
 
-Author: [Peter Galli](https://social.technet.microsoft.com/profile/Peter+Galli)
+## Credits
 
-More information is availble here:
+- Terry Mahaffey - Original author of pstsdk
+- Jon Griffiths & WINE - mapitags.h header file
 
-https://msdn.microsoft.com/en-us/library/ff385210.aspx
+## License
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+**Note:** `mapitags.h` is licensed under the [GNU Lesser General Public License v2.1+](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).

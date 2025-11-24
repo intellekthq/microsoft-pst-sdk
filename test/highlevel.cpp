@@ -169,7 +169,7 @@ void iterate(pstsdk::shared_db_ptr pdb)
             ++iter)
     {
         node n(pdb, *iter);
-        std::vector<byte> buffer(n.size());
+        std::vector<pstsdk::byte> buffer(n.size());
         n.read(buffer, 0);
 
         try
@@ -200,7 +200,7 @@ void iterate(pstsdk::shared_db_ptr pdb)
                     break;
                 case prop_type_mv_binary:
                     {
-                    vector<vector<byte> > bins = bag.read_prop_array<vector<byte> >(proplist[i]);
+                    vector<vector<pstsdk::byte> > bins = bag.read_prop_array<vector<pstsdk::byte> >(proplist[i]);
                     cout << "prop_type_mv_wstring" << endl;
                     }
                     break;

@@ -3,4 +3,5 @@ add_executable(pstsdk_test ${sources})
 if(ICONV_LIBRARY)
   target_link_libraries(pstsdk_test ${ICONV_LIBRARY})
 endif()
-add_test(NAME pstsdk_test COMMAND pstsdk_test)
+
+add_test(NAME pstsdk_test COMMAND pstsdk_test WORKING_DIRECTORY ../test)
