@@ -19,7 +19,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set up our compiler flags.
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "/DPSTSDK_VALIDATION_LEVEL_FULL /EHsc /nologo /W4 /WX /std:c++17")
+  set(CMAKE_CXX_FLAGS "/DPSTSDK_VALIDATION_LEVEL_FULL /EHsc /nologo /std:c++17 /W4 /WX /wd4244 /wd2220 /wd")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # https://clang.llvm.org/docs/DiagnosticsReference.html#wincompatible-ms-struct 
   set(CMAKE_CXX_FLAGS "-Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++17")
