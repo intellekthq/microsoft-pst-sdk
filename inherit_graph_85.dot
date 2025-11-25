@@ -1,0 +1,25 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=FreeSans,fontsize=10,labelfontname=FreeSans,labelfontsize=10];
+  node [fontname=FreeSans,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="std::runtime_error",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node0 -> Node1 [id="edge91_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="pstsdk::can_not_resize",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1can__not__resize.html",tooltip="A block or node can not satisfy a resize request."];
+  Node0 -> Node2 [id="edge92_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="pstsdk::database_corrupt",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1database__corrupt.html",tooltip="The database is corrupt."];
+  Node2 -> Node3 [id="edge93_Node000002_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="pstsdk::crc_fail",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1crc__fail.html",tooltip="A CRC of an item failed."];
+  Node2 -> Node4 [id="edge94_Node000002_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="pstsdk::invalid_format",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1invalid__format.html",tooltip="The database was not in the expected format."];
+  Node2 -> Node5 [id="edge95_Node000002_Node000005",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="pstsdk::sig_mismatch",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1sig__mismatch.html",tooltip="An unexpected signature was encountered."];
+  Node2 -> Node6 [id="edge96_Node000002_Node000006",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="pstsdk::unexpected\l_block",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1unexpected__block.html",tooltip="An unexpected block or block type was encountered."];
+  Node2 -> Node7 [id="edge97_Node000002_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node7 [id="Node000007",label="pstsdk::unexpected_page",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1unexpected__page.html",tooltip="An unexpected page or page type was encountered."];
+  Node0 -> Node8 [id="edge98_Node000000_Node000008",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node8 [id="Node000008",label="pstsdk::write_error",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1write__error.html",tooltip="An error occured writing to the file."];
+}

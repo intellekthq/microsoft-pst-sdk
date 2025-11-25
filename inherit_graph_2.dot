@@ -1,0 +1,19 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=FreeSans,fontsize=10,labelfontname=FreeSans,labelfontsize=10];
+  node [fontname=FreeSans,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="boost::iterator_facade",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node0 -> Node1 [id="edge4_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="pstsdk::const_btree\l_node_iter\< node_id,\l node_info \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1const__btree__node__iter.html",tooltip=" "];
+  Node0 -> Node2 [id="edge5_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="pstsdk::const_btree\l_node_iter\< node_id,\l subnode_info \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1const__btree__node__iter.html",tooltip=" "];
+  Node0 -> Node3 [id="edge6_Node000000_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="pstsdk::const_btree\l_node_iter\< block_id,\l block_info \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1const__btree__node__iter.html",tooltip=" "];
+  Node0 -> Node4 [id="edge7_Node000000_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="pstsdk::const_btree\l_node_iter\< K, V \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1const__btree__node__iter.html",tooltip="The actual iterator type used by the btree_node class hierarchy."];
+  Node0 -> Node5 [id="edge8_Node000000_Node000005",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="pstsdk::const_table\l_row_iter",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1const__table__row__iter.html",tooltip="The iterator type exposed by the table for row iteration."];
+}

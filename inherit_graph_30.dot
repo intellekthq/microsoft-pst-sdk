@@ -1,0 +1,9 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=FreeSans,fontsize=10,labelfontname=FreeSans,labelfontsize=10];
+  node [fontname=FreeSans,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="pstsdk::disk::bth_nonleaf\l_entry\< K \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structpstsdk_1_1disk_1_1bth__nonleaf__entry.html",tooltip="Entries which make up a \"non-leaf\" BTH allocation."];
+}

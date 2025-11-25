@@ -1,0 +1,15 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=FreeSans,fontsize=10,labelfontname=FreeSans,labelfontsize=10];
+  node [fontname=FreeSans,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="boost::iostreams::device",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classboost_1_1iostreams_1_1device.html",tooltip=" "];
+  Node0 -> Node1 [id="edge1_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="pstsdk::hid_stream\l_device",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1hid__stream__device.html",tooltip="Defines a stream device for a heap allocation for use by boost iostream."];
+  Node0 -> Node2 [id="edge2_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="pstsdk::hnid_stream\l_device",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1hnid__stream__device.html",tooltip="Defines a stream device which can wrap one of the two prop sources."];
+  Node0 -> Node3 [id="edge3_Node000000_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="pstsdk::node_stream\l_device",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1node__stream__device.html",tooltip="Defines a stream device for a node for use by boost iostream."];
+}

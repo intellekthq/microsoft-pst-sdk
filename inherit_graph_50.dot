@@ -1,0 +1,17 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=FreeSans,fontsize=10,labelfontname=FreeSans,labelfontsize=10];
+  node [fontname=FreeSans,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="pstsdk::disk::page\< T \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structpstsdk_1_1disk_1_1page.html",tooltip="Generic page structure."];
+  Node0 -> Node1 [id="edge83_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="pstsdk::disk::amap\l_page\< T \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structpstsdk_1_1disk_1_1amap__page.html",tooltip="The authoritative source of free space in the file."];
+  Node0 -> Node2 [id="edge84_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="pstsdk::disk::fmap\l_page\< T \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structpstsdk_1_1disk_1_1fmap__page.html",tooltip="A deprecated allocation system optimized for AMap page searching."];
+  Node0 -> Node3 [id="edge85_Node000000_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="pstsdk::disk::fpmap\l_page\< T \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structpstsdk_1_1disk_1_1fpmap__page.html",tooltip="A deprecated allocation system optimized for PMap page searching."];
+  Node0 -> Node4 [id="edge86_Node000000_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="pstsdk::disk::pmap\l_page\< T \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structpstsdk_1_1disk_1_1pmap__page.html",tooltip="An old allocation system optimized for pages."];
+}

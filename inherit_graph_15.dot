@@ -1,0 +1,13 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=FreeSans,fontsize=10,labelfontname=FreeSans,labelfontsize=10];
+  node [fontname=FreeSans,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="pstsdk::const_property\l_object",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1const__property__object.html",tooltip="Property object base class."];
+  Node0 -> Node1 [id="edge75_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="pstsdk::const_table_row",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1const__table__row.html",tooltip="An abstraction of a table row."];
+  Node0 -> Node2 [id="edge76_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="pstsdk::property_bag",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classpstsdk_1_1property__bag.html",tooltip="Property Context (PC) Implementation."];
+}

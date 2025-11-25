@@ -1,0 +1,107 @@
+var disk_2disk_8h =
+[
+    [ "pstsdk::disk::block_types", "group__disk__blockrelated.html#gab878c6c9ac4687f08b8004d13c5891e7", [
+      [ "pstsdk::disk::block_type_external", "group__disk__blockrelated.html#ggab878c6c9ac4687f08b8004d13c5891e7a778726e73412ae94e2df22f51ea9f6ac", null ],
+      [ "pstsdk::disk::block_type_extended", "group__disk__blockrelated.html#ggab878c6c9ac4687f08b8004d13c5891e7afcb465d5a6df74b85ba8c8ef13465ea1", null ],
+      [ "pstsdk::disk::block_type_sub", "group__disk__blockrelated.html#ggab878c6c9ac4687f08b8004d13c5891e7a8a7ab3c936d646cd945286701c31f630", null ]
+    ] ],
+    [ "pstsdk::disk::crypt_method", "group__disk__headerrelated.html#gae8018f737117cf4dbcec6ba64a956877", [
+      [ "pstsdk::disk::crypt_method_none", "group__disk__headerrelated.html#ggae8018f737117cf4dbcec6ba64a956877ae11b83c7500d39870d293b52046daa07", null ],
+      [ "pstsdk::disk::crypt_method_permute", "group__disk__headerrelated.html#ggae8018f737117cf4dbcec6ba64a956877ab0f135b42c52fceed6154696e3db8164", null ],
+      [ "pstsdk::disk::crypt_method_cyclic", "group__disk__headerrelated.html#ggae8018f737117cf4dbcec6ba64a956877ac842484e000e82008fff086589e4ffb4", null ]
+    ] ],
+    [ "pstsdk::disk::database_format", "group__disk__headerrelated.html#ga4255b8a181bef2123af19a1179a055e9", [
+      [ "pstsdk::disk::database_format_ansi_min", "group__disk__headerrelated.html#gga4255b8a181bef2123af19a1179a055e9a969214f21b9e7dcbd208ced7c54132f7", null ],
+      [ "pstsdk::disk::database_format_ansi", "group__disk__headerrelated.html#gga4255b8a181bef2123af19a1179a055e9a4c5d53257ad64df16fab4ec0762457d9", null ],
+      [ "pstsdk::disk::database_format_unicode_min", "group__disk__headerrelated.html#gga4255b8a181bef2123af19a1179a055e9a7ea7e52ae96fa6a267b7c0a0f6abec15", null ],
+      [ "pstsdk::disk::database_format_unicode", "group__disk__headerrelated.html#gga4255b8a181bef2123af19a1179a055e9ab99920a5f39366f1096ea79a3f8bd0af", null ]
+    ] ],
+    [ "pstsdk::disk::database_type", "group__disk__headerrelated.html#gaf47af2f81d8b7d8c2d18fa666f0e51bf", [
+      [ "pstsdk::disk::database_ost", "group__disk__headerrelated.html#ggaf47af2f81d8b7d8c2d18fa666f0e51bfa4129f46b1477b47a6f7492f950d8ca29", null ],
+      [ "pstsdk::disk::database_pst", "group__disk__headerrelated.html#ggaf47af2f81d8b7d8c2d18fa666f0e51bfa16cc11dc852316bad681298199311a2d", null ]
+    ] ],
+    [ "pstsdk::disk::heap_client_signature", "group__disk__heaprelated.html#ga971e15c2bfeb3b71b4f3c51c5c3f105e", [
+      [ "pstsdk::disk::heap_sig_gmp", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105ea62040a1fa9a54a1a0bb9555641c1f0a3", null ],
+      [ "pstsdk::disk::heap_sig_tc", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105ea6d8e7bda1a36e0192674c894acd5a254", null ],
+      [ "pstsdk::disk::heap_sig_smp", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105eaa22cc12172e0e1c9047357e6c0cb0008", null ],
+      [ "pstsdk::disk::heap_sig_hmp", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105ea39660e5a26bd0c1dc5c36ef9f84e4e1a", null ],
+      [ "pstsdk::disk::heap_sig_ch", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105eade9fa900760351b558dfe6107e4c7020", null ],
+      [ "pstsdk::disk::heap_sig_chtc", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105ea003d683c4d0d029688f9d920dd5bce75", null ],
+      [ "pstsdk::disk::heap_sig_bth", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105ea4e947f5b4b2c819d62dbc214c517c9ba", null ],
+      [ "pstsdk::disk::heap_sig_pc", "group__disk__heaprelated.html#gga971e15c2bfeb3b71b4f3c51c5c3f105ea208705d98d8859e7a3b27040759e335f", null ]
+    ] ],
+    [ "pstsdk::disk::heap_fill_level", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56d", [
+      [ "pstsdk::disk::heap_fill_empty", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56daeb550f7438ca870ec7c668af0b34aceb", null ],
+      [ "pstsdk::disk::heap_fill_1", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da618f49bea19f627b4dbb44297ab14729", null ],
+      [ "pstsdk::disk::heap_fill_2", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56dadeac3ff8e0daf151413341d248ba8c86", null ],
+      [ "pstsdk::disk::heap_fill_3", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da08ef05f372d0acf31074e41e3776e4be", null ],
+      [ "pstsdk::disk::heap_fill_4", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56dadc6d3f4dadbba68f50df09d0805060a7", null ],
+      [ "pstsdk::disk::heap_fill_5", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56dac8d96144945fc90cd37c9c652ff02728", null ],
+      [ "pstsdk::disk::heap_fill_6", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56dae827c3aea4f7e896e85e46cd2455e0c9", null ],
+      [ "pstsdk::disk::heap_fill_7", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da2dba01669a2bc9155ebb9a9e6aedba45", null ],
+      [ "pstsdk::disk::heap_fill_8", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da4b09d1265549fc94c6c26f563dd200ce", null ],
+      [ "pstsdk::disk::heap_fill_9", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da7da3e5194302bc8c7a446ecff47ff0b8", null ],
+      [ "pstsdk::disk::heap_fill_10", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da31df9e2b48e5b9b80bb771797af386bf", null ],
+      [ "pstsdk::disk::heap_fill_11", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da78e86fcb423ac604abecd1f439ae7f6e", null ],
+      [ "pstsdk::disk::heap_fill_12", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da9a59f1b1eca50e52815fabde321c0c03", null ],
+      [ "pstsdk::disk::heap_fill_13", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da6cc01117f627dcbe981196a3b09730d9", null ],
+      [ "pstsdk::disk::heap_fill_14", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da8424bf620e78b7bed69349a52c68df21", null ],
+      [ "pstsdk::disk::heap_fill_full", "namespacepstsdk_1_1disk.html#a7aeabddee25825e46ee8717d61cba56da9dae726eb09ddfe7fd2de967c836a532", null ]
+    ] ],
+    [ "pstsdk::disk::page_type", "group__disk__pagerelated.html#ga32f0c742b96cce71bf29f6ae8d323c76", [
+      [ "pstsdk::disk::page_type_bbt", "group__disk__pagerelated.html#gga32f0c742b96cce71bf29f6ae8d323c76a9aaeb3e7b13920a8b4812923b6902d03", null ],
+      [ "pstsdk::disk::page_type_nbt", "group__disk__pagerelated.html#gga32f0c742b96cce71bf29f6ae8d323c76a85957693d8bb90b74050375c60715188", null ],
+      [ "pstsdk::disk::page_type_fmap", "group__disk__pagerelated.html#gga32f0c742b96cce71bf29f6ae8d323c76a5124e0e7cc01744d0d77e8582014973e", null ],
+      [ "pstsdk::disk::page_type_pmap", "group__disk__pagerelated.html#gga32f0c742b96cce71bf29f6ae8d323c76a46fd9fe79208bd9da386901feac97728", null ],
+      [ "pstsdk::disk::page_type_amap", "group__disk__pagerelated.html#gga32f0c742b96cce71bf29f6ae8d323c76a05c1d8e8c41b232a2b6d101f43c17513", null ],
+      [ "pstsdk::disk::page_type_fpmap", "group__disk__pagerelated.html#gga32f0c742b96cce71bf29f6ae8d323c76a720ccc8a5e06b4dc3f4f76be8579fa8b", null ],
+      [ "pstsdk::disk::page_type_dlist", "group__disk__pagerelated.html#gga32f0c742b96cce71bf29f6ae8d323c76ad8560845df65fa3113c801e504cbef04", null ]
+    ] ],
+    [ "pstsdk::disk::tc_offsets", "group__disk__tcrelated.html#ga5d18b211e9e57ab6b76531d01a98ea1f", [
+      [ "pstsdk::disk::tc_offsets_four", "group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fa213b25e8bfee327808fe150eae312d12", null ],
+      [ "pstsdk::disk::tc_offsets_two", "group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fab68f57dead425ac4df27a4efca06ec63", null ],
+      [ "pstsdk::disk::tc_offsets_one", "group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fabaf3daae8367e98dd36760a0ec9740ec", null ],
+      [ "pstsdk::disk::tc_offsets_bitmap", "group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fafacab6eefb277526f0f7492c1b70546a", null ],
+      [ "pstsdk::disk::tc_offsets_max", "group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fa6f6193ba44679633716199421230d485", null ]
+    ] ],
+    [ "pstsdk::disk::align_disk", "group__disk__blockrelated.html#gafb2f3462a66d4e5dd98ef5cd08228265", null ],
+    [ "pstsdk::disk::align_slot", "group__disk__blockrelated.html#ga0d1fa63c49bd24b6c34ea1b7584d26f1", null ],
+    [ "pstsdk::disk::bid_is_external", "group__disk__blockrelated.html#gac65f95443612817e6e7561b3fcfd26d9", null ],
+    [ "pstsdk::disk::bid_is_internal", "group__disk__blockrelated.html#ga49901b94a75a4394cb7da6573aebac57", null ],
+    [ "pstsdk::disk::compute_crc", "group__utilityrelated.html#ga3f5129d4720dd98122cb42b9accfa292", null ],
+    [ "pstsdk::disk::compute_signature", "group__utilityrelated.html#gaa0bbd79cee7beeab4c4f214719ab2a60", null ],
+    [ "pstsdk::disk::compute_signature", "group__utilityrelated.html#ga1b22bf2a6474d311adbc0d17892a93bc", null ],
+    [ "pstsdk::disk::cyclic", "group__disk.html#gab9421fc9a2252721b9242bd0129515fe", null ],
+    [ "pstsdk::disk::dlist_get_page_num", "group__disk__pagerelated.html#ga4ee519170ca8645e0407969c7be1a278", null ],
+    [ "pstsdk::disk::dlist_get_slots", "group__disk__pagerelated.html#ga7cdbf4603fae418b88c7a6c43bf758d5", null ],
+    [ "pstsdk::disk::nameid_get_guid_index", "group__disk__nameidrelated.html#gab2c0c42db74e509b1bc8fd0785004640", null ],
+    [ "pstsdk::disk::nameid_get_guid_index", "group__disk__nameidrelated.html#ga6810a18b356c69a2b1e1c5052a0f1a77", null ],
+    [ "pstsdk::disk::nameid_get_prop_index", "group__disk__nameidrelated.html#ga1995e886e02c97b3009ba73b5da7a17c", null ],
+    [ "pstsdk::disk::nameid_get_prop_index", "group__disk__nameidrelated.html#ga42502af5ddb64aee236786cd101d1c1f", null ],
+    [ "pstsdk::disk::nameid_is_string", "group__disk__nameidrelated.html#ga771a13364d6fd461410f6de6121ba46c", null ],
+    [ "pstsdk::disk::nameid_is_string", "group__disk__nameidrelated.html#ga4141f4a6967f94ea5cc19f407484c9ae", null ],
+    [ "pstsdk::disk::permute", "group__disk.html#ga869e1cd58cedf4235bdaf930b6adac97", null ],
+    [ "pstsdk::disk::block_id_attached_bit", "namespacepstsdk_1_1disk.html#af667a52c73df42253d16122a00667c06", null ],
+    [ "pstsdk::disk::block_id_increment", "group__disk__blockrelated.html#ga30660ea4fbf72f34b05f3508eb10a159", null ],
+    [ "pstsdk::disk::block_id_internal_bit", "group__disk__blockrelated.html#ga22340f597b0abf71808b74302eee835d", null ],
+    [ "pstsdk::disk::bytes_per_slot", "group__disk__pagerelated.html#gadc0f8def6e7d80dc05b47046a91313d0", null ],
+    [ "pstsdk::disk::crc_table", "group__utilityrelated.html#ga528e42e46d8089d5a1b58866a5573ddb", null ],
+    [ "pstsdk::disk::dlist_page_location", "group__disk__pagerelated.html#ga38a33764faa8a9175a2bb25051ffae39", null ],
+    [ "pstsdk::disk::dlist_page_num_mask", "group__disk__pagerelated.html#gac6f76f373e0061872408ea87f24eb402", null ],
+    [ "pstsdk::disk::dlist_slots_shift", "group__disk__pagerelated.html#gae1647ea897ff9e327c44a04169b93388", null ],
+    [ "pstsdk::disk::first_amap_page_location", "group__disk__pagerelated.html#ga35a07bb66f81e1208edc1c055d40f4ac", null ],
+    [ "pstsdk::disk::header_fmap_entries", "group__disk__headerrelated.html#gaae04f5d0d0ff310035f301619fa000c4", null ],
+    [ "pstsdk::disk::header_fpmap_size", "group__disk__headerrelated.html#gafc7458b98526ceb2f0da5374a27aa7c9", null ],
+    [ "pstsdk::disk::header_lock_entries", "group__disk__headerrelated.html#ga862de2fb2439398994374cffa9c5441f", null ],
+    [ "pstsdk::disk::heap_max_alloc_size", "group__disk__heaprelated.html#gaf2c50817352bc72fa43a03c1570850f5", null ],
+    [ "pstsdk::disk::heap_max_alloc_size_wver_14", "group__disk__heaprelated.html#ga40de53b2b795b49448ae6fc064366a93", null ],
+    [ "pstsdk::disk::heap_signature", "group__disk__heaprelated.html#ga6280ba5978a60146a75f391110474812", null ],
+    [ "pstsdk::disk::hlmagic", "group__disk__headerrelated.html#ga77687e3c069414529a46e58c1146c5dd", null ],
+    [ "pstsdk::disk::max_block_disk_size", "group__disk__blockrelated.html#ga8e5011a038c73be8e1c193baf93ea32d", null ],
+    [ "pstsdk::disk::ost_magic", "group__disk__headerrelated.html#ga21805ada371278d6ec8e40050f2ba608", null ],
+    [ "pstsdk::disk::page_size", "group__disk__pagerelated.html#ga08c9cf0f35c0dabea4d427a3d5a468ab", null ],
+    [ "pstsdk::disk::pst_magic", "group__disk__headerrelated.html#ga3428a9dcf0d47b22091bdc56821b14dd", null ],
+    [ "pstsdk::disk::table1", "group__utilityrelated.html#ga71511f545c419a4360dbbd84f204db6f", null ],
+    [ "pstsdk::disk::table2", "group__utilityrelated.html#gaad14410d2b52a804bb70f690e3c5b275", null ],
+    [ "pstsdk::disk::table3", "group__utilityrelated.html#ga80b3c727a0a36c399b581dcd44581181", null ]
+];

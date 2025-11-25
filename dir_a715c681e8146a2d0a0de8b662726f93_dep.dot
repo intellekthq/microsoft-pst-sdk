@@ -1,0 +1,12 @@
+digraph "pstsdk/util"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=FreeSans,fontsize=10,labelfontname=FreeSans,labelfontsize=10];
+  node [fontname=FreeSans,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_ee09676acc752b8712fe0074f922eea1 {
+    graph [ bgcolor="#edf0f7", pencolor="grey25", label="pstsdk", fontname=FreeSans,fontsize=10 style="filled,dashed", URL="dir_ee09676acc752b8712fe0074f922eea1.html",tooltip=""]
+  dir_a715c681e8146a2d0a0de8b662726f93 [label="util", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_a715c681e8146a2d0a0de8b662726f93.html",tooltip=""];
+  }
+}
