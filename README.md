@@ -1,12 +1,11 @@
 # pstsdk
 
-pstsdk is a library for reading PST-format email archives.  It currently supports little-endian systems with modern C++ compilers. This fork continues from the `trunk` dir in the original CodePlex dump from the upstream repo. The original documentation and issues are available in [/doc](doc).
+pstsdk is a library for reading PST-format email archives.  It currently supports little-endian systems with modern C++ compilers. This fork continues from the `trunk` dir in the original CodePlex dump from the upstream repo.
 
 **Important Links:**
+- [Doxygen](https://intellekthq.github.io/microsoft-pst-sdk/)
 - [MS-PST](doc/[MS-PST].pdf) - PST Spec v20100627
-- [For Developers](doc/quick_start_devs.md) - Working on pstsdk itself
-- [For Users](doc/quick_start_users.md) - Using pstsdk in your project
-- [Big Issues](doc/big_issues.md) - Known issues and limitations
+- Misc original docs/issues [/doc](doc)
 
 This is a fork with the following changes:
 - Build with `-std=c++17`
