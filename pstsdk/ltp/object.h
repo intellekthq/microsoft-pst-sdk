@@ -13,9 +13,11 @@
 #ifndef PSTSDK_LTP_OBJECT_H
 #define PSTSDK_LTP_OBJECT_H
 
+#include "pstsdk/util/util.h"
 #include <functional>
 #include <type_traits>
 #include <algorithm>
+#include <optional>
 #include <boost/iostreams/concepts.hpp>
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -120,6 +122,17 @@ public:
     //! \returns The property value
     template<typename T>
     T read_prop(prop_id id) const;
+
+    //! \brief Read a property as a given type, if it exists.
+    //!
+    //! It is the callers responsibility to ensure the prop_id is of or
+    //! convertable to the requested type.
+    //! \tparam T The type to interpret he property as
+    //! \param[in] id The prop_id
+    //! \throws key_not_found<prop_id> If the specified property is not present
+    //! \returns The property value
+    template<typename T>
+    std::optional<T> read_prop_if_exists(prop_id id) const;
 
     //! \brief Read a property as an array of the given type
     //!
@@ -291,8 +304,18 @@ inline std::vector<byte> const_property_object::read_prop<std::vector<byte> >(pr
     return get_value_variable(id); 
 }
 
+
+template<typename T>
+std::optional<T> const_property_object::read_prop_if_exists(prop_id id) const {
+    if (prop_exists(id)) {
+        return read_prop<T>(id);
+    } else {
+        return {};
+    }
+}
+
 template<>
-inline std::vector<std::vector<byte> > const_property_object::read_prop_array<std::vector<byte> >(prop_id id) const
+inline std::vector<std::vector<byte>> const_property_object::read_prop_array<std::vector<byte> >(prop_id id) const
 {
     std::vector<byte> buffer = get_value_variable(id);
 #ifdef PSTSDK_VALIDATION_LEVEL_WEAK
@@ -372,8 +395,7 @@ inline std::string const_property_object::read_prop<std::string>(prop_id id) con
     {
         if(buffer.size())
         {
-            std::wstring s(bytes_to_wstring(buffer));
-            return std::string(s.begin(), s.end());
+            return std::string(bytes_to_string(buffer));
         }
         return std::string();
     }

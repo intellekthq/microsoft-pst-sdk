@@ -111,6 +111,12 @@ bool test_bit(const byte* pbytes, ulong bit);
 
 //! \brief Convert an array of bytes to a std::wstring
 //! \param[in] bytes The bytes to convert
+//! \returns A std::string
+//! \ingroup util
+std::string bytes_to_string(const std::vector<byte> &bytes);
+
+//! \brief Convert an array of bytes to a std::wstring
+//! \param[in] bytes The bytes to convert
 //! \returns A std::wstring
 //! \ingroup util
 std::wstring bytes_to_wstring(const std::vector<byte> &bytes);
@@ -267,6 +273,40 @@ inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
         throw std::runtime_error("Failed to convert from UTF-16LE to wstring");
 
     out.resize(out.size() - (outbytesleft / sizeof(wchar_t)));
+    return out;
+}
+
+// Allows reading wstring props directly into std::string for non-Windows
+inline std::string pstsdk::bytes_to_string(const std::vector<byte> &bytes)
+{
+    if(bytes.size() == 0)
+        return std::string();
+
+    // Up to one wchar_t for every 2 bytes, if there are no surrogate pairs.
+    if(bytes.size() % 2 != 0)
+        throw std::runtime_error("Cannot interpret odd number of bytes as UTF-16LE");
+
+    // Up to 4 bytes out per char
+    std::string out(bytes.size() * 2, L'\0');
+
+    iconv_t cd(::iconv_open("UTF-8", "UTF-16LE"));
+    if(cd == (iconv_t)(-1)) {
+        perror("bytes_to_string");
+        throw std::runtime_error("Unable to convert from UTF-16LE to string");
+    }
+
+    const char *inbuf = reinterpret_cast<const char *>(&bytes[0]);
+    size_t inbytesleft = bytes.size();
+    char *outbuf = reinterpret_cast<char *>(&out[0]);
+    size_t outbytesleft = out.size();
+    size_t result = ::iconv(cd, const_cast<char **>(&inbuf), &inbytesleft, &outbuf, &outbytesleft);
+    ::iconv_close(cd);
+
+    if(result == (size_t)(-1) || inbytesleft > 0)
+        throw std::runtime_error("Failed to convert from UTF-16LE to string");
+
+    out.resize(out.size() - outbytesleft);
+
     return out;
 }
 
