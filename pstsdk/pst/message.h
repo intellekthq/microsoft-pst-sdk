@@ -18,6 +18,7 @@
 #include "pstsdk/ltp/propbag.h"
 #include "pstsdk/ltp/table.h"
 #include "pstsdk/mapitags.h"
+#include "pstsdk/util/primitives.h"
 
 namespace pstsdk
 {
@@ -318,7 +319,18 @@ public:
     // \brief Get the total size of this message
     //! \returns The message size
     size_t size() const
-        { return m_bag.read_prop<slong>(PR_MESSAGE_SIZE); }
+        {
+            size_t size = 0;
+            auto size_type = m_bag.get_prop_type(PR_MESSAGE_SIZE);
+
+            if (size_type == prop_type_long) {
+                size = m_bag.read_prop<int32_t>(PR_MESSAGE_SIZE);
+            } else if (size_type == prop_type_longlong) {
+                size = m_bag.read_prop<int64_t>(PR_MESSAGE_SIZE);
+            }
+
+            return size;
+        }
     //! \brief Get the number of attachments on this message
     //! \returns The number of attachments
     size_t get_attachment_count() const;
