@@ -26,6 +26,7 @@
 
 #include "pstsdk/pst/folder.h"
 #include "pstsdk/pst/message.h"
+#include "pstsdk/util/primitives.h"
 
 namespace pstsdk
 {
@@ -46,10 +47,9 @@ namespace pstsdk
 //! \ingroup pst_pstrelated
 class pst : private boost::noncopyable
 {
+public:
     typedef boost::filter_iterator<is_nid_type<nid_type_folder>, const_nodeinfo_iterator> folder_filter_iterator;
     typedef boost::filter_iterator<is_nid_type<nid_type_message>, const_nodeinfo_iterator> message_filter_iterator;
-
-public:
     //! \brief Message iterator type; a transform iterator over a filter iterator over a nodeinfo iterator
     typedef boost::transform_iterator<message_transform_info, message_filter_iterator> message_iterator;
     //! \brief Folder iterator type; a transform iterator over a filter iterator over a nodeinfo iterator
@@ -76,6 +76,24 @@ public:
     //! \returns an iterator at the end position
     folder_iterator folder_end() const
         { return boost::make_transform_iterator(boost::make_filter_iterator<is_nid_type<nid_type_folder> >(m_db->read_nbt_root()->end(), m_db->read_nbt_root()->end()), folder_transform_info(m_db) ); }
+
+    //! \brief Get an iterator to the first folder in the PST file
+    //! \returns an iterator positioned on the first folder in this PST file
+    folder_filter_iterator folder_node_begin() const
+        { return boost::make_filter_iterator<is_nid_type<nid_type_folder> >(m_db->read_nbt_root()->begin(), m_db->read_nbt_root()->end()); }
+    //! \brief Get the end folder iterator
+    //! \returns an iterator at the end position
+    folder_filter_iterator folder_node_end() const
+        { return boost::make_filter_iterator<is_nid_type<nid_type_folder> >(m_db->read_nbt_root()->end(), m_db->read_nbt_root()->end()); }
+
+    //! \brief Get an iterator to the first message in the PST file
+    //! \returns an iterator positioned on the first message in this PST file
+    message_filter_iterator message_node_begin() const
+        { return boost::make_filter_iterator<is_nid_type<nid_type_message> >(m_db->read_nbt_root()->begin(), m_db->read_nbt_root()->end()); }
+    //! \brief Get the end message iterator
+    //! \returns an iterator at the end position
+    message_filter_iterator message_node_end() const
+        { return boost::make_filter_iterator<is_nid_type<nid_type_message> >(m_db->read_nbt_root()->end(), m_db->read_nbt_root()->end()); }
 
     //! \brief Get an iterator to the first message in the PST file
     //! \returns an iterator positioned on the first message in this PST file
