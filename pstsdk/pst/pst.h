@@ -57,8 +57,13 @@ public:
 
     //! \brief Construct a pst object from the specified file
     //! \param[in] filename The pst file to open on disk
-    pst(const std::wstring& filename) 
+    pst(const std::wstring& filename)
         : m_db(open_database(filename)) { }
+
+    //! \brief Construct a pst object from a custom file instance
+    //! \param[in] custom_file A shared_ptr to a file instance (e.g., backed by custom filesystem)
+    pst(std::shared_ptr<file> custom_file)
+        : m_db(open_database(custom_file)) { }
 
 #ifndef BOOST_NO_RVALUE_REFERENCES
     //! \brief Move constructor

@@ -31,6 +31,12 @@ namespace pstsdk
 class file : private boost::noncopyable
 {
 public:
+    // TODO
+    file() {
+        m_pfile = nullptr;
+        m_filename = L"";
+    }
+
     //! \brief Construct a file object from the given filename
     //! \throw runtime_error if an error occurs opening the file
     //! \param[in] filename The file to open
@@ -44,7 +50,7 @@ public:
     //! \param[in,out] buffer The buffer to store the data in. The size of this vector is the amount of data to read.
     //! \param[in] offset The location on disk to read the data from.
     //! \returns The amount of data read
-    size_t read(std::vector<byte>& buffer, ulonglong offset) const;
+    virtual size_t read(std::vector<byte>& buffer, ulonglong offset) const;
 
 //! \cond write_api
 
@@ -53,7 +59,7 @@ public:
     //! \param[in] buffer The data to write. The size of this vector is the amount of data to write.
     //! \param[in] offset The location on disk to read the data from.
     //! \returns The amount of data written
-    size_t write(const std::vector<byte>& buffer, ulonglong offset);
+    virtual size_t write(const std::vector<byte>& buffer, ulonglong offset);
 //! \endcond
 
 private:
@@ -147,6 +153,7 @@ inline pstsdk::file::file(const std::wstring& filename)
 
 inline pstsdk::file::~file()
 {
+    if (!m_pfile) return;
     fflush(m_pfile);
     fclose(m_pfile);
 }

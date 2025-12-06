@@ -40,6 +40,14 @@ typedef database_impl<ulong> small_pst;
 //! \returns A shared_ptr to the opened context
 //! \ingroup ndb_databaserelated
 shared_db_ptr open_database(const std::wstring& filename);
+//! \brief Open a db_context for the given file instance
+//! \throws invalid_format if the file format is not understood
+//! \throws runtime_error if an error occurs opening the file
+//! \throws crc_fail (\ref PSTSDK_VALIDATION_LEVEL_WEAK) if the CRC of this header doesn't match
+//! \param[in] file A shared_ptr to a file instance (e.g., backed by custom filesystem)
+//! \returns A shared_ptr to the opened context
+//! \ingroup ndb_databaserelated
+shared_db_ptr open_database(std::shared_ptr<file> file);
 //! \brief Try to open the given file as an ANSI store
 //! \throws invalid_format if the file format is not ANSI
 //! \throws runtime_error if an error occurs opening the file
@@ -48,6 +56,14 @@ shared_db_ptr open_database(const std::wstring& filename);
 //! \returns A shared_ptr to the opened context
 //! \ingroup ndb_databaserelated
 std::shared_ptr<small_pst> open_small_pst(const std::wstring& filename);
+//! \brief Try to open the given file as an ANSI store with custom file instance
+//! \throws invalid_format if the file format is not ANSI
+//! \throws runtime_error if an error occurs opening the file
+//! \throws crc_fail (\ref PSTSDK_VALIDATION_LEVEL_WEAK) if the CRC of this header doesn't match
+//! \param[in] file A shared_ptr to a file instance
+//! \returns A shared_ptr to the opened context
+//! \ingroup ndb_databaserelated
+std::shared_ptr<small_pst> open_small_pst(std::shared_ptr<file> file);
 //! \brief Try to open the given file as a Unicode store
 //! \throws invalid_format if the file format is not Unicode
 //! \throws runtime_error if an error occurs opening the file
@@ -56,6 +72,14 @@ std::shared_ptr<small_pst> open_small_pst(const std::wstring& filename);
 //! \returns A shared_ptr to the opened context
 //! \ingroup ndb_databaserelated
 std::shared_ptr<large_pst> open_large_pst(const std::wstring& filename);
+//! \brief Try to open the given file as a Unicode store with custom file instance
+//! \throws invalid_format if the file format is not Unicode
+//! \throws runtime_error if an error occurs opening the file
+//! \throws crc_fail (\ref PSTSDK_VALIDATION_LEVEL_WEAK) if the CRC of this header doesn't match
+//! \param[in] file A shared_ptr to a file instance
+//! \returns A shared_ptr to the opened context
+//! \ingroup ndb_databaserelated
+std::shared_ptr<large_pst> open_large_pst(std::shared_ptr<file> file);
 
 //! \brief PST implementation
 //!
@@ -135,6 +159,13 @@ protected:
     //! \throws runtime_error if an error occurs opening the file
     //! \param[in] filename The filename to open
     database_impl(const std::wstring& filename);
+
+    //! \brief Construct a database_impl from a file
+    //! \throws invalid_format if the file format is not understood
+    //! \throws runtime_error if an error occurs opening the file
+    //! \param[in] file The file
+    database_impl(std::shared_ptr<file> file);
+
     //! \brief Validate the header of this file
     //! \throws invalid_format if this header is for a database format incompatible with this object
     //! \throws crc_fail (\ref PSTSDK_VALIDATION_LEVEL_WEAK) if the CRC of this header doesn't match
@@ -166,10 +197,13 @@ protected:
     std::shared_ptr<subnode_nonleaf_block> read_subnode_nonleaf_block(const shared_db_ptr& parent, const block_info& bi, disk::sub_nonleaf_block<T>& sub_block);
 
     friend shared_db_ptr open_database(const std::wstring& filename);
+    friend shared_db_ptr open_database(std::shared_ptr<file> file);
     friend std::shared_ptr<small_pst> open_small_pst(const std::wstring& filename);
+    friend std::shared_ptr<small_pst> open_small_pst(std::shared_ptr<file> file);
     friend std::shared_ptr<large_pst> open_large_pst(const std::wstring& filename);
+    friend std::shared_ptr<large_pst> open_large_pst(std::shared_ptr<file> file);
 
-    file m_file;
+    std::shared_ptr<file> m_file;
     disk::header<T> m_header;
     std::shared_ptr<bbt_page> m_bbt_root;
     std::shared_ptr<nbt_page> m_nbt_root;
@@ -234,9 +268,37 @@ inline std::shared_ptr<pstsdk::small_pst> pstsdk::open_small_pst(const std::wstr
     return db;
 }
 
+inline std::shared_ptr<pstsdk::small_pst> pstsdk::open_small_pst(std::shared_ptr<file> custom_file)
+{
+    std::shared_ptr<small_pst> db(new small_pst(custom_file));
+    return db;
+}
+
 inline std::shared_ptr<pstsdk::large_pst> pstsdk::open_large_pst(const std::wstring& filename)
 {
     std::shared_ptr<large_pst> db(new large_pst(filename));
+    return db;
+}
+
+inline std::shared_ptr<pstsdk::large_pst> pstsdk::open_large_pst(std::shared_ptr<file> custom_file)
+{
+    std::shared_ptr<large_pst> db(new large_pst(custom_file));
+    return db;
+}
+
+inline pstsdk::shared_db_ptr pstsdk::open_database(std::shared_ptr<file> custom_file)
+{
+    try
+    {
+        shared_db_ptr db = open_small_pst(custom_file);
+        return db;
+    }
+    catch(invalid_format&)
+    {
+        // well, that didn't work
+    }
+
+    shared_db_ptr db = open_large_pst(custom_file);
     return db;
 }
 
@@ -256,7 +318,7 @@ inline std::vector<pstsdk::byte> pstsdk::database_impl<T>::read_block_data(const
     std::vector<byte> buffer(aligned_size);
     disk::block_trailer<T>* bt = (disk::block_trailer<T>*)(&buffer[0] + aligned_size - sizeof(disk::block_trailer<T>));
 
-    m_file.read(buffer, bi.address);    
+    m_file->read(buffer, bi.address);
 
 #ifdef PSTSDK_VALIDATION_LEVEL_WEAK
     if(bt->bid != bi.id)
@@ -292,7 +354,7 @@ std::vector<pstsdk::byte> pstsdk::database_impl<T>::read_page_data(const page_in
     std::vector<byte> buffer(disk::page_size);
     disk::page<T>* ppage = (disk::page<T>*)&buffer[0];
     
-    m_file.read(buffer, pi.address);
+    m_file->read(buffer, pi.address);
 
 #ifdef PSTSDK_VALIDATION_LEVEL_FULL
     ulong crc = disk::compute_crc(&buffer[0], disk::page<T>::page_data_size);
@@ -341,10 +403,21 @@ inline std::shared_ptr<pstsdk::nbt_page> pstsdk::database_impl<T>::read_nbt_root
 
 template<typename T>
 inline pstsdk::database_impl<T>::database_impl(const std::wstring& filename)
-: m_file(filename)
+: m_file(std::make_unique<file>(filename))
 {
     std::vector<byte> buffer(sizeof(m_header));
-    m_file.read(buffer, 0);
+    m_file->read(buffer, 0);
+    memcpy(&m_header, &buffer[0], sizeof(m_header));
+
+    validate_header();
+}
+
+template<typename T>
+inline pstsdk::database_impl<T>::database_impl(std::shared_ptr<file> file)
+: m_file(file)
+{
+    std::vector<byte> buffer(sizeof(m_header));
+    m_file->read(buffer, 0);
     memcpy(&m_header, &buffer[0], sizeof(m_header));
 
     validate_header();
@@ -581,7 +654,7 @@ inline std::shared_ptr<pstsdk::data_block> pstsdk::database_impl<T>::read_data_b
 
     std::vector<byte> buffer(sizeof(disk::extended_block<T>));
     disk::extended_block<T>* peblock = (disk::extended_block<T>*)&buffer[0];
-    m_file.read(buffer, bi.address);
+    m_file->read(buffer, bi.address);
 
     // the behavior of read_block depends on this throw; this can not go under PSTSDK_VALIDATION_WEAK
     if(peblock->block_type != disk::block_type_extended)
