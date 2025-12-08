@@ -48,6 +48,11 @@ shared_db_ptr open_database(const std::wstring& filename);
 //! \returns A shared_ptr to the opened context
 //! \ingroup ndb_databaserelated
 shared_db_ptr open_database(std::shared_ptr<file> file);
+//! \brief Open a db_context by copying the in-memory header and file handle from another db_context.
+//! \param[in] other_database A reference to an existing shared_db_ptr to copy from
+//! \returns A shared_ptr to the new database context, or nullptr if the input type is unknown
+//! \ingroup ndb_databaserelated
+shared_db_ptr open_database(const shared_db_ptr &other_database);
 //! \brief Try to open the given file as an ANSI store
 //! \throws invalid_format if the file format is not ANSI
 //! \throws runtime_error if an error occurs opening the file
@@ -166,6 +171,10 @@ protected:
     //! \param[in] file The file
     database_impl(std::shared_ptr<file> file);
 
+    //! \brief Construct a database_impl from another database_impl, copying its header
+    //! \param[in] other_database Pointer to the source database_impl to copy from
+    database_impl(database_impl<T> *other_database);
+
     //! \brief Validate the header of this file
     //! \throws invalid_format if this header is for a database format incompatible with this object
     //! \throws crc_fail (\ref PSTSDK_VALIDATION_LEVEL_WEAK) if the CRC of this header doesn't match
@@ -198,6 +207,8 @@ protected:
 
     friend shared_db_ptr open_database(const std::wstring& filename);
     friend shared_db_ptr open_database(std::shared_ptr<file> file);
+    friend shared_db_ptr open_database(const shared_db_ptr &other_database);
+
     friend std::shared_ptr<small_pst> open_small_pst(const std::wstring& filename);
     friend std::shared_ptr<small_pst> open_small_pst(std::shared_ptr<file> file);
     friend std::shared_ptr<large_pst> open_large_pst(const std::wstring& filename);
@@ -300,6 +311,17 @@ inline pstsdk::shared_db_ptr pstsdk::open_database(std::shared_ptr<file> custom_
 
     shared_db_ptr db = open_large_pst(custom_file);
     return db;
+}
+
+inline pstsdk::shared_db_ptr pstsdk::open_database(const pstsdk::shared_db_ptr &other_database)
+{
+    auto small_pst_db = dynamic_cast<small_pst *>(other_database.get());
+    if (small_pst_db) return std::shared_ptr<small_pst>(new small_pst(small_pst_db));
+
+    auto large_pst_db = dynamic_cast<large_pst *>(other_database.get());
+    if (large_pst_db) return std::shared_ptr<large_pst>(new large_pst(large_pst_db));
+
+    return nullptr;
 }
 
 template<typename T>
@@ -421,6 +443,14 @@ inline pstsdk::database_impl<T>::database_impl(std::shared_ptr<file> file)
     memcpy(&m_header, &buffer[0], sizeof(m_header));
 
     validate_header();
+}
+
+template<typename T>
+inline pstsdk::database_impl<T>::database_impl(database_impl<T> *other_database)
+: m_file(other_database->m_file)
+{
+    // We assume that the header was already validated, so just copy it
+    memcpy(&m_header, &other_database->m_header, sizeof(m_header));
 }
 
 template<typename T>

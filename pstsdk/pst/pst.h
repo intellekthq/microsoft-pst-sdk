@@ -65,6 +65,13 @@ public:
     pst(std::shared_ptr<file> custom_file)
         : m_db(open_database(custom_file)) { }
 
+    //! \brief Construct a pst object from another pst instance, copying its header and skipping validation
+    //!
+    //! NOTE: Assumes validation is performed during initial open from file
+    //! \param[in] other_pst A reference to another PST object to copy from
+    pst(const pstsdk::pst &other_pst)
+        : m_db(open_database(other_pst.m_db)) { }
+
 #ifndef BOOST_NO_RVALUE_REFERENCES
     //! \brief Move constructor
     //! \param[in] other The other pst file
