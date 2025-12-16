@@ -813,4 +813,710 @@
 #define PROP_ID_SECURE_MIN 0x67F0
 #define PROP_ID_SECURE_MAX 0x67FF
 
+/** MAPI named properties */
+
+/** PSETID_APPOINTMENT */
+#define PidLidSendMeetingAsIcal 0x8200 // PT_BOOLEAN
+#define PidLidAppointmentSequence 0x8201 // PT_I4
+#define PidLidAppointmentSequenceTime 0x8202 // PT_SYSTIME
+#define PidLidAppointmentLastSequence 0x8203 // PT_I4
+#define PidLidChangeHighlight 0x8204 // PT_I4
+#define PidLidBusyStatus 0x8205 // PT_I4
+#define PidLidFExceptionalBody 0x8206 // PT_BOOLEAN
+#define PidLidAppointmentAuxiliaryFlags 0x8207 // PT_I4
+#define PidLidLocation_W 0x8208 // PT_UNICODE
+#define PidLidLocation_A 0x8208 // PT_STRING8
+
+#define PidLidMeetingWorkspaceUrl_W 0x8209 // PT_UNICODE
+#define PidLidMeetingWorkspaceUrl_A 0x8209 // PT_STRING8
+
+#define PidLidForwardInstance 0x820A // PT_BOOLEAN
+#define PidLidLinkedTaskItems 0x820C // PT_MV_BINARY
+#define PidLidAppointmentStartWhole 0x820D // PT_SYSTIME
+#define PidLidAppointmentEndWhole 0x820E // PT_SYSTIME
+#define PidLidAppointmentStartTime 0x820F // PT_SYSTIME
+#define PidLidAppointmentEndTime 0x8210 // PT_SYSTIME
+#define PidLidAppointmentEndDate 0x8211 // PT_SYSTIME
+#define PidLidAppointmentStartDate 0x8212 // PT_SYSTIME
+#define PidLidAppointmentDuration 0x8213 // PT_I4
+#define PidLidAppointmentColor 0x8214 // PT_I4
+#define PidLidAppointmentSubType 0x8215 // PT_BOOLEAN
+#define PidLidAppointmentRecur 0x8216 // PT_BINARY
+#define PidLidAppointmentStateFlags 0x8217 // PT_I4
+#define PidLidResponseStatus 0x8218 // PT_I4
+#define PidLidAppointmentReplyTime 0x8220 // PT_SYSTIME
+#define PidLidRecurring 0x8223 // PT_BOOLEAN
+#define PidLidIntendedBusyStatus 0x8224 // PT_I4
+#define PidLidAppointmentUpdateTime 0x8226 // PT_SYSTIME
+#define PidLidExceptionReplaceTime 0x8228 // PT_SYSTIME
+#define PidLidFInvited 0x8229 // PT_BOOLEAN
+#define PidLidFExceptionalAttendees 0x822B // PT_BOOLEAN
+#define PidLidOwnerName_W 0x822E // PT_UNICODE
+#define PidLidOwnerName_A 0x822E // PT_STRING8
+
+#define PidLidFOthersAppointment 0x822F // PT_BOOLEAN
+#define PidLidAppointmentReplyName_W 0x8230 // PT_UNICODE
+#define PidLidAppointmentReplyName_A 0x8230 // PT_STRING8
+
+#define PidLidRecurrenceType 0x8231 // PT_I4
+#define PidLidRecurrencePattern_W 0x8232 // PT_UNICODE
+#define PidLidRecurrencePattern_A 0x8232 // PT_STRING8
+
+#define PidLidTimeZoneStruct 0x8233 // PT_BINARY
+#define PidLidTimeZoneDescription_W 0x8234 // PT_UNICODE
+#define PidLidTimeZoneDescription_A 0x8234 // PT_STRING8
+
+#define PidLidClipStart 0x8235 // PT_SYSTIME
+#define PidLidClipEnd 0x8236 // PT_SYSTIME
+#define PidLidOriginalStoreEntryId 0x8237 // PT_BINARY
+#define PidLidAllAttendeesString_W 0x8238 // PT_UNICODE
+#define PidLidAllAttendeesString_A 0x8238 // PT_STRING8
+
+#define PidLidAutoFillLocation 0x823A // PT_BOOLEAN
+#define PidLidToAttendeesString_W 0x823B // PT_UNICODE
+#define PidLidToAttendeesString_A 0x823B // PT_STRING8
+
+#define PidLidCcAttendeesString_W 0x823C // PT_UNICODE
+#define PidLidCcAttendeesString_A 0x823C // PT_STRING8
+
+#define PidLidConferencingCheck 0x8240 // PT_BOOLEAN
+#define PidLidConferencingType 0x8241 // PT_I4
+#define PidLidDirectory_W 0x8242 // PT_UNICODE
+#define PidLidDirectory_A 0x8242 // PT_STRING8
+
+#define PidLidOrganizerAlias_W 0x8243 // PT_UNICODE
+#define PidLidOrganizerAlias_A 0x8243 // PT_STRING8
+
+#define PidLidAutoStartCheck 0x8244 // PT_BOOLEAN
+#define PidLidAutoStartWhen 0x8245 // PT_I4
+#define PidLidAllowExternalCheck 0x8246 // PT_BOOLEAN
+#define PidLidCollaborateDoc_W 0x8247 // PT_UNICODE
+#define PidLidCollaborateDoc_A 0x8247 // PT_STRING8
+
+#define PidLidNetShowUrl_W 0x8248 // PT_UNICODE
+#define PidLidNetShowUrl_A 0x8248 // PT_STRING8
+
+#define PidLidOnlinePassword_W 0x8249 // PT_UNICODE
+#define PidLidOnlinePassword_A 0x8249 // PT_STRING8
+
+#define PidLidAppointmentProposedStartWhole 0x8250 // PT_SYSTIME
+#define PidLidAppointmentProposedEndWhole 0x8251 // PT_SYSTIME
+#define PidLidAppointmentProposedDuration 0x8256 // PT_I4
+#define PidLidAppointmentCounterProposal 0x8257 // PT_BOOLEAN
+#define PidLidAppointmentProposalNumber 0x8259 // PT_I4
+#define PidLidAppointmentNotAllowPropose 0x825A // PT_BOOLEAN
+#define PidLidAppointmentUnsendableRecipients 0x825D // PT_BINARY
+#define PidLidAppointmentTimeZoneDefinitionStartDisplay 0x825E // PT_BINARY
+#define PidLidAppointmentTimeZoneDefinitionEndDisplay 0x825F // PT_BINARY
+#define PidLidAppointmentTimeZoneDefinitionRecur 0x8260 // PT_BINARY
+#define PidLidForwardNotificationRecipients 0x8261 // PT_BINARY
+#define PidLidInboundICalStream 0x827A // PT_BINARY
+#define PidLidSingleBodyIcal 0x827B // PT_BOOLEAN
+
+/** PS_PUBLIC_STRINGS (most use MNID_STRING and have propID 0x0000) */
+#define PidLidCategories 0x9000 // PT_MV_STRING8
+#define PidNameApplicationName 0x0000 // PT_UNICODE
+#define PidNameAuthor 0x0000 // PT_UNICODE
+#define PidNameByteCount 0x0000 // PT_I4
+#define PidNameCategory 0x0000 // PT_UNICODE
+#define PidNameCharacterCount 0x0000 // PT_I4
+#define PidNameComments 0x0000 // PT_UNICODE
+#define PidNameCompany 0x0000 // PT_UNICODE
+#define PidNameCreateDateTimeReadOnly 0x0000 // PT_SYSTIME
+#define PidNameRightsManagementLicense 0x0000 // PT_MV_BINARY
+#define PidNameEditTime 0x0000 // PT_UNICODE
+#define PidNameHiddenCount 0x0000 // PT_I4
+#define PidNameKeywords 0x0000 // PT_MV_UNICODE
+#define PidNameLastAuthor 0x0000 // PT_UNICODE
+#define PidNameLastPrinted 0x0000 // PT_SYSTIME
+#define PidNameLastSaveDateTime 0x0000 // PT_SYSTIME
+#define PidNameLineCount 0x0000 // PT_I4
+#define PidNameManager 0x0000 // PT_UNICODE
+#define PidNameMultimediaClipCount 0x0000 // PT_I4
+#define PidNameNoteCount 0x0000 // PT_I4
+#define PidNamePhishingStamp 0x0000 // PT_I4
+#define PidNameSpoofingStamp 0x0000 // PT_I4
+#define PidNamePageCount 0x0000 // PT_I4
+#define PidNameParagraphCount 0x0000 // PT_I4
+#define PidNamePresentationFormat 0x0000 // PT_UNICODE
+#define PidNameSecurity 0x0000 // PT_I4
+#define PidNameSlideCount 0x0000 // PT_I4
+#define PidNameSubject 0x0000 // PT_UNICODE
+#define PidNameTemplate 0x0000 // PT_UNICODE
+#define PidNameTitle 0x0000 // PT_UNICODE
+#define PidNameWordCount 0x0000 // PT_I4
+#define PidNameAcceptLanguage 0x0000 // PT_UNICODE
+#define PidNameApproved 0x0000 // PT_UNICODE
+#define PidNameContentBase 0x0000 // PT_UNICODE
+#define PidNameContentClass 0x0000 // PT_UNICODE
+#define PidNameContentDisposition 0x0000 // PT_UNICODE
+#define PidNameContentID 0x0000 // PT_UNICODE
+#define PidNameContentLanguage 0x0000 // PT_UNICODE
+#define PidNameContentLocation 0x0000 // PT_UNICODE
+#define PidNameContentTransferEncoding 0x0000 // PT_UNICODE
+#define PidNameContentType 0x0000 // PT_UNICODE
+#define PidNameCrossReference 0x0000 // PT_UNICODE
+#define PidNameXMSExchangeOrganizationAuthdomain 0x0000 // PT_UNICODE
+#define PidNameXSharingBrowseUrl 0x0000 // PT_UNICODE
+#define PidNameXSharingCapabilities 0x0000 // PT_UNICODE
+#define PidNameXSharingConfigUrl 0x0000 // PT_UNICODE
+#define PidNameXSharingFlavor 0x0000 // PT_UNICODE
+#define PidNameXSharingInstanceGuid 0x0000 // PT_UNICODE
+#define PidNameXSharingLocalType 0x0000 // PT_UNICODE
+#define PidNameXSharingProviderGuid 0x0000 // PT_UNICODE
+#define PidNameXSharingProviderName 0x0000 // PT_UNICODE
+#define PidNameXSharingProviderUrl 0x0000 // PT_UNICODE
+#define PidNameXSharingRemoteName 0x0000 // PT_UNICODE
+#define PidNameXSharingRemotePath 0x0000 // PT_UNICODE
+#define PidNameXSharingRemoteStoreUid 0x0000 // PT_UNICODE
+#define PidNameXSharingRemoteType 0x0000 // PT_UNICODE
+#define PidNameXSharingRemoteUid 0x0000 // PT_UNICODE
+#define PidNameXSieve 0x0000 // PT_UNICODE
+#define PidNameXVirusScanned 0x0000 // PT_UNICODE
+
+/** PSETID_TASK */
+#define PidLidTaskStatus 0x8101 // PT_I4
+#define PidLidPercentComplete 0x8102 // PT_DOUBLE
+#define PidLidTeamTask 0x8103 // PT_BOOLEAN
+#define PidLidTaskStartDate 0x8104 // PT_SYSTIME
+#define PidLidTaskDueDate 0x8105 // PT_SYSTIME
+#define PidLidTaskResetReminder 0x8107 // PT_BOOLEAN
+#define PidLidTaskAccepted 0x8108 // PT_BOOLEAN
+#define PidLidTaskDeadOccurrence 0x8109 // PT_BOOLEAN
+#define PidLidTaskDateCompleted 0x810F // PT_SYSTIME
+#define PidLidTaskActualEffort 0x8110 // PT_I4
+#define PidLidTaskEstimatedEffort 0x8111 // PT_I4
+#define PidLidTaskVersion 0x8112 // PT_I4
+#define PidLidTaskState 0x8113 // PT_I4
+#define PidLidTaskLastUpdate 0x8115 // PT_SYSTIME
+#define PidLidTaskRecurrence 0x8116 // PT_BINARY
+#define PidLidTaskAssigners 0x8117 // PT_BINARY
+#define PidLidTaskStatusOnComplete 0x8119 // PT_BOOLEAN
+#define PidLidTaskHistory 0x811A // PT_I4
+#define PidLidTaskUpdates 0x811B // PT_BOOLEAN
+#define PidLidTaskComplete 0x811C // PT_BOOLEAN
+#define PidLidTaskFCreator 0x811E // PT_BOOLEAN
+#define PidLidTaskOwner_W 0x811F // PT_UNICODE
+#define PidLidTaskOwner_A 0x811F // PT_STRING8
+
+#define PidLidTaskMultipleRecipients 0x8120 // PT_I4
+#define PidLidTaskAssigner_W 0x8121 // PT_UNICODE
+#define PidLidTaskAssigner_A 0x8121 // PT_STRING8
+
+#define PidLidTaskLastUser_W 0x8122 // PT_UNICODE
+#define PidLidTaskLastUser_A 0x8122 // PT_STRING8
+
+#define PidLidTaskOrdinal 0x8123 // PT_I4
+#define PidLidTaskNoCompute 0x8124 // PT_BOOLEAN
+#define PidLidTaskLastDelegate_W 0x8125 // PT_UNICODE
+#define PidLidTaskLastDelegate_A 0x8125 // PT_STRING8
+
+#define PidLidTaskFRecurring 0x8126 // PT_BOOLEAN
+#define PidLidTaskRole_W 0x8127 // PT_UNICODE
+#define PidLidTaskRole_A 0x8127 // PT_STRING8
+
+#define PidLidTaskOwnership 0x8129 // PT_I4
+#define PidLidAcceptanceState 0x812A // PT_I4
+#define PidLidTaskFFixOffline 0x812C // PT_BOOLEAN
+#define PidLidTaskCustomFlags 0x8139 // PT_I4
+
+/** PSETID_COMMON */
+#define PidLidDayOfMonth 0x1000 // PT_I4
+#define PidLidICalendarDayOfWeekMask 0x1001 // PT_I4
+#define PidLidOccurrences 0x1005 // PT_I4
+#define PidLidMonthOfYear 0x1006 // PT_I4
+#define PidLidNoEndDateFlag 0x100B // PT_BOOLEAN
+#define PidLidRecurrenceDuration 0x100D // PT_I4
+#define PidLidReminderDelta 0x8501 // PT_I4
+#define PidLidReminderTime 0x8502 // PT_SYSTIME
+#define PidLidReminderSet 0x8503 // PT_BOOLEAN
+#define PidLidReminderTimeTime 0x8504 // PT_SYSTIME
+#define PidLidReminderTimeDate 0x8505 // PT_SYSTIME
+#define PidLidPrivate 0x8506 // PT_BOOLEAN
+#define PidLidAgingDontAgeMe 0x850E // PT_BOOLEAN
+#define PidLidSideEffects 0x8510 // PT_I4
+#define PidLidRemoteStatus 0x8511 // PT_I4
+#define PidLidSmartNoAttach 0x8514 // PT_BOOLEAN
+#define PidLidCommonStart 0x8516 // PT_SYSTIME
+#define PidLidCommonEnd 0x8517 // PT_SYSTIME
+#define PidLidTaskMode 0x8518 // PT_I4
+#define PidLidTaskGlobalId 0x8519 // PT_BINARY
+#define PidLidAutoProcessState 0x851A // PT_I4
+#define PidLidReminderOverride 0x851C // PT_BOOLEAN
+#define PidLidReminderType 0x851D // PT_I4
+#define PidLidReminderPlaySound 0x851E // PT_BOOLEAN
+#define PidLidReminderFileParameter_W 0x851F // PT_UNICODE
+#define PidLidReminderFileParameter_A 0x851F // PT_STRING8
+
+#define PidLidVerbStream 0x8520 // PT_BINARY
+#define PidLidVerbResponse_W 0x8524 // PT_UNICODE
+#define PidLidVerbResponse_A 0x8524 // PT_STRING8
+
+#define PidLidFlagRequest_W 0x8530 // PT_UNICODE
+#define PidLidFlagRequest_A 0x8530 // PT_STRING8
+
+#define PidLidMileage_W 0x8534 // PT_UNICODE
+#define PidLidMileage_A 0x8534 // PT_STRING8
+
+#define PidLidBillingInformation_W 0x8535 // PT_UNICODE
+#define PidLidBillingInformation_A 0x8535 // PT_STRING8
+
+#define PidLidNonSendtableTo_W 0x8536 // PT_UNICODE
+#define PidLidNonSendtableTo_A 0x8536 // PT_STRING8
+
+#define PidLidNonSendableCc_W 0x8537 // PT_UNICODE
+#define PidLidNonSendableCc_A 0x8537 // PT_STRING8
+
+#define PidLidNonSendableBcc_W 0x8538 // PT_UNICODE
+#define PidLidNonSendableBcc_A 0x8538 // PT_STRING8
+
+#define PidLidCompanies 0x8539 // PT_MV_STRING8
+#define PidLidContacts 0x853A // PT_MV_STRING8
+#define PidLidNonSendToTrackStatus 0x8543 // PT_MV_LONG
+#define PidLidNonSendCcTrackStatus 0x8544 // PT_MV_LONG
+#define PidLidNonSendBccTrackStatus 0x8545 // PT_MV_LONG
+#define PidLidCurrentVersion 0x8552 // PT_I4
+#define PidLidCurrentVersionName_W 0x8554 // PT_UNICODE
+#define PidLidCurrentVersionName_A 0x8554 // PT_STRING8
+
+#define PidLidReminderSignalTime 0x8560 // PT_SYSTIME
+#define PidLidImapDeleted 0x8570 // PT_I4
+#define PidLidHeaderItem 0x8578 // PT_I4
+#define PidLidInternetAccountName_W 0x8580 // PT_UNICODE
+#define PidLidInternetAccountName_A 0x8580 // PT_STRING8
+
+#define PidLidInternetAccountStamp_W 0x8581 // PT_UNICODE
+#define PidLidInternetAccountStamp_A 0x8581 // PT_STRING8
+
+#define PidLidUseTnef 0x8582 // PT_BOOLEAN
+#define PidLidContactLinkSearchKey 0x8584 // PT_BINARY
+#define PidLidContactLinkEntry 0x8585 // PT_BINARY
+#define PidLidContactLinkName_W 0x8586 // PT_UNICODE
+#define PidLidContactLinkName_A 0x8586 // PT_STRING8
+
+#define PidLidSpamOriginalFolder 0x859C // PT_BINARY
+#define PidLidToDoOrdinalDate 0x85A0 // PT_SYSTIME
+#define PidLidToDoSubOrdinal_W 0x85A1 // PT_UNICODE
+#define PidLidToDoSubOrdinal_A 0x85A1 // PT_STRING8
+
+#define PidLidToDoTitle_W 0x85A4 // PT_UNICODE
+#define PidLidToDoTitle_A 0x85A4 // PT_STRING8
+
+#define PidLidInfoPathFormName_W 0x85B1 // PT_UNICODE
+#define PidLidInfoPathFormName_A 0x85B1 // PT_STRING8
+
+#define PidLidClassified 0x85B5 // PT_BOOLEAN
+#define PidLidClassification_W 0x85B6 // PT_UNICODE
+#define PidLidClassification_A 0x85B6 // PT_STRING8
+
+#define PidLidClassificationDescription_W 0x85B7 // PT_UNICODE
+#define PidLidClassificationDescription_A 0x85B7 // PT_STRING8
+
+#define PidLidClassificationGuid_W 0x85B8 // PT_UNICODE
+#define PidLidClassificationGuid_A 0x85B8 // PT_STRING8
+
+#define PidLidClassificationKeep 0x85BA // PT_BOOLEAN
+#define PidLidReferenceEntryId 0x85BD // PT_BINARY
+#define PidLidValidFlagStringProof 0x85BF // PT_SYSTIME
+#define PidLidFlagString 0x85C0 // PT_I4
+#define PidLidConversationActionMoveFolderEid 0x85C6 // PT_BINARY
+#define PidLidConversationActionMoveStoreEid 0x85C7 // PT_BINARY
+#define PidLidConversationActionMaxDeliveryTime 0x85C8 // PT_SYSTIME
+#define PidLidConversationProcessed 0x85C9 // PT_I4
+#define PidLidConversationActionLastAppliedTime 0x85CA // PT_SYSTIME
+#define PidLidConversationActionVersion 0x85CB // PT_I4
+
+/** PS_INTERNET_HEADERS (all use MNID_STRING and have propID 0x0000) */
+#define PidNameBcc 0x0000 // PT_UNICODE
+
+/** PSETID_SHARING */
+#define PidLidSharingStatus 0x8A00 // PT_I4
+#define PidLidSharingProviderGuid 0x8A01 // PT_BINARY
+#define PidLidSharingProviderName_W 0x8A02 // PT_UNICODE
+#define PidLidSharingProviderName_A 0x8A02 // PT_STRING8
+
+#define PidLidSharingProviderUrl_W 0x8A03 // PT_UNICODE
+#define PidLidSharingProviderUrl_A 0x8A03 // PT_STRING8
+
+#define PidLidSharingRemotePath_W 0x8A04 // PT_UNICODE
+#define PidLidSharingRemotePath_A 0x8A04 // PT_STRING8
+
+#define PidLidSharingRemoteName_W 0x8A05 // PT_UNICODE
+#define PidLidSharingRemoteName_A 0x8A05 // PT_STRING8
+
+#define PidLidSharingRemoteUid_W 0x8A06 // PT_UNICODE
+#define PidLidSharingRemoteUid_A 0x8A06 // PT_STRING8
+
+#define PidLidSharingInitiatorName_W 0x8A07 // PT_UNICODE
+#define PidLidSharingInitiatorName_A 0x8A07 // PT_STRING8
+
+#define PidLidSharingInitiatorSmtp_W 0x8A08 // PT_UNICODE
+#define PidLidSharingInitiatorSmtp_A 0x8A08 // PT_STRING8
+
+#define PidLidSharingInitiatorEntryId 0x8A09 // PT_BINARY
+#define PidLidSharingFlags 0x8A0A // PT_I4
+#define PidLidSharingProviderExtension_W 0x8A0B // PT_UNICODE
+#define PidLidSharingProviderExtension_A 0x8A0B // PT_STRING8
+
+#define PidLidSharingRemoteUser_W 0x8A0C // PT_UNICODE
+#define PidLidSharingRemoteUser_A 0x8A0C // PT_STRING8
+
+#define PidLidSharingRemotePass_W 0x8A0D // PT_UNICODE
+#define PidLidSharingRemotePass_A 0x8A0D // PT_STRING8
+
+#define PidLidSharingLocalPath_W 0x8A0E // PT_UNICODE
+#define PidLidSharingLocalPath_A 0x8A0E // PT_STRING8
+
+#define PidLidSharingLocalName_W 0x8A0F // PT_UNICODE
+#define PidLidSharingLocalName_A 0x8A0F // PT_STRING8
+
+#define PidLidSharingLocalUid_W 0x8A10 // PT_UNICODE
+#define PidLidSharingLocalUid_A 0x8A10 // PT_STRING8
+
+#define PidLidSharingFilter 0x8A13 // PT_BINARY
+#define PidLidSharingLocalType_W 0x8A14 // PT_UNICODE
+#define PidLidSharingLocalType_A 0x8A14 // PT_STRING8
+
+#define PidLidSharingFolderEntryId 0x8A15 // PT_BINARY
+#define PidLidSharingCapabilities 0x8A17 // PT_I4
+#define PidLidSharingFlavor 0x8A18 // PT_I4
+#define PidLidSharingAnonymity 0x8A19 // PT_I4
+#define PidLidSharingReciprocation 0x8A1A // PT_I4
+#define PidLidSharingPermissions 0x8A1B // PT_I4
+#define PidLidSharingInstanceGuid 0x8A1C // PT_BINARY
+#define PidLidSharingRemoteType_W 0x8A1D // PT_UNICODE
+#define PidLidSharingRemoteType_A 0x8A1D // PT_STRING8
+
+#define PidLidSharingParticipants_W 0x8A1E // PT_UNICODE
+#define PidLidSharingParticipants_A 0x8A1E // PT_STRING8
+
+#define PidLidSharingLastSyncTime 0x8A1F // PT_SYSTIME
+#define PidLidSharingExtensionXml_W 0x8A21 // PT_UNICODE
+#define PidLidSharingExtensionXml_A 0x8A21 // PT_STRING8
+
+#define PidLidSharingRemoteLastModificationTime 0x8A22 // PT_SYSTIME
+#define PidLidSharingLocalLastModificationTime 0x8A23 // PT_SYSTIME
+#define PidLidSharingConfigurationUrl_W 0x8A24 // PT_UNICODE
+#define PidLidSharingConfigurationUrl_A 0x8A24 // PT_STRING8
+
+#define PidLidSharingStart 0x8A25 // PT_SYSTIME
+#define PidLidSharingStop 0x8A26 // PT_SYSTIME
+#define PidLidSharingResponseType 0x8A27 // PT_I4
+#define PidLidSharingResponseTime 0x8A28 // PT_SYSTIME
+#define PidLidSharingOriginalMessageEntryId 0x8A29 // PT_BINARY
+#define PidLidSharingSyncInterval 0x8A2A // PT_I4
+#define PidLidSharingDetail 0x8A2B // PT_I4
+#define PidLidSharingTimeToLive 0x8A2C // PT_I4
+#define PidLidSharingBindingEntryId 0x8A2D // PT_BINARY
+#define PidLidSharingIndexEntryId 0x8A2E // PT_BINARY
+#define PidLidSharingRemoteComment_W 0x8A2F // PT_UNICODE
+#define PidLidSharingRemoteComment_A 0x8A2F // PT_STRING8
+
+#define PidLidSharingWorkingHoursStart 0x8A40 // PT_SYSTIME
+#define PidLidSharingWorkingHoursEnd 0x8A41 // PT_SYSTIME
+#define PidLidSharingWorkingHoursDay 0x8A42 // PT_I4
+#define PidLidSharingWorkingHoursTimeZone 0x8A43 // PT_BINARY
+#define PidLidSharingDataRangeStart 0x8A44 // PT_SYSTIME
+#define PidLidSharingDataRangeEnd 0x8A45 // PT_SYSTIME
+#define PidLidSharingRangeStart 0x8A46 // PT_I4
+#define PidLidSharingRangeEnd 0x8A47 // PT_I4
+#define PidLidSharingRemoteStoreUid_W 0x8A48 // PT_UNICODE
+#define PidLidSharingRemoteStoreUid_A 0x8A48 // PT_STRING8
+
+#define PidLidSharingLocalStoreUid_W 0x8A49 // PT_UNICODE
+#define PidLidSharingLocalStoreUid_A 0x8A49 // PT_STRING8
+
+#define PidLidSharingRemoteByteSize 0x8A4B // PT_I4
+#define PidLidSharingRemoteCrc 0x8A4C // PT_I4
+#define PidLidSharingLocalComment_W 0x8A4D // PT_UNICODE
+#define PidLidSharingLocalComment_A 0x8A4D // PT_STRING8
+
+#define PidLidSharingRoamLog 0x8A4E // PT_I4
+#define PidLidSharingRemoteMessageCount 0x8A4F // PT_I4
+#define PidLidSharingBrowseUrl_W 0x8A51 // PT_UNICODE
+#define PidLidSharingBrowseUrl_A 0x8A51 // PT_STRING8
+
+#define PidLidSharingLastAutoSyncTime 0x8A55 // PT_SYSTIME
+#define PidLidSharingTimeToLiveAuto 0x8A56 // PT_I4
+#define PidLidSharingRemoteVersion_W 0x8A5B // PT_UNICODE
+#define PidLidSharingRemoteVersion_A 0x8A5B // PT_STRING8
+
+#define PidLidSharingParentBindingEntryId 0x8A5C // PT_BINARY
+#define PidLidSharingSyncFlags 0x8A60 // PT_I4
+
+/** PSETID_ADDRESS */
+#define PidLidFileUnder_W 0x8005 // PT_UNICODE
+#define PidLidFileUnder_A 0x8005 // PT_STRING8
+
+#define PidLidFileUnderId 0x8006 // PT_I4
+#define PidLidContactItemData 0x8007 // PT_MV_LONG
+#define PidLidReferredBy_W 0x800E // PT_UNICODE
+#define PidLidReferredBy_A 0x800E // PT_STRING8
+
+#define PidLidDepartment_W 0x8010 // PT_UNICODE
+#define PidLidDepartment_A 0x8010 // PT_STRING8
+
+#define PidLidHasPicture 0x8015 // PT_BOOLEAN
+#define PidLidHomeAddress_W 0x801A // PT_UNICODE
+#define PidLidHomeAddress_A 0x801A // PT_STRING8
+
+#define PidLidWorkAddress_W 0x801B // PT_UNICODE
+#define PidLidWorkAddress_A 0x801B // PT_STRING8
+
+#define PidLidOtherAddress_W 0x801C // PT_UNICODE
+#define PidLidOtherAddress_A 0x801C // PT_STRING8
+
+#define PidLidPostalAddressId 0x8022 // PT_I4
+#define PidLidContactCharacterSet 0x8023 // PT_I4
+#define PidLidAutoLog 0x8025 // PT_BOOLEAN
+#define PidLidFileUnderList 0x8026 // PT_MV_LONG
+#define PidLidEmailList 0x8027 // PT_MV_LONG
+#define PidLidAddressBookProviderEmailList 0x8028 // PT_MV_LONG
+#define PidLidAddressBookProviderArrayType 0x8029 // PT_I4
+#define PidLidHtml_W 0x802B // PT_UNICODE
+#define PidLidHtml_A 0x802B // PT_STRING8
+
+#define PidLidYomiFirstName_W 0x802C // PT_UNICODE
+#define PidLidYomiFirstName_A 0x802C // PT_STRING8
+
+#define PidLidYomiLastName_W 0x802D // PT_UNICODE
+#define PidLidYomiLastName_A 0x802D // PT_STRING8
+
+#define PidLidYomiCompanyName_W 0x802E // PT_UNICODE
+#define PidLidYomiCompanyName_A 0x802E // PT_STRING8
+
+#define PidLidBusinessCardDisplayDefinition 0x8040 // PT_BINARY
+#define PidLidBusinessCardCardPicture 0x8041 // PT_BINARY
+#define PidLidWorkAddressStreet_W 0x8045 // PT_UNICODE
+#define PidLidWorkAddressStreet_A 0x8045 // PT_STRING8
+
+#define PidLidWorkAddressCity_W 0x8046 // PT_UNICODE
+#define PidLidWorkAddressCity_A 0x8046 // PT_STRING8
+
+#define PidLidWorkAddressState_W 0x8047 // PT_UNICODE
+#define PidLidWorkAddressState_A 0x8047 // PT_STRING8
+
+#define PidLidWorkAddressPostalCode_W 0x8048 // PT_UNICODE
+#define PidLidWorkAddressPostalCode_A 0x8048 // PT_STRING8
+
+#define PidLidWorkAddressCountry_W 0x8049 // PT_UNICODE
+#define PidLidWorkAddressCountry_A 0x8049 // PT_STRING8
+
+#define PidLidWorkAddressPostOfficeBox_W 0x804A // PT_UNICODE
+#define PidLidWorkAddressPostOfficeBox_A 0x804A // PT_STRING8
+
+#define PidLidDistributionListChecksum 0x804C // PT_I4
+#define PidLidBirthdayEventEntryId 0x804D // PT_BINARY
+#define PidLidAnniversaryEventEntryId 0x804E // PT_BINARY
+#define PidLidContactUserField1_W 0x804F // PT_UNICODE
+#define PidLidContactUserField1_A 0x804F // PT_STRING8
+
+#define PidLidContactUserField2_W 0x8050 // PT_UNICODE
+#define PidLidContactUserField2_A 0x8050 // PT_STRING8
+
+#define PidLidContactUserField3_W 0x8051 // PT_UNICODE
+#define PidLidContactUserField3_A 0x8051 // PT_STRING8
+
+#define PidLidContactUserField4_W 0x8052 // PT_UNICODE
+#define PidLidContactUserField4_A 0x8052 // PT_STRING8
+
+#define PidLidDistributionListName_W 0x8053 // PT_UNICODE
+#define PidLidDistributionListName_A 0x8053 // PT_STRING8
+
+#define PidLidDistributionListOneOffMembers 0x8054 // PT_MV_BINARY
+#define PidLidDistributionListMembers 0x8055 // PT_MV_BINARY
+#define PidLidInstantMessagingAddress_W 0x8062 // PT_UNICODE
+#define PidLidInstantMessagingAddress_A 0x8062 // PT_STRING8
+
+#define PidLidDistributionListStream 0x8064 // PT_I4
+#define PidLidEmail1DisplayName_W 0x8080 // PT_UNICODE
+#define PidLidEmail1DisplayName_A 0x8080 // PT_STRING8
+
+#define PidLidEmail1AddressType_W 0x8082 // PT_UNICODE
+#define PidLidEmail1AddressType_A 0x8082 // PT_STRING8
+
+#define PidLidEmail1EmailAddress_W 0x8083 // PT_UNICODE
+#define PidLidEmail1EmailAddress_A 0x8083 // PT_STRING8
+
+#define PidLidEmail1OriginalDisplayName_W 0x8084 // PT_UNICODE
+#define PidLidEmail1OriginalDisplayName_A 0x8084 // PT_STRING8
+
+#define PidLidEmail1OriginalEntryId 0x8085 // PT_BINARY
+#define PidLidEmail1RichTextFormat 0x8086 // PT_BOOLEAN
+#define PidLidEmail1EmailType_W 0x8087 // PT_UNICODE
+#define PidLidEmail1EmailType_A 0x8087 // PT_STRING8
+
+#define PidLidEmail2DisplayName_W 0x8090 // PT_UNICODE
+#define PidLidEmail2DisplayName_A 0x8090 // PT_STRING8
+
+#define PidLidEmail2EntryId 0x8091 // PT_BINARY
+#define PidLidEmail2AddressType_W 0x8092 // PT_UNICODE
+#define PidLidEmail2AddressType_A 0x8092 // PT_STRING8
+
+#define PidLidEmail2EmailAddress_W 0x8093 // PT_UNICODE
+#define PidLidEmail2EmailAddress_A 0x8093 // PT_STRING8
+
+#define PidLidEmail2OriginalDisplayName_W 0x8094 // PT_UNICODE
+#define PidLidEmail2OriginalDisplayName_A 0x8094 // PT_STRING8
+
+#define PidLidEmail2OriginalEntryId 0x8095 // PT_BINARY
+#define PidLidEmail2RichTextFormat 0x8096 // PT_BOOLEAN
+#define PidLidEmail3DisplayName_W 0x80A0 // PT_UNICODE
+#define PidLidEmail3DisplayName_A 0x80A0 // PT_STRING8
+
+#define PidLidEmail3EntryId 0x80A1 // PT_BINARY
+#define PidLidEmail3AddressType_W 0x80A2 // PT_UNICODE
+#define PidLidEmail3AddressType_A 0x80A2 // PT_STRING8
+
+#define PidLidEmail3EmailAddress_W 0x80A3 // PT_UNICODE
+#define PidLidEmail3EmailAddress_A 0x80A3 // PT_STRING8
+
+#define PidLidEmail3OriginalDisplayName_W 0x80A4 // PT_UNICODE
+#define PidLidEmail3OriginalDisplayName_A 0x80A4 // PT_STRING8
+
+#define PidLidEmail3OriginalEntryId 0x80A5 // PT_BINARY
+#define PidLidEmail3RichTextFormat 0x80A6 // PT_BOOLEAN
+#define PidLidFax1AddressType_W 0x80B2 // PT_UNICODE
+#define PidLidFax1AddressType_A 0x80B2 // PT_STRING8
+
+#define PidLidFax1EmailAddress_W 0x80B3 // PT_UNICODE
+#define PidLidFax1EmailAddress_A 0x80B3 // PT_STRING8
+
+#define PidLidFax1OriginalDisplayName_W 0x80B4 // PT_UNICODE
+#define PidLidFax1OriginalDisplayName_A 0x80B4 // PT_STRING8
+
+#define PidLidFax1OriginalEntryId 0x80B5 // PT_BINARY
+#define PidLidFax2AddressType_W 0x80C2 // PT_UNICODE
+#define PidLidFax2AddressType_A 0x80C2 // PT_STRING8
+
+#define PidLidFax2EmailAddress_W 0x80C3 // PT_UNICODE
+#define PidLidFax2EmailAddress_A 0x80C3 // PT_STRING8
+
+#define PidLidFax2OriginalDisplayName_W 0x80C4 // PT_UNICODE
+#define PidLidFax2OriginalDisplayName_A 0x80C4 // PT_STRING8
+
+#define PidLidFax2OriginalEntryId 0x80C5 // PT_BINARY
+#define PidLidFax3AddressType_W 0x80D2 // PT_UNICODE
+#define PidLidFax3AddressType_A 0x80D2 // PT_STRING8
+
+#define PidLidFax3EmailAddress_W 0x80D3 // PT_UNICODE
+#define PidLidFax3EmailAddress_A 0x80D3 // PT_STRING8
+
+#define PidLidFax3OriginalDisplayName_W 0x80D4 // PT_UNICODE
+#define PidLidFax3OriginalDisplayName_A 0x80D4 // PT_STRING8
+
+#define PidLidFax3OriginalEntryId 0x80D5 // PT_BINARY
+#define PidLidFreeBusyLocation_W 0x80D8 // PT_UNICODE
+#define PidLidFreeBusyLocation_A 0x80D8 // PT_STRING8
+
+#define PidLidHomeAddressCountryCode_W 0x80DA // PT_UNICODE
+#define PidLidHomeAddressCountryCode_A 0x80DA // PT_STRING8
+
+#define PidLidWorkAddressCountryCode_W 0x80DB // PT_UNICODE
+#define PidLidWorkAddressCountryCode_A 0x80DB // PT_STRING8
+
+#define PidLidOtherAddressCountryCode_W 0x80DC // PT_UNICODE
+#define PidLidOtherAddressCountryCode_A 0x80DC // PT_STRING8
+
+#define PidLidAddressCountryCode_W 0x80DD // PT_UNICODE
+#define PidLidAddressCountryCode_A 0x80DD // PT_STRING8
+
+/** PSETID_MEETING */
+#define PidLidAttendeeCriticalChange 0x0001 // PT_SYSTIME
+#define PidLidWhere_W 0x0002 // PT_UNICODE
+#define PidLidWhere_A 0x0002 // PT_STRING8
+
+#define PidLidGlobalObjectId 0x0003 // PT_BINARY
+#define PidLidIsSilent 0x0004 // PT_BOOLEAN
+#define PidLidIsRecurring 0x0005 // PT_BOOLEAN
+#define PidLidRequiredAttendees_W 0x0006 // PT_UNICODE
+#define PidLidRequiredAttendees_A 0x0006 // PT_STRING8
+
+#define PidLidOptionalAttendees_W 0x0007 // PT_UNICODE
+#define PidLidOptionalAttendees_A 0x0007 // PT_STRING8
+
+#define PidLidResourceAttendees_W 0x0008 // PT_UNICODE
+#define PidLidResourceAttendees_A 0x0008 // PT_STRING8
+
+#define PidLidDelegateMail 0x0009 // PT_BOOLEAN
+#define PidLidIsException 0x000A // PT_BOOLEAN
+#define PidLidSingleInvite 0x000B // PT_BOOLEAN
+#define PidLidTimeZone 0x000C // PT_I4
+#define PidLidStartRecurrenceDate 0x000D // PT_I4
+#define PidLidStartRecurrenceTime 0x000E // PT_I4
+#define PidLidEndRecurrenceDate 0x000F // PT_I4
+#define PidLidEndRecurrenceTime 0x0010 // PT_I4
+#define PidLidDayInterval 0x0011 // PT_I2
+#define PidLidWeekInterval 0x0012 // PT_I2
+#define PidLidMonthInterval 0x0013 // PT_I2
+#define PidLidYearInterval 0x0014 // PT_I2
+#define PidLidMonthOfYearMask 0x0017 // PT_I4
+#define PidLidOldRecurrenceType 0x0018 // PT_I2
+#define PidLidOwnerCriticalChange 0x001A // PT_SYSTIME
+#define PidLidCalendarType 0x001C // PT_I4
+#define PidLidAllAttendeesList_W 0x001D // PT_UNICODE
+#define PidLidAllAttendeesList_A 0x001D // PT_STRING8
+
+#define PidLidCleanGlobalObjectId 0x0023 // PT_BINARY
+#define PidLidAppointmentMessageClass_W 0x0024 // PT_UNICODE
+#define PidLidAppointmentMessageClass_A 0x0024 // PT_STRING8
+
+#define PidLidMeetingType 0x0026 // PT_I4
+#define PidLidOldLocation_W 0x0028 // PT_UNICODE
+#define PidLidOldLocation_A 0x0028 // PT_STRING8
+
+#define PidLidOldWhenStartWhole 0x0029 // PT_SYSTIME
+#define PidLidOldWhenEndWhole 0x002A // PT_SYSTIME
+
+/** PSETID_LOG */
+#define PidLidLogType_W 0x8700 // PT_UNICODE
+#define PidLidLogType_A 0x8700 // PT_STRING8
+
+#define PidLidLogStart 0x8706 // PT_SYSTIME
+#define PidLidLogDuration 0x8707 // PT_I4
+#define PidLidLogEnd 0x8708 // PT_SYSTIME
+#define PidLidLogFlags 0x870C // PT_I4
+#define PidLidDocumentPrinted 0x870E // PT_BOOLEAN
+#define PidLidDocumentSaved 0x870F // PT_BOOLEAN
+#define PidLidDocumentRouted 0x8710 // PT_BOOLEAN
+#define PidLidDocumentPosted 0x8711 // PT_BOOLEAN
+#define PidLidLogTypeDesc_W 0x8712 // PT_UNICODE
+#define PidLidLogTypeDesc_A 0x8712 // PT_STRING8
+
+/** PSETID_POSTRSS */
+#define PidLidPostRssChannelLink_W 0x8900 // PT_UNICODE
+#define PidLidPostRssChannelLink_A 0x8900 // PT_STRING8
+
+#define PidLidPostRssItemLink_W 0x8901 // PT_UNICODE
+#define PidLidPostRssItemLink_A 0x8901 // PT_STRING8
+
+#define PidLidPostRssItemHash 0x8902 // PT_I4
+#define PidLidPostRssItemGuid_W 0x8903 // PT_UNICODE
+#define PidLidPostRssItemGuid_A 0x8903 // PT_STRING8
+
+#define PidLidPostRssChannel_W 0x8904 // PT_UNICODE
+#define PidLidPostRssChannel_A 0x8904 // PT_STRING8
+
+#define PidLidPostRssItemXml_W 0x8905 // PT_UNICODE
+#define PidLidPostRssItemXml_A 0x8905 // PT_STRING8
+
+#define PidLidPostRssSubscription_W 0x8906 // PT_UNICODE
+#define PidLidPostRssSubscription_A 0x8906 // PT_STRING8
+
+/** PSETID_NOTE */
+#define PidLidNoteColor 0x8B00 // PT_I4
+#define PidLidNoteWidth 0x8B02 // PT_I4
+#define PidLidNoteHeight 0x8B03 // PT_I4
+#define PidLidNoteX 0x8B04 // PT_I4
+#define PidLidNoteY 0x8B05 // PT_I4
+
+/** PSETID_CALENDARASSISTANT */
+#define PidLidClientIntent 0x0015 // PT_I4
+#define PidLidServerProcessed 0x85CC // PT_BOOLEAN
+#define PidLidServerProcessingActions 0x85CD // PT_I4
+
+/** PSETID_REMOTE */
+#define PidLidRemoteTransferSize 0x8f05 // PT_I4
+#define PidLidRemoteAttachment 0x8f07 // PT_BOOLEAN
+
 #endif /* MAPITAGS_H */

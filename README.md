@@ -51,9 +51,10 @@ The unit tests should pass on all supported platforms.
 
 - Terry Mahaffey - Original author of pstsdk
 - Jon Griffiths & WINE - mapitags.h header file
+- Julien Kerihuel & OpenChange - [mapi-named-properties](https://github.com/openchange/openchange/blob/master/libmapi/conf/mapi-named-properties)
 
 ## License
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
-**Note:** `mapitags.h` is licensed under the [GNU Lesser General Public License v2.1+](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
+**Note:** `mapitags.h` and `mapi-named-properties` are licensed under the [GNU Lesser General Public License v2.1+](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).

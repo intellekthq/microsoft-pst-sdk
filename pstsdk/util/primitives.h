@@ -373,5 +373,41 @@ const guid ps_mapi = { 0x20328, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
 //! \ingroup primitive
 const guid ps_public_strings = { 0x20329, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
 
+//! \brief The PS_APPOINTMENT guid
+const guid ps_appointment = {0x62002, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PS_TASK guid
+const guid ps_task = {0x62003, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PS_COMMON guid
+const guid ps_common = {0x62008, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PSETID_Address guid
+const guid ps_address = {0x62004, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PSETID_Meeting guid
+const guid ps_meeting = {0x6ED8DA90, 0x450B, 0x101B, { 0x98, 0xDA, 0x00, 0xAA, 0x00, 0x3F, 0x13, 0x05 } };
+
+//! \brief The PS_INTERNET_HEADERS guid
+const guid ps_internet_headers = {0x20386, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PSETID_Sharing guid
+const guid ps_sharing = {0x62040, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PSETID_Log guid
+const guid ps_log = {0x6200A, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PSETID_PostRss guid
+const guid ps_postrss = {0x62041, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PSETID_Note guid
+const guid ps_note = {0x6200E, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The PSETID_CalendarAssistant guid
+// const guid ps_calendarassistant = {0x11000E07, 0xB51B, 0x40D6, { 0xAF, 0x21, 0xCA, 0xA8, 0x5E, 0xDA, 0xB1, 0xD0 } };
+
+//! \brief The PSETID_Remote guid
+const guid ps_remote = {0x62014, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
 } // end pstsdk namespace
 #endif
