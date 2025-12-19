@@ -11,6 +11,7 @@
 
 #include <boost/config.hpp>
 #include <boost/cstdint.hpp>
+#include <cstring>
 
 //
 // Global compiler hacks
@@ -351,10 +352,17 @@ const byte message_subject_prefix_lead_byte = 0x01;
 struct guid
 {
     ulong data1;
-    short data2;
-    short data3;
+    ushort data2;
+    ushort data3;
     byte data4[8];
 } PSTSDK_MS_STRUCT;
+
+inline bool guid_eq(const guid &l, const guid &r) {
+    auto small_parts = l.data1 == r.data1 && l.data2 == r.data2 && l.data3 == r.data3;
+    if (!small_parts) return small_parts;
+    return small_parts && !std::memcmp(&l.data4, &r.data4, 8);
+}
+
 //! \cond static_asserts
 static_assert(sizeof(guid) == 16, "guid incorrect size");
 //! \endcond
@@ -404,10 +412,14 @@ const guid ps_postrss = {0x62041, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
 const guid ps_note = {0x6200E, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
 
 //! \brief The PSETID_CalendarAssistant guid
-// const guid ps_calendarassistant = {0x11000E07, 0xB51B, 0x40D6, { 0xAF, 0x21, 0xCA, 0xA8, 0x5E, 0xDA, 0xB1, 0xD0 } };
+const guid ps_calendarassistant = {0x11000E07, 0xB51B, 0x40D6, { 0xAF, 0x21, 0xCA, 0xA8, 0x5E, 0xDA, 0xB1, 0xD0 } };
 
 //! \brief The PSETID_Remote guid
 const guid ps_remote = {0x62014, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
+
+//! \brief The ProviderUID for WrappedEntryId
+//! \sa [MS-OXOCNTC] 2.2.2.2.4.1.1
+const guid provider_uid_wrapped_entry_id = {0xD3AD91C0, 0x9D51, 0x11CF, { 0xA4, 0xA9, 0x00, 0xAA, 0x00, 0x47, 0xFA, 0xA4 } };
 
 } // end pstsdk namespace
 #endif
