@@ -41,16 +41,17 @@ struct distribution_list_wrapped_entry_id : entry_id_header {
  */
 struct recipient_oneoff_entry_id : entry_id_header {
 	const uint16_t version;
-	const uint8_t pad;
 	const uint16_t meta;
 	const byte data[];
 
-	inline bool is_mime() const {
-		return (meta & 0x0100);
-	}
+	// inline bool is_mime() const {
+	// 	return (meta & 0x0100);
+	// }
 
+    // TODO: 2.2.5.1 says 0x0080 (??), but
+    // https://grep.app/search?q=MAPI_ONE_OFF_UNICODE
 	inline bool is_unicode() const {
-		return (meta & 0x0080);
+		return (meta & 0x8000);
 	}
 
 	inline std::vector<std::string> read_strings() const {
@@ -63,13 +64,13 @@ struct recipient_oneoff_entry_id : entry_id_header {
 				for (int i = 0; i < 256; i += 2) {
 					const uint16_t *wc = reinterpret_cast<const uint16_t *>(begin + i);
 					if (*wc == 0) {
-						length = i + 2;
+						length = i;
 						break;
 					}
 				}
 
 			} else {
-				length = strnlen(begin, 256) + 1;
+				length = strnlen(begin, 256);
 			}
 
 			if (length == 0)
@@ -77,7 +78,7 @@ struct recipient_oneoff_entry_id : entry_id_header {
 
 			std::vector<pstsdk::byte> bytes(begin, begin + length);
 			strings.emplace_back(bytes_to_string(bytes));
-			begin = begin + length;
+			begin = begin + length + (is_unicode() ? 2 : 1);
 		}
 
 		return strings;

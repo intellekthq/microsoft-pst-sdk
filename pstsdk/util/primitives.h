@@ -421,5 +421,10 @@ const guid ps_remote = {0x62014, 0, 0, { 0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
 //! \sa [MS-OXOCNTC] 2.2.2.2.4.1.1
 const guid provider_uid_wrapped_entry_id = {0xD3AD91C0, 0x9D51, 0x11CF, { 0xA4, 0xA9, 0x00, 0xAA, 0x00, 0x47, 0xFA, 0xA4 } };
 
+//! \brief The ProviderUID for Recipient One-Off EntryID
+//! \sa [MS-OXCDATA] 2.2.5.1
+//! {A41F2B81-A3BE-1910-9D6E-00DD010F5402}
+const guid provider_uid_recipient_oneoff = {0xA41F2B81, 0xA3BE, 0x1910, { 0x9D, 0x6E, 0x00, 0xDD, 0x01, 0x0F, 0x54, 0x02 } };
+
 } // end pstsdk namespace
 #endif
