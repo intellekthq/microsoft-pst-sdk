@@ -1,0 +1,17 @@
+<map id="pstsdk::disk::bt_page&lt; T, EntryType &gt;" name="pstsdk::disk::bt_page&lt; T, EntryType &gt;">
+<area shape="rect" id="Node000001" title="The fundamental page structure which forms the basis of the two BTrees." alt="" coords="319,5,471,265"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1bt__page.html" title=" " alt="" coords="10,343,202,603"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="312,234,263,291,204,359,200,356,259,288,308,231"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1disk_1_1bt__page.html" title=" " alt="" coords="319,343,471,603"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="398,279,398,342,393,342,393,279"/>
+<area shape="rect" id="Node000007" href="$structpstsdk_1_1disk_1_1bt__page.html" title=" " alt="" coords="542,343,734,603"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="483,215,545,288,579,341,575,344,541,291,479,218"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1disk_1_1bbt__leaf__page.html" title="BBT leaf page." alt="" coords="5,652,159,732"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="93,617,89,652,84,651,88,616"/>
+<area shape="rect" id="Node000005" href="$structpstsdk_1_1disk_1_1bbt__nonleaf__page.html" title="BBT non&#45;leaf page." alt="" coords="183,652,360,732"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="317,616,296,653,291,650,312,614"/>
+<area shape="rect" id="Node000006" href="$structpstsdk_1_1disk_1_1nbt__nonleaf__page.html" title="NBT non&#45;leaf page." alt="" coords="384,652,561,732"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="448,615,461,651,456,653,443,617"/>
+<area shape="rect" id="Node000008" href="$structpstsdk_1_1disk_1_1nbt__leaf__page.html" title="NBT leaf page." alt="" coords="585,652,739,732"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="656,616,660,651,655,652,651,617"/>
+</map>

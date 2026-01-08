@@ -1,0 +1,9 @@
+<map id="pstsdk::page" name="pstsdk::page">
+<area shape="rect" id="Node000001" title="Generic base class for all page typesA page which forms a node in the NBT or BBT." alt="" coords="107,5,224,171"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1bt__page.html" title=" " alt="" coords="79,219,252,304"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,184,168,218,163,218,163,184"/>
+<area shape="rect" id="Node000003" href="$classpstsdk_1_1bt__leaf__page.html" title="Contains the actual key value pairs of the btree." alt="" coords="5,362,155,502"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="140,318,118,363,113,360,136,315"/>
+<area shape="rect" id="Node000004" href="$classpstsdk_1_1bt__nonleaf__page.html" title="Contains references to other bt_pages." alt="" coords="179,352,325,512"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="195,315,214,350,209,353,191,317"/>
+</map>

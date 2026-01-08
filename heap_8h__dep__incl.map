@@ -1,0 +1,35 @@
+<map id="pstsdk/ltp/heap.h" name="pstsdk/ltp/heap.h">
+<area shape="rect" id="Node000001" title="Heap&#45;on&#45;Node (HN) and BTree&#45;on&#45;Heap (BTH) implementation." alt="" coords="139,5,274,31"/>
+<area shape="rect" id="Node000002" href="$ltp_8h.html" title=" " alt="" coords="5,299,104,324"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,42,150,74,111,117,75,169,49,226,46,245,47,265,53,298,48,299,41,265,41,245,44,225,70,166,107,114,146,70,180,38"/>
+<area shape="rect" id="Node000003" href="$object_8h.html" title="Property access base class." alt="" coords="190,79,333,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="226,40,255,77,250,80,222,43"/>
+<area shape="rect" id="Node000004" href="$propbag_8h.html" title="Property Bag (or Property Context, or PC) implementation." alt="" coords="169,152,324,177"/>
+<area shape="poly" id="edge22_Node000001_Node000004" title=" " alt="" coords="192,43,179,73,178,88,181,103,202,130,227,150,224,154,198,134,176,105,172,88,174,71,187,41"/>
+<area shape="rect" id="Node000010" href="$table_8h.html" title="Table (or Table Context, or TC) implementation." alt="" coords="349,152,483,177"/>
+<area shape="poly" id="edge23_Node000001_Node000010" title=" " alt="" coords="260,33,304,51,347,77,386,115,411,150,407,154,382,118,344,81,302,56,258,38"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="214,112,174,129,132,154,92,187,62,227,56,245,53,264,55,298,50,298,48,264,51,244,58,224,89,183,129,150,172,125,212,107"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="259,118,252,152,246,151,254,117"/>
+<area shape="poly" id="edge18_Node000003_Node000010" title=" " alt="" coords="300,107,392,149,390,154,297,112"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="159,184,117,201,82,227,70,244,63,264,58,299,52,298,58,262,66,242,78,223,115,196,157,179"/>
+<area shape="rect" id="Node000005" href="$nameid_8h.html" title="Named Property Lookup Map implementation." alt="" coords="93,225,243,251"/>
+<area shape="poly" id="edge6_Node000004_Node000005" title=" " alt="" coords="226,189,183,227,179,223,222,185"/>
+<area shape="rect" id="Node000006" href="$pst_2pst_8h.html" title="PST implementation." alt="" coords="269,372,395,397"/>
+<area shape="poly" id="edge17_Node000004_Node000006" title=" " alt="" coords="259,189,330,371,325,373,254,191"/>
+<area shape="rect" id="Node000008" href="$folder_8h.html" title="Folder objects." alt="" coords="370,299,513,324"/>
+<area shape="poly" id="edge10_Node000004_Node000008" title=" " alt="" coords="275,184,427,296,424,301,272,188"/>
+<area shape="rect" id="Node000009" href="$message_8h.html" title="Message related classes." alt="" coords="421,225,585,251"/>
+<area shape="poly" id="edge13_Node000004_Node000009" title=" " alt="" coords="301,178,462,223,461,228,300,183"/>
+<area shape="poly" id="edge7_Node000005_Node000002" title=" " alt="" coords="139,260,75,301,72,296,136,256"/>
+<area shape="poly" id="edge8_Node000005_Node000006" title=" " alt="" coords="193,258,264,322,320,370,316,374,261,326,189,262"/>
+<area shape="rect" id="Node000007" href="$pst_8h.html" title=" " alt="" coords="391,445,492,471"/>
+<area shape="poly" id="edge9_Node000006_Node000007" title=" " alt="" coords="362,403,425,443,422,447,360,407"/>
+<area shape="poly" id="edge12_Node000008_Node000006" title=" " alt="" coords="414,334,351,374,348,370,411,329"/>
+<area shape="poly" id="edge11_Node000008_Node000007" title=" " alt="" coords="444,338,444,445,439,445,439,338"/>
+<area shape="poly" id="edge16_Node000009_Node000006" title=" " alt="" coords="433,257,394,274,361,300,349,318,342,337,335,372,330,371,336,336,344,315,357,297,392,270,431,252"/>
+<area shape="poly" id="edge14_Node000009_Node000007" title=" " alt="" coords="519,262,528,292,530,308,528,325,513,362,493,397,454,447,450,443,488,394,508,360,523,323,525,308,523,293,513,264"/>
+<area shape="poly" id="edge15_Node000009_Node000008" title=" " alt="" coords="486,263,453,300,449,297,482,260"/>
+<area shape="poly" id="edge19_Node000010_Node000002" title=" " alt="" coords="387,187,328,220,257,253,177,281,104,301,102,296,175,276,255,248,325,215,384,182"/>
+<area shape="poly" id="edge20_Node000010_Node000008" title=" " alt="" coords="497,169,526,176,553,187,579,202,600,224,606,238,605,252,598,264,585,274,551,290,510,301,509,296,549,285,583,269,594,260,600,250,601,239,595,227,575,207,551,192,524,181,496,174"/>
+<area shape="poly" id="edge21_Node000010_Node000009" title=" " alt="" coords="442,184,490,223,487,227,439,188"/>
+</map>

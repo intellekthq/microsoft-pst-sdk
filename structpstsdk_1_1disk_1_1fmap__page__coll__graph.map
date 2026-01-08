@@ -1,0 +1,11 @@
+<map id="pstsdk::disk::fmap_page&lt; T &gt;" name="pstsdk::disk::fmap_page&lt; T &gt;">
+<area shape="rect" id="Node000001" title="A deprecated allocation system optimized for AMap page searching." alt="" coords="112,248,247,328"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1page.html" title="Generic page structure." alt="" coords="94,133,265,199"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,212,182,248,177,248,177,212"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,57,71"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="40,70,47,90,59,108,81,126,78,130,55,111,42,92,35,72"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="150,5,209,71"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="182,71,182,117,177,117,177,71"/>
+<area shape="rect" id="Node000005" href="$classpage__trailer_3_01_t_01_4.html" title=" " alt="" coords="233,5,363,71"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="270,73,222,123,218,120,266,69"/>
+</map>

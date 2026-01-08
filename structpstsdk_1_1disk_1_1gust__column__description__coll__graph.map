@@ -1,0 +1,11 @@
+<map id="pstsdk::disk::gust_column_description" name="pstsdk::disk::gust_column_description">
+<area shape="rect" id="Node000001" title="GUST Column description structure." alt="" coords="107,177,255,257"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,72,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="42,70,50,112,57,133,69,152,95,177,92,180,65,155,53,135,45,113,37,71"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="113,5,167,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="148,70,165,153,167,161,162,162,160,154,143,72"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="192,5,251,71"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="217,72,196,162,191,161,212,70"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="288,5,339,71"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="313,72,303,113,294,135,282,155,270,169,266,165,278,152,289,133,298,112,308,70"/>
+</map>

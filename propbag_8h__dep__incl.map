@@ -1,0 +1,22 @@
+<map id="pstsdk/ltp/propbag.h" name="pstsdk/ltp/propbag.h">
+<area shape="rect" id="Node000001" title="Property Bag (or Property Context, or PC) implementation." alt="" coords="160,5,315,31"/>
+<area shape="rect" id="Node000002" href="$ltp_8h.html" title=" " alt="" coords="5,152,104,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="147,25,116,32,87,43,60,59,38,80,32,97,34,116,49,151,44,153,29,118,27,97,34,77,57,54,84,38,115,27,146,20"/>
+<area shape="rect" id="Node000003" href="$nameid_8h.html" title="Named Property Lookup Map implementation." alt="" coords="49,79,199,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="209,40,144,81,141,76,206,36"/>
+<area shape="rect" id="Node000004" href="$pst_2pst_8h.html" title="PST implementation." alt="" coords="189,225,315,251"/>
+<area shape="poly" id="edge13_Node000001_Node000004" title=" " alt="" coords="242,45,254,225,249,225,236,45"/>
+<area shape="rect" id="Node000006" href="$folder_8h.html" title="Folder objects." alt="" coords="390,152,533,177"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="325,31,402,50,434,62,454,77,464,95,468,116,466,152,461,152,463,117,459,97,450,80,431,67,401,55,324,36"/>
+<area shape="rect" id="Node000007" href="$message_8h.html" title="Message related classes." alt="" coords="275,79,439,104"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="270,35,339,76,336,81,267,40"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="105,116,68,154,64,150,101,112"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="146,113,244,223,240,227,142,116"/>
+<area shape="rect" id="Node000005" href="$pst_8h.html" title=" " alt="" coords="301,299,403,324"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="281,256,337,296,334,301,278,261"/>
+<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="415,184,287,228,285,223,414,179"/>
+<area shape="poly" id="edge7_Node000006_Node000005" title=" " alt="" coords="446,190,363,300,359,297,442,187"/>
+<area shape="poly" id="edge12_Node000007_Node000004" title=" " alt="" coords="343,117,263,227,258,224,338,114"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="359,118,355,298,350,298,354,118"/>
+<area shape="poly" id="edge11_Node000007_Node000006" title=" " alt="" coords="387,110,446,150,443,154,384,114"/>
+</map>

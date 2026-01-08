@@ -1,0 +1,9 @@
+<map id="pstsdk::data_block" name="pstsdk::data_block">
+<area shape="rect" id="Node000001" title="A block which represents end user data." alt="" coords="113,339,255,544"/>
+<area shape="rect" id="Node000003" href="$classpstsdk_1_1extended__block.html" title="A data block which refers to other data blocks, in order to extend the physical size limit (8k) to a ..." alt="" coords="5,592,173,757"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="140,558,125,593,120,591,135,556"/>
+<area shape="rect" id="Node000004" href="$classpstsdk_1_1external__block.html" title="Contains actual data." alt="" coords="198,602,359,747"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="233,556,252,601,247,603,228,558"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1block.html" title="The base class of the block class hierarchy." alt="" coords="121,5,247,291"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="187,304,187,338,181,338,181,304"/>
+</map>

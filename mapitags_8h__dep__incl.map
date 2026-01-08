@@ -1,0 +1,15 @@
+<map id="pstsdk/mapitags.h" name="pstsdk/mapitags.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="60,5,203,31"/>
+<area shape="rect" id="Node000002" href="$folder_8h.html" title="Folder objects." alt="" coords="5,152,148,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,44,99,80,87,119,81,152,76,151,82,118,94,78,113,41"/>
+<area shape="rect" id="Node000005" href="$message_8h.html" title="Message related classes." alt="" coords="109,79,273,104"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="152,40,184,77,180,80,148,43"/>
+<area shape="rect" id="Node000003" href="$pst_8h.html" title=" " alt="" coords="107,299,209,324"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="76,191,77,220,86,249,109,277,137,296,134,301,105,281,81,252,72,221,71,192"/>
+<area shape="rect" id="Node000004" href="$pst_2pst_8h.html" title="PST implementation." alt="" coords="95,225,221,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="102,184,146,223,143,227,98,188"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="161,264,161,299,155,299,155,264"/>
+<area shape="poly" id="edge7_Node000005_Node000002" title=" " alt="" coords="163,113,97,154,94,150,160,109"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="209,115,225,143,238,178,243,215,241,234,235,252,225,268,212,281,183,301,180,296,208,277,221,264,230,250,236,233,238,215,233,179,220,145,205,117"/>
+<area shape="poly" id="edge8_Node000005_Node000004" title=" " alt="" coords="188,118,163,226,158,225,183,117"/>
+</map>

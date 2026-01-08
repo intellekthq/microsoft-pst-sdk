@@ -1,0 +1,5 @@
+<map id="pstsdk::disk::header_crc_locations&lt; ulong &gt;" name="pstsdk::disk::header_crc_locations&lt; ulong &gt;">
+<area shape="rect" id="Node000001" title="The byte offsets used to calculate the CRCs in an ANSI PST." alt="" coords="5,163,177,243"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="65,5,117,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,71,94,146,89,146,89,71"/>
+</map>

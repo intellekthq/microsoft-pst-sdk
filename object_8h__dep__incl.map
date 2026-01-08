@@ -1,0 +1,30 @@
+<map id="pstsdk/ltp/object.h" name="pstsdk/ltp/object.h">
+<area shape="rect" id="Node000001" title="Property access base class." alt="" coords="166,5,309,31"/>
+<area shape="rect" id="Node000002" href="$ltp_8h.html" title=" " alt="" coords="5,225,104,251"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="186,38,144,55,99,80,58,113,41,132,26,153,22,171,27,191,47,224,42,227,22,193,17,171,22,151,36,129,54,109,96,76,142,50,184,33"/>
+<area shape="rect" id="Node000003" href="$propbag_8h.html" title="Property Bag (or Property Context, or PC) implementation." alt="" coords="160,79,315,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="240,44,240,79,235,79,235,44"/>
+<area shape="rect" id="Node000009" href="$table_8h.html" title="Table (or Table Context, or TC) implementation." alt="" coords="365,79,499,104"/>
+<area shape="poly" id="edge16_Node000001_Node000009" title=" " alt="" coords="282,33,401,76,399,81,280,38"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="147,99,116,105,87,116,60,132,38,153,32,171,34,189,49,224,44,226,29,191,27,170,34,151,57,128,84,111,115,100,146,93"/>
+<area shape="rect" id="Node000004" href="$nameid_8h.html" title="Named Property Lookup Map implementation." alt="" coords="49,152,199,177"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="209,114,144,154,141,150,206,109"/>
+<area shape="rect" id="Node000005" href="$pst_2pst_8h.html" title="PST implementation." alt="" coords="225,299,351,324"/>
+<area shape="poly" id="edge15_Node000003_Node000005" title=" " alt="" coords="246,117,288,298,283,299,241,118"/>
+<area shape="rect" id="Node000007" href="$folder_8h.html" title="Folder objects." alt="" coords="326,225,469,251"/>
+<area shape="poly" id="edge8_Node000003_Node000007" title=" " alt="" coords="262,111,386,223,383,227,259,115"/>
+<area shape="rect" id="Node000008" href="$message_8h.html" title="Message related classes." alt="" coords="377,152,541,177"/>
+<area shape="poly" id="edge11_Node000003_Node000008" title=" " alt="" coords="286,106,424,149,422,154,285,111"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="105,189,68,227,64,223,101,185"/>
+<area shape="poly" id="edge6_Node000004_Node000005" title=" " alt="" coords="149,185,220,249,276,296,272,300,217,253,145,189"/>
+<area shape="rect" id="Node000006" href="$pst_8h.html" title=" " alt="" coords="347,372,448,397"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="318,329,381,370,378,374,316,334"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="370,260,307,301,304,296,367,256"/>
+<area shape="poly" id="edge9_Node000007_Node000006" title=" " alt="" coords="400,265,400,372,395,372,395,265"/>
+<area shape="poly" id="edge14_Node000008_Node000005" title=" " alt="" coords="389,184,350,201,317,227,305,244,298,264,291,299,286,298,292,262,300,242,313,224,348,197,387,179"/>
+<area shape="poly" id="edge12_Node000008_Node000006" title=" " alt="" coords="475,189,484,218,486,235,484,251,469,289,449,323,410,373,406,370,444,320,464,286,479,250,481,235,479,219,469,190"/>
+<area shape="poly" id="edge13_Node000008_Node000007" title=" " alt="" coords="442,190,409,227,405,223,438,186"/>
+<area shape="poly" id="edge17_Node000009_Node000002" title=" " alt="" coords="390,111,212,180,86,228,84,223,210,175,388,107"/>
+<area shape="poly" id="edge18_Node000009_Node000007" title=" " alt="" coords="491,106,521,118,547,134,561,154,561,166,556,179,538,198,517,212,470,230,468,225,514,208,535,194,551,176,556,165,556,156,543,138,519,123,489,111"/>
+<area shape="poly" id="edge19_Node000009_Node000008" title=" " alt="" coords="444,116,457,151,452,153,439,118"/>
+</map>

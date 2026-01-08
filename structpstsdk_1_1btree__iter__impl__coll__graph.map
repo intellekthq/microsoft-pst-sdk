@@ -1,0 +1,9 @@
+<map id="pstsdk::btree_iter_impl&lt; K, V &gt;" name="pstsdk::btree_iter_impl&lt; K, V &gt;">
+<area shape="rect" id="Node000001" title="BTree iterator helper class." alt="" coords="145,163,273,243"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,13,152,93"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,91,145,137,156,149,152,153,141,140,104,95"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="176,20,243,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="212,86,212,146,207,146,207,86"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="267,5,467,100"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="340,102,307,141,289,156,285,152,303,137,336,99"/>
+</map>
