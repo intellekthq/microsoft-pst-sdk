@@ -299,17 +299,20 @@ inline std::shared_ptr<pstsdk::large_pst> pstsdk::open_large_pst(std::shared_ptr
 
 inline pstsdk::shared_db_ptr pstsdk::open_database(std::shared_ptr<file> custom_file)
 {
-    try
-    {
-        shared_db_ptr db = open_small_pst(custom_file);
-        return db;
-    }
-    catch(invalid_format&)
-    {
-        // well, that didn't work
+    std::vector<byte> version_buf(2);
+    custom_file->read(version_buf, 10);
+    ushort wver;
+    memcpy(&wver, version_buf.data(), sizeof(ushort));
+
+    shared_db_ptr db;
+    if (wver >= disk::database_format_unicode_min) {
+        db = open_large_pst(custom_file);
+    } else {
+        db = open_small_pst(custom_file);
     }
 
-    shared_db_ptr db = open_large_pst(custom_file);
+    if (!db) throw invalid_format();
+
     return db;
 }
 
