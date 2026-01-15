@@ -79,6 +79,7 @@ public:
     //! \returns The node
     node& get_node() { return m_pbth->get_node(); }
 
+    std::vector<byte> get_value_variable(prop_id id) const;
 private:
     property_bag& operator=(const property_bag& other); // = delete
 
@@ -89,7 +90,7 @@ private:
     ulong get_value_4(prop_id id) const
         { return (ulong)m_pbth->lookup(id).id; }
     ulonglong get_value_8(prop_id id) const;
-    std::vector<byte> get_value_variable(prop_id id) const;
+
     void get_prop_list_impl(std::vector<prop_id>& proplist, const pc_bth_node* pbth_node) const;
 
     std::shared_ptr<pc_bth_node> m_pbth;
