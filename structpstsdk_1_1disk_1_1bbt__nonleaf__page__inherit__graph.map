@@ -1,0 +1,7 @@
+<map id="pstsdk::disk::bbt_nonleaf_page&lt; T &gt;" name="pstsdk::disk::bbt_nonleaf_page&lt; T &gt;">
+<area shape="rect" id="Node000001" title="BBT non&#45;leaf page." alt="" coords="5,637,183,717"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1bt__page.html" title=" " alt="" coords="18,328,170,588"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,602,97,637,91,637,91,602"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1disk_1_1bt__page.html" title="The fundamental page structure which forms the basis of the two BTrees." alt="" coords="18,5,170,265"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="97,279,97,328,91,328,91,279"/>
+</map>

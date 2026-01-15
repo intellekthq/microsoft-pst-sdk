@@ -1,0 +1,19 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,104,144,129"/>
+<area shape="rect" id="Node000001" href="$classpstsdk_1_1can__not__resize.html" title="A block or node can not satisfy a resize request." alt="" coords="200,55,371,80"/>
+<area shape="poly" id="edge65_Node000000_Node000001" title=" " alt="" coords="142,98,230,77,231,83,143,103"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1database__corrupt.html" title="The database is corrupt." alt="" coords="192,104,379,129"/>
+<area shape="poly" id="edge66_Node000000_Node000002" title=" " alt="" coords="158,114,192,114,192,119,158,119"/>
+<area shape="rect" id="Node000008" href="$classpstsdk_1_1write__error.html" title="An error occured writing to the file." alt="" coords="213,153,357,179"/>
+<area shape="poly" id="edge72_Node000000_Node000008" title=" " alt="" coords="143,130,231,151,230,156,142,135"/>
+<area shape="rect" id="Node000003" href="$classpstsdk_1_1crc__fail.html" title="A CRC of an item failed." alt="" coords="461,5,581,31"/>
+<area shape="poly" id="edge67_Node000002_Node000003" title=" " alt="" coords="362,97,377,89,392,77,400,65,410,52,425,40,460,26,462,31,428,44,414,56,405,68,395,81,380,94,364,101"/>
+<area shape="rect" id="Node000004" href="$classpstsdk_1_1invalid__format.html" title="The database was not in the expected format." alt="" coords="437,55,605,80"/>
+<area shape="poly" id="edge68_Node000002_Node000004" title=" " alt="" coords="359,99,459,77,460,83,360,104"/>
+<area shape="rect" id="Node000005" href="$classpstsdk_1_1sig__mismatch.html" title="An unexpected signature was encountered." alt="" coords="439,104,603,129"/>
+<area shape="poly" id="edge69_Node000002_Node000005" title=" " alt="" coords="392,114,438,114,438,119,392,119"/>
+<area shape="rect" id="Node000006" href="$classpstsdk_1_1unexpected__block.html" title="An unexpected block or block type was encountered." alt="" coords="446,154,595,194"/>
+<area shape="poly" id="edge70_Node000002_Node000006" title=" " alt="" coords="352,130,446,153,445,158,351,135"/>
+<area shape="rect" id="Node000007" href="$classpstsdk_1_1unexpected__page.html" title="An unexpected page or page type was encountered." alt="" coords="427,219,615,244"/>
+<area shape="poly" id="edge71_Node000002_Node000007" title=" " alt="" coords="370,133,380,139,397,155,405,172,413,188,428,204,453,216,450,221,425,208,409,192,400,174,392,158,377,143,368,137"/>
+</map>

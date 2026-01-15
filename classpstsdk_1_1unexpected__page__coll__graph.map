@@ -1,0 +1,7 @@
+<map id="pstsdk::unexpected_page" name="pstsdk::unexpected_page">
+<area shape="rect" id="Node000001" title="An unexpected page or page type was encountered." alt="" coords="5,232,185,297"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1database__corrupt.html" title="The database is corrupt." alt="" coords="6,119,185,184"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,198,98,232,93,232,93,198"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="30,5,161,71"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="98,84,98,119,93,119,93,84"/>
+</map>

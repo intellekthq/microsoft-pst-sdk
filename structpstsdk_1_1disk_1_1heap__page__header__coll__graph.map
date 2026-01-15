@@ -1,0 +1,5 @@
+<map id="pstsdk::disk::heap_page_header" name="pstsdk::disk::heap_page_header">
+<area shape="rect" id="Node000001" title="Header structure on non&#45;first/non&#45;fill blocks." alt="" coords="5,133,137,213"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="38,5,105,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,71,74,117,69,117,69,71"/>
+</map>

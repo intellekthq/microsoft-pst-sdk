@@ -1,0 +1,5 @@
+<map id="pstsdk::recipient_oneoff_entry_id" name="pstsdk::recipient_oneoff_entry_id">
+<area shape="rect" id="Node000001" title="One&#45;off recipient EntryID [MS&#45;OXCDATA] 2.2.5.1." alt="" coords="5,139,176,279"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1entry__id__header.html" title=" " alt="" coords="5,5,176,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,104,93,139,88,139,88,104"/>
+</map>

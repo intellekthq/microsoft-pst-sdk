@@ -1,0 +1,24 @@
+<map id="pstsdk::disk::nbt_nonleaf_page&lt; T &gt;" name="pstsdk::disk::nbt_nonleaf_page&lt; T &gt;">
+<area shape="rect" id="Node000001" title="NBT non&#45;leaf page." alt="" coords="322,479,499,559"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1bt__page.html" title=" " alt="" coords="335,349,487,429"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="413,443,413,478,408,478,408,443"/>
+<area shape="rect" id="Node000003" href="$classstatic_01const_01size__t.html" title=" " alt="" coords="5,199,136,265"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="82,264,98,296,122,323,155,339,204,353,319,374,318,379,203,358,153,344,118,327,93,299,77,266"/>
+<area shape="rect" id="Node000004" href="$classbt__entry_3_01_t_01_4.html" title=" " alt="" coords="160,199,267,265"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="216,264,222,295,237,324,254,340,275,353,320,371,318,376,272,358,251,344,233,327,217,297,211,265"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="308,5,367,71"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="337,71,336,162,341,217,352,271,364,303,379,334,374,336,359,306,347,273,336,218,331,162,332,71"/>
+<area shape="rect" id="Node000008" href="$structpstsdk_1_1disk_1_1bt__page.html" title="The fundamental page structure which forms the basis of the two BTrees." alt="" coords="569,192,721,272"/>
+<area shape="poly" id="edge10_Node000008_Node000005" title=" " alt="" coords="346,70,364,121,379,146,399,166,418,178,436,184,470,186,507,184,551,189,554,190,553,195,550,195,506,189,470,191,435,189,416,183,396,170,375,149,359,123,341,72"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="443,5,570,71"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="510,71,504,163,495,218,481,273,467,306,450,337,445,334,462,303,476,271,490,217,499,162,504,71"/>
+<area shape="poly" id="edge11_Node000008_Node000006" title=" " alt="" coords="522,70,545,117,577,166,587,178,583,182,573,170,540,120,517,72"/>
+<area shape="rect" id="Node000007" href="$classpage__trailer_3_01_t_01_4.html" title=" " alt="" coords="828,5,959,71"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="903,71,906,118,903,144,896,169,863,228,825,267,779,297,717,328,664,350,609,366,504,384,503,379,608,361,663,345,715,323,776,292,822,263,859,225,891,167,898,143,901,118,898,71"/>
+<area shape="poly" id="edge12_Node000008_Node000007" title=" " alt="" coords="860,73,841,96,831,116,827,134,822,151,809,170,775,194,738,212,736,207,773,190,805,166,817,149,822,132,826,114,836,93,856,69"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="589,283,528,328,488,352,485,347,525,323,586,279"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="594,5,646,71"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="620,71,619,117,624,168,626,176,621,177,619,168,614,117,615,71"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="706,5,785,71"/>
+<area shape="poly" id="edge9_Node000008_Node000010" title=" " alt="" coords="746,71,738,119,730,145,718,169,710,181,706,178,714,167,725,143,733,118,741,70"/>
+</map>

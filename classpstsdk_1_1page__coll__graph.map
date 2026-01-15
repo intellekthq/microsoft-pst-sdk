@@ -1,0 +1,9 @@
+<map id="pstsdk::page" name="pstsdk::page">
+<area shape="rect" id="Node000001" title="Generic base class for all page typesA page which forms a node in the NBT or BBT." alt="" coords="181,133,299,259"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,181,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,69,173,120,169,123,121,73"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="206,5,274,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="243,71,243,117,237,117,237,71"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="299,5,365,71"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="322,72,304,111,298,121,293,118,299,108,318,70"/>
+</map>

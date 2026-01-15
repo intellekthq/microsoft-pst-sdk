@@ -1,0 +1,17 @@
+<map id="pstsdk::recipient_oneoff_entry_id" name="pstsdk::recipient_oneoff_entry_id">
+<area shape="rect" id="Node000001" title="One&#45;off recipient EntryID [MS&#45;OXCDATA] 2.2.5.1." alt="" coords="60,419,231,519"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1entry__id__header.html" title=" " alt="" coords="60,291,231,356"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,370,148,418,143,418,143,370"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="233,5,300,71"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="279,71,284,94,290,145,289,187,277,226,250,268,237,283,233,279,246,265,272,223,284,186,284,146,279,95,274,72"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1guid.html" title="A Win32 GUID structure." alt="" coords="99,148,192,213"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="245,73,202,126,191,138,187,134,198,122,241,69"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="148,213,148,274,143,274,143,213"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,5,72,71"/>
+<area shape="poly" id="edge7_Node000001_Node000005" title=" " alt="" coords="35,71,28,127,25,199,31,278,38,317,50,355,64,381,81,404,77,408,59,383,46,357,33,319,25,279,20,199,23,126,30,71"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="56,69,89,122,99,134,95,138,85,126,51,72"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="116,5,175,71"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="148,71,148,131,143,131,143,71"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="255,291,337,356"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="264,358,211,409,207,405,261,354"/>
+</map>

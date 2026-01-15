@@ -1,0 +1,36 @@
+var group__pst__pstrelated =
+[
+    [ "pstsdk::pst", "classpstsdk_1_1pst.html", [
+      [ "folder_filter_iterator", "classpstsdk_1_1pst.html#af219a4e9692e04bf7d76074d02393f7f", null ],
+      [ "folder_iterator", "classpstsdk_1_1pst.html#aa7e6f466f2ac83b94370cb3fcec006bc", null ],
+      [ "message_filter_iterator", "classpstsdk_1_1pst.html#a5fc1300b51c6b1b82abe38272b5100f6", null ],
+      [ "message_iterator", "classpstsdk_1_1pst.html#a81c562f6c0c6dac2cebccc5273fc1f43", null ],
+      [ "pst", "classpstsdk_1_1pst.html#a71f63a2fd75a6fe61327f2b0cfa4665b", null ],
+      [ "pst", "classpstsdk_1_1pst.html#ae576db99e029e4f11d54917b09718612", null ],
+      [ "pst", "classpstsdk_1_1pst.html#a67a395bd2cad87e13e2936a3e4d3b80c", null ],
+      [ "pst", "classpstsdk_1_1pst.html#a72fe0660ed01a6bf1385c96a5c28581b", null ],
+      [ "folder_begin", "classpstsdk_1_1pst.html#a2f4eeb49fb7ad282d84b72ea86c72f7c", null ],
+      [ "folder_end", "classpstsdk_1_1pst.html#a75e09d812150db67908efc2367e38f0e", null ],
+      [ "folder_node_begin", "classpstsdk_1_1pst.html#a80b06e342285d481cdd49c5bf641c23b", null ],
+      [ "folder_node_end", "classpstsdk_1_1pst.html#a32d52bc28b8f3f96b97bb0be9a5b1f77", null ],
+      [ "get_db", "classpstsdk_1_1pst.html#a21927cd7d7ff4cb5332d33982f7ca403", null ],
+      [ "get_name", "classpstsdk_1_1pst.html#af71bb7ffb6b572d58b06abeb6c6bdc42", null ],
+      [ "get_name_id_map", "classpstsdk_1_1pst.html#a7ac0a01380a2ef6d79a746c47217af88", null ],
+      [ "get_name_id_map", "classpstsdk_1_1pst.html#ae51b9718c70da181c443a89c5e869a09", null ],
+      [ "get_property_bag", "classpstsdk_1_1pst.html#a47f878ec2915d04306cea3b4e87a948d", null ],
+      [ "get_property_bag", "classpstsdk_1_1pst.html#a7091b153d0ee199b98c9cf835640186e", null ],
+      [ "lookup_name_prop", "classpstsdk_1_1pst.html#a487be777b2c69d406b534e1e33a3e2c9", null ],
+      [ "lookup_prop_id", "classpstsdk_1_1pst.html#a16550b91ee03815ae32d8087b5962a60", null ],
+      [ "lookup_prop_id", "classpstsdk_1_1pst.html#a5921ccbeb7d8dbf0f6700ac7d7a0de5b", null ],
+      [ "lookup_prop_id", "classpstsdk_1_1pst.html#a74a216753d3b13287912964b0434794a", null ],
+      [ "message_begin", "classpstsdk_1_1pst.html#abf667afe09d10d58404c89621fd21e41", null ],
+      [ "message_end", "classpstsdk_1_1pst.html#ac7e1a252bbebb825d147b0d7364990b8", null ],
+      [ "message_node_begin", "classpstsdk_1_1pst.html#ad23c1e3f6b6032bf9c1dc367700d7aaa", null ],
+      [ "message_node_end", "classpstsdk_1_1pst.html#a50037e179b639d285d5578e03c00cd3f", null ],
+      [ "open_folder", "classpstsdk_1_1pst.html#a45daf94b62ae1ec16fd41b728fd3f8dd", null ],
+      [ "open_folder", "classpstsdk_1_1pst.html#ab2d3e591b97faf0f39668b4354c7288a", null ],
+      [ "open_message", "classpstsdk_1_1pst.html#aa2e053e6f139ad829fc6382be8d7d9c4", null ],
+      [ "open_root_folder", "classpstsdk_1_1pst.html#aac2b858d54589550830f49490654fa3a", null ],
+      [ "open_search_folder", "classpstsdk_1_1pst.html#a09639c601f2cfe0082aec882a59e8ad4", null ]
+    ] ]
+];

@@ -1,0 +1,20 @@
+<map id="pstsdk::extended_block" name="pstsdk::extended_block">
+<area shape="rect" id="Node000001" title="A data block which refers to other data blocks, in order to extend the physical size limit (8k) to a ..." alt="" coords="79,643,247,808"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1data__block.html" title="A block which represents end user data." alt="" coords="5,388,147,593"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,605,135,642,130,644,116,607"/>
+<area shape="rect" id="Node000003" href="$classpstsdk_1_1block.html" title="The base class of the block class hierarchy." alt="" coords="197,133,323,339"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="191,337,149,394,145,391,186,334"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="532,5,575,71"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="534,63,522,73,428,138,339,193,336,189,426,134,518,69,530,58"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="49,5,101,71"/>
+<area shape="poly" id="edge8_Node000002_Node000005" title=" " alt="" coords="77,71,78,371,73,371,72,71"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="103,69,138,107,166,131,187,152,183,156,162,135,134,111,99,73"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="138,5,217,71"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="193,70,213,117,208,119,188,72"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="241,5,308,71"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="275,71,272,117,266,117,270,71"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="332,5,508,71"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="396,72,336,146,332,143,392,69"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="171,443,330,538"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="231,552,196,643,191,642,226,550"/>
+</map>

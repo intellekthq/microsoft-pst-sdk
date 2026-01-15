@@ -1,0 +1,15 @@
+<map id="pstsdk::disk::tc_header" name="pstsdk::disk::tc_header">
+<area shape="rect" id="Node000001" title="The root_id allocation out of the Heap of a TC node." alt="" coords="211,305,375,371"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="15,5,73,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="31,72,19,106,10,147,10,189,15,208,25,226,59,263,102,291,149,310,196,322,194,327,147,315,99,295,55,267,20,230,10,210,5,189,5,146,13,105,26,70"/>
+<area shape="rect" id="Node000005" href="$structpstsdk_1_1disk_1_1column__description.html" title="Describes a column." alt="" coords="142,148,290,228"/>
+<area shape="poly" id="edge7_Node000005_Node000002" title=" " alt="" coords="73,69,127,122,144,136,141,140,123,126,70,73"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="281,5,348,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="323,71,332,166,331,224,322,282,320,291,315,289,317,281,325,224,326,166,317,71"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="287,73,269,96,245,135,240,132,264,93,283,70"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="456,155,507,221"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="457,215,439,230,351,298,348,293,436,226,454,211"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="229,227,252,280,258,291,253,293,247,283,224,229"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="179,5,234,71"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="209,71,211,124,211,132,206,132,205,124,204,71"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="pstsdk::disk::root&lt; T &gt;" name="pstsdk::disk::root&lt; T &gt;">
+<area shape="rect" id="Node000001" title="The root of the database." alt="" coords="191,177,355,243"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,72,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="40,71,47,113,55,134,67,152,91,170,117,185,176,201,175,207,115,190,88,175,63,155,50,136,41,114,35,71"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="135,5,158,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="149,70,154,112,161,133,171,152,184,166,180,169,167,155,156,135,149,113,143,71"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="191,5,347,71"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="273,71,275,161,270,161,267,71"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="372,5,431,71"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="390,72,367,119,346,155,334,168,330,165,342,152,363,117,385,70"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="459,5,525,71"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="495,71,487,114,478,136,465,155,444,172,422,185,372,202,371,197,419,180,441,168,461,152,474,134,482,113,489,71"/>
+</map>

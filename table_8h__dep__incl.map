@@ -1,0 +1,17 @@
+<map id="pstsdk/ltp/table.h" name="pstsdk/ltp/table.h">
+<area shape="rect" id="Node000001" title="Table (or Table Context, or TC) implementation." alt="" coords="74,5,209,31"/>
+<area shape="rect" id="Node000002" href="$ltp_8h.html" title=" " alt="" coords="5,79,104,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,41,71,81,67,76,115,37"/>
+<area shape="rect" id="Node000003" href="$folder_8h.html" title="Folder objects." alt="" coords="75,152,218,177"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="145,45,149,152,144,152,140,45"/>
+<area shape="rect" id="Node000006" href="$message_8h.html" title="Message related classes." alt="" coords="179,79,343,104"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="174,35,243,76,240,81,171,40"/>
+<area shape="rect" id="Node000004" href="$pst_8h.html" title=" " alt="" coords="177,299,279,324"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="146,191,147,220,156,249,179,277,207,296,204,301,175,281,151,252,142,221,141,192"/>
+<area shape="rect" id="Node000005" href="$pst_2pst_8h.html" title="PST implementation." alt="" coords="165,225,291,251"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="172,184,216,223,213,227,168,188"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="231,264,231,299,225,299,225,264"/>
+<area shape="poly" id="edge8_Node000006_Node000003" title=" " alt="" coords="233,113,167,154,164,150,230,109"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="279,115,295,143,308,178,313,215,311,234,305,252,295,268,282,281,253,301,250,296,278,277,291,264,300,250,306,233,308,215,303,179,290,145,275,117"/>
+<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="258,118,233,226,228,225,253,117"/>
+</map>

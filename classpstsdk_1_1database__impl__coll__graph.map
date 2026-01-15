@@ -1,0 +1,13 @@
+<map id="pstsdk::database_impl&lt; T &gt;" name="pstsdk::database_impl&lt; T &gt;">
+<area shape="rect" id="Node000001" title="PST implementation." alt="" coords="275,1187,479,1927"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1db__context.html" title="Database external interface." alt="" coords="5,135,209,1109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="216,1077,225,1109,277,1274,272,1276,219,1110,210,1079"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="15,5,200,85"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="110,99,110,134,105,134,105,99"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="234,582,375,662"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="310,662,350,1170,344,1170,305,662"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="400,589,497,655"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="449,655,410,1163,409,1171,404,1170,405,1162,444,655"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="522,582,663,662"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="590,662,561,855,513,1110,498,1163,486,1205,481,1203,493,1162,507,1109,556,854,585,662"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="pstsdk::const_property_object" name="pstsdk::const_property_object">
+<area shape="rect" id="Node000001" title="Property object base class." alt="" coords="89,5,282,425"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1const__table__row.html" title="An abstraction of a table row." alt="" coords="5,543,176,749"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="139,440,116,544,110,543,134,439"/>
+<area shape="rect" id="Node000003" href="$classpstsdk_1_1property__bag.html" title="Property Context (PC) Implementation." alt="" coords="200,473,363,819"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="238,438,245,473,240,474,233,439"/>
+</map>

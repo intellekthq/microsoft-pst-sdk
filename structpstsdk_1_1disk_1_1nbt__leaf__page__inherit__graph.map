@@ -1,0 +1,7 @@
+<map id="pstsdk::disk::nbt_leaf_page&lt; T &gt;" name="pstsdk::disk::nbt_leaf_page&lt; T &gt;">
+<area shape="rect" id="Node000001" title="NBT leaf page." alt="" coords="25,652,178,732"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1bt__page.html" title=" " alt="" coords="5,343,197,603"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,617,104,652,99,652,99,617"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1disk_1_1bt__page.html" title="The fundamental page structure which forms the basis of the two BTrees." alt="" coords="25,5,177,265"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="104,279,104,342,99,342,99,279"/>
+</map>

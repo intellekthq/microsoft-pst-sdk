@@ -1,0 +1,11 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$structpstsdk_1_1disk_1_1page.html" title="Generic page structure." alt="" coords="5,109,184,134"/>
+<area shape="rect" id="Node000001" href="$structpstsdk_1_1disk_1_1amap__page.html" title="The authoritative source of free space in the file." alt="" coords="235,5,380,45"/>
+<area shape="poly" id="edge54_Node000000_Node000001" title=" " alt="" coords="133,100,231,55,258,43,260,48,233,60,136,105"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1fmap__page.html" title="A deprecated allocation system optimized for AMap page searching." alt="" coords="236,69,379,109"/>
+<area shape="poly" id="edge55_Node000000_Node000002" title=" " alt="" coords="193,104,235,97,236,103,194,109"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1disk_1_1fpmap__page.html" title="A deprecated allocation system optimized for PMap page searching." alt="" coords="232,133,383,173"/>
+<area shape="poly" id="edge56_Node000000_Node000003" title=" " alt="" coords="193,133,232,139,231,145,193,139"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1disk_1_1pmap__page.html" title="An old allocation system optimized for pages." alt="" coords="235,197,380,237"/>
+<area shape="poly" id="edge57_Node000000_Node000004" title=" " alt="" coords="136,137,233,183,260,195,258,200,231,188,133,142"/>
+</map>

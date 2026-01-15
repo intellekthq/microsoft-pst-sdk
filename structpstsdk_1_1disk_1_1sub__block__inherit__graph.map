@@ -1,0 +1,11 @@
+<map id="pstsdk::disk::sub_block&lt; T, EntryType &gt;" name="pstsdk::disk::sub_block&lt; T, EntryType &gt;">
+<area shape="rect" id="Node000001" title="Subnode Blocks." alt="" coords="121,5,287,145"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1sub__block.html" title=" " alt="" coords="5,230,200,370"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="143,159,137,170,117,231,112,229,132,168,138,156"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1disk_1_1sub__block.html" title=" " alt="" coords="224,223,389,377"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="263,156,269,168,290,221,285,223,264,170,258,159"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1disk_1_1sub__leaf__block.html" title="Subnode leaf block." alt="" coords="25,427,180,507"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="105,384,105,426,100,426,100,384"/>
+<area shape="rect" id="Node000005" href="$structpstsdk_1_1disk_1_1sub__nonleaf__block.html" title="Subnode non&#45;leaf block." alt="" coords="217,427,396,507"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="309,391,309,426,304,426,304,391"/>
+</map>

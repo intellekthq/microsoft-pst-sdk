@@ -1,0 +1,15 @@
+<map id="pstsdk::entry_id_bytebag" name="pstsdk::entry_id_bytebag">
+<area shape="rect" id="Node000001" title=" " alt="" coords="137,391,316,456"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1entry__id__header.html" title=" " alt="" coords="63,276,233,341"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,351,207,389,202,392,176,354"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,72,71"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="35,71,30,139,34,176,45,212,63,240,86,263,82,267,59,243,40,214,29,177,25,139,29,71"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1guid.html" title="A Win32 GUID structure." alt="" coords="101,148,195,213"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="57,69,91,122,102,134,98,138,87,126,53,72"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="151,214,151,260,145,260,145,214"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="115,5,181,71"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="151,71,151,131,145,131,145,71"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="240,5,299,71"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="283,71,288,94,288,124,267,262,242,376,236,374,262,261,283,124,283,95,278,72"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="248,73,205,126,194,138,190,134,201,122,244,69"/>
+</map>
