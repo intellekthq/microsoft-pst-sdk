@@ -11,8 +11,10 @@
 #define PSTSDK_UTIL_UTIL_H
 
 #include <cstdio>
+#include <cstdlib>
 #include <time.h>
 #include <memory>
+#include <string>
 #include <vector>
 #include <boost/utility.hpp>
 
@@ -246,6 +248,22 @@ inline std::vector<pstsdk::byte> pstsdk::wstring_to_bytes(const std::wstring &ws
 
     const byte *begin = reinterpret_cast<const byte *>(&wstr[0]);
     return std::vector<byte>(begin, begin + wstr.size()*sizeof(wchar_t));
+}
+
+// Assume UCS-2LE
+inline std::string pstsdk::bytes_to_string(const std::vector<byte> &bytes)
+{
+    // Do the wstr cast and use c_str to avoid any issues stemming from null terminator
+    std::wstring ws = bytes_to_wstring(bytes);
+    size_t utf8_sz = wcstombs(NULL, ws.c_str(),  0);
+
+    std::vector<char> utf8_str(utf8_sz);
+    size_t copied = wcstombs(&utf8_str.data()[0], ws.c_str(), utf8_str.size());
+
+    if (copied != utf8_sz)
+        throw std::runtime_error("Expected to copy " + std::to_string(utf8_sz) + " bytes but copied " + std::to_string(copied));
+
+    return { utf8_str.begin(), utf8_str.end() };
 }
 
 #else // !(defined(_WIN32) || defined(__MINGW32__))

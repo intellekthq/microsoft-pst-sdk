@@ -19,7 +19,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set up our compiler flags.
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "/DPSTSDK_VALIDATION_LEVEL_FULL /EHsc /nologo /std:c++17 /W4 /WX /wd4244 /wd4267 /wd4456 /wd4127")
+  set(CMAKE_CXX_FLAGS "/DPSTSDK_VALIDATION_LEVEL_FULL /EHsc /nologo /std:c++17 /W4 /WX /wd4244 /wd4267 /wd4456 /wd4127 /wd4996")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # https://clang.llvm.org/docs/DiagnosticsReference.html#wincompatible-ms-struct 
   set(CMAKE_CXX_FLAGS "-Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++17")
@@ -36,7 +36,9 @@ endif()
 
 # Use iconv if we have it.  This is required on non-Win32 platforms,
 # because we don't necessarily know the encoding of wchar_t.
-find_library(ICONV_LIBRARY NAMES iconv)
+if (NOT MSVC)
+  find_package(Iconv REQUIRED)
+endif()
 
 # Compile our unit tests.
 add_subdirectory(test)
