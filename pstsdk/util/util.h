@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <memory>
+#include <string>
 #include <vector>
 #include <boost/utility.hpp>
 
