@@ -14,12 +14,16 @@
 #include <cstdlib>
 #include <time.h>
 #include <memory>
-#include <string>
 #include <vector>
 #include <boost/utility.hpp>
 
 #include "pstsdk/util/errors.h"
 #include "pstsdk/util/primitives.h"
+
+#if defined(_WIN32) || defined(__MINGW32__)
+#define NOMINMAX
+#include <windows.h>
+#endif
 
 namespace pstsdk
 {
@@ -250,15 +254,15 @@ inline std::vector<pstsdk::byte> pstsdk::wstring_to_bytes(const std::wstring &ws
     return std::vector<byte>(begin, begin + wstr.size()*sizeof(wchar_t));
 }
 
-// Assume UCS-2LE
+// Assume UCS-2LE, use WideCharToMultiByte to support pre Win 10
 inline std::string pstsdk::bytes_to_string(const std::vector<byte> &bytes)
 {
     // Do the wstr cast and use c_str to avoid any issues stemming from null terminator
     std::wstring ws = bytes_to_wstring(bytes);
-    size_t utf8_sz = wcstombs(NULL, ws.c_str(),  0);
+    size_t utf8_sz = WideCharToMultiByte(CP_UTF8, 0, ws.c_str(), ws.size(), NULL, 0, NULL, NULL);
 
     std::vector<char> utf8_str(utf8_sz);
-    size_t copied = wcstombs(&utf8_str.data()[0], ws.c_str(), utf8_str.size());
+    size_t copied = WideCharToMultiByte(CP_UTF8, 0, ws.c_str(), ws.size(), &utf8_str.data()[0], utf8_sz, NULL, NULL);
 
     if (copied != utf8_sz)
         throw std::runtime_error("Expected to copy " + std::to_string(utf8_sz) + " bytes but copied " + std::to_string(copied));
