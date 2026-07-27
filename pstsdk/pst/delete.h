@@ -365,10 +365,10 @@ inline void delete_folder_impl(const std::shared_ptr<database_impl<T> >& db, nod
 
 inline void pstsdk::delete_message(const shared_db_ptr& db, node_id nid)
 {
-    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
-        return detail::delete_message_impl(large, nid);
-    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
-        return detail::delete_message_impl(small, nid);
+    if(std::shared_ptr<large_pst> unicode = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::delete_message_impl(unicode, nid);
+    if(std::shared_ptr<small_pst> ansi = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::delete_message_impl(ansi, nid);
 
     throw invalid_format();
 }
@@ -376,30 +376,30 @@ inline void pstsdk::delete_message(const shared_db_ptr& db, node_id nid)
 inline void pstsdk::delete_attachment(const shared_db_ptr& db, node_id message_nid,
                                       node_id attachment_nid)
 {
-    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
-        return detail::delete_attachment_impl(large, message_nid, attachment_nid);
-    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
-        return detail::delete_attachment_impl(small, message_nid, attachment_nid);
+    if(std::shared_ptr<large_pst> unicode = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::delete_attachment_impl(unicode, message_nid, attachment_nid);
+    if(std::shared_ptr<small_pst> ansi = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::delete_attachment_impl(ansi, message_nid, attachment_nid);
 
     throw invalid_format();
 }
 
 inline pstsdk::ulonglong pstsdk::wipe_free_space(const shared_db_ptr& db)
 {
-    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
-        return detail::wipe_impl(large);
-    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
-        return detail::wipe_impl(small);
+    if(std::shared_ptr<large_pst> unicode = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::wipe_impl(unicode);
+    if(std::shared_ptr<small_pst> ansi = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::wipe_impl(ansi);
 
     throw invalid_format();
 }
 
 inline void pstsdk::delete_folder(const shared_db_ptr& db, node_id nid)
 {
-    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
-        return detail::delete_folder_impl(large, nid);
-    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
-        return detail::delete_folder_impl(small, nid);
+    if(std::shared_ptr<large_pst> unicode = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::delete_folder_impl(unicode, nid);
+    if(std::shared_ptr<small_pst> ansi = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::delete_folder_impl(ansi, nid);
 
     throw invalid_format();
 }
