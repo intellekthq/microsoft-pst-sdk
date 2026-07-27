@@ -130,6 +130,40 @@ inline std::vector<row_id> table_row_ids(const shared_db_ptr& db, node_id owner,
     return rows;
 }
 
+//! Every search folder's contents table, which caches copies of the columns it
+//! indexes and so has to lose a deleted message's row along with the real folder.
+//! The GUST is skipped: open_table refuses to parse it at all.
+inline std::vector<node_id> search_contents_tables(const shared_db_ptr& db)
+{
+    std::vector<node_id> tables;
+    std::shared_ptr<nbt_page> root = db->read_nbt_root();
+
+    for(const_nodeinfo_iterator i = root->begin(); i != root->end(); ++i)
+    {
+        if(get_nid_type((*i).id) != nid_type_search_contents_table)
+            continue;
+
+        if((*i).id == nid_all_message_search_contents)
+            continue;
+
+        tables.push_back((*i).id);
+    }
+
+    return tables;
+}
+
+template<typename T>
+inline void sweep_search_folders(db_writer<T>& writer, const std::vector<node_id>& tables,
+                                 node_id message)
+{
+    for(size_t i = 0; i < tables.size(); ++i)
+    {
+        try { tc_remove_row(writer, tables[i], message); }
+        catch(key_not_found<row_id>&) { }
+        catch(database_corrupt&) { }
+    }
+}
+
 inline node_id folder_table(node_id folder, nid_type type)
 {
     return make_nid(type, get_nid_index(folder));
@@ -177,6 +211,8 @@ inline void delete_message_impl(const std::shared_ptr<database_impl<T> >& db, no
     const bool has_unread = try_read_long(db, folder, PR_CONTENT_UNREAD, unread_count);
     const bool has_associated = try_read_long(db, folder, PR_ASSOC_CONTENT_COUNT, associated_count);
 
+    const std::vector<node_id> search = search_contents_tables(db);
+
     db_writer<T> writer(db);
 
     bool associated = false;
@@ -190,6 +226,8 @@ inline void delete_message_impl(const std::shared_ptr<database_impl<T> >& db, no
 
     if(removed && !associated && unread && has_unread && unread_count > 0)
         pc_set_inline(writer, folder, (prop_id)PR_CONTENT_UNREAD, unread_count - 1);
+
+    sweep_search_folders(writer, search, nid);
 
     writer.delete_node(nid);
     writer.commit();
@@ -228,13 +266,13 @@ inline void delete_attachment_impl(const std::shared_ptr<database_impl<T> >& db,
 
 template<typename T>
 inline void delete_folder_contents(db_writer<T>& writer, const std::shared_ptr<database_impl<T> >& db,
-                                   node_id folder)
+                                   node_id folder, const std::vector<node_id>& search)
 {
     const std::vector<row_id> subfolders =
         table_row_ids(db, folder_table(folder, nid_type_hierarchy_table));
 
     for(size_t i = 0; i < subfolders.size(); ++i)
-        delete_folder_contents(writer, db, subfolders[i]);
+        delete_folder_contents(writer, db, subfolders[i], search);
 
     // The tables go with the folder, so the messages only need their nodes
     // unlinked; there is no row left to take them out of.
@@ -244,7 +282,10 @@ inline void delete_folder_contents(db_writer<T>& writer, const std::shared_ptr<d
         table_row_ids(db, folder_table(folder, nid_type_associated_contents_table));
 
     for(size_t i = 0; i < messages.size(); ++i)
+    {
+        sweep_search_folders(writer, search, (node_id)messages[i]);
         writer.delete_node(messages[i]);
+    }
 
     for(size_t i = 0; i < associated.size(); ++i)
         writer.delete_node(associated[i]);
@@ -269,6 +310,7 @@ inline void delete_folder_impl(const std::shared_ptr<database_impl<T> >& db, nod
 
     const size_t siblings =
         table_row_ids(db, folder_table(parent, nid_type_hierarchy_table)).size();
+    const std::vector<node_id> search = search_contents_tables(db);
 
     db_writer<T> writer(db);
 
@@ -285,7 +327,7 @@ inline void delete_folder_impl(const std::shared_ptr<database_impl<T> >& db, nod
         }
     }
 
-    delete_folder_contents(writer, db, nid);
+    delete_folder_contents(writer, db, nid, search);
     writer.commit();
 }
 
