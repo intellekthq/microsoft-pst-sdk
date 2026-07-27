@@ -6,3 +6,4 @@ if(Iconv_FOUND)
 endif()
 
 add_test(NAME pstsdk_test COMMAND pstsdk_test WORKING_DIRECTORY ../test)
+set_tests_properties(pstsdk_test PROPERTIES TIMEOUT 300)

@@ -68,6 +68,7 @@
 
 #include "pstsdk/pst/pst.h"
 #include "pstsdk/pst/folder.h"
+#include "pstsdk/pst/delete.h"
 #include "pstsdk/pst/message.h"
 
 #endif

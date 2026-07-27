@@ -26,6 +26,10 @@
 #include <windows.h>
 #endif
 
+#ifdef _MSC_VER
+#include <share.h>
+#endif
+
 namespace pstsdk
 {
 
@@ -47,7 +51,8 @@ public:
     //! \brief Construct a file object from the given filename
     //! \throw runtime_error if an error occurs opening the file
     //! \param[in] filename The file to open
-    file(const std::wstring& filename);
+    //! \param[in] writable Open for update, so \ref write can be used
+    file(const std::wstring& filename, bool writable = false);
     
     //! \brief Close the file
     ~file();
@@ -142,15 +147,17 @@ std::vector<byte> wstring_to_bytes(const std::wstring &wstr);
 
 } // end pstsdk namespace
 
-inline pstsdk::file::file(const std::wstring& filename)
+inline pstsdk::file::file(const std::wstring& filename, bool writable)
 : m_filename(filename)
 {
-    const char* mode = "rb";
+    // "r+b" rather than "w+b": every write in this library is an in-place edit of
+    // an existing store, so truncating on open would destroy it.
+    const char* mode = writable ? "r+b" : "rb";
 
-#ifdef _MSC_VER 
-    errno_t err = fopen_s(&m_pfile, std::string(filename.begin(), filename.end()).c_str(), mode);
-    if(err != 0)
-        m_pfile = NULL;
+#ifdef _MSC_VER
+    // not fopen_s: it opens exclusively, so a second handle on the same store
+    // fails, and both this library and its callers open one store more than once
+    m_pfile = _fsopen(std::string(filename.begin(), filename.end()).c_str(), mode, _SH_DENYNO);
 #else
     m_pfile = fopen(std::string(filename.begin(), filename.end()).c_str(), mode);
 #endif
@@ -200,6 +207,10 @@ inline size_t pstsdk::file::write(const std::vector<byte>& buffer, ulonglong off
 
     if(write != buffer.size())
         throw std::out_of_range("fwrite failed");
+
+    // another handle on this file has its own buffer, and on Windows those are
+    // not coherent with this one until the bytes actually land
+    fflush(m_pfile);
 
     return write;
 }

@@ -32,6 +32,11 @@ class database_impl;
 typedef database_impl<ulonglong> large_pst;
 typedef database_impl<ulong> small_pst;
 
+//! \cond write_api
+template<typename T>
+class db_writer;
+//! \endcond
+
 //! \brief Open a db_context for the given file
 //! \throws invalid_format if the file format is not understood
 //! \throws runtime_error if an error occurs opening the file
@@ -213,6 +218,20 @@ protected:
     friend std::shared_ptr<small_pst> open_small_pst(std::shared_ptr<file> file);
     friend std::shared_ptr<large_pst> open_large_pst(const std::wstring& filename);
     friend std::shared_ptr<large_pst> open_large_pst(std::shared_ptr<file> file);
+
+//! \cond write_api
+    template<typename> friend class db_writer;
+
+    file& get_file() { return *m_file; }
+    disk::header<T>& get_header() { return m_header; }
+
+    //! \brief Drop the cached NBT and BBT roots
+    //!
+    //! Nothing else in the library invalidates them, and every
+    //! bt_nonleaf_page::m_child_pages hanging off them caches the pre-mutation
+    //! tree, so dropping the roots is what drops the whole cached subtree.
+    void reset_page_cache() { m_bbt_root.reset(); m_nbt_root.reset(); }
+//! \endcond
 
     std::shared_ptr<file> m_file;
     disk::header<T> m_header;

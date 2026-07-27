@@ -86,10 +86,50 @@ void test_disk_structures(pstsdk::file& file)
     test_page<T>(file, pheader->root_info.brefBBT, pheader->bCryptMethod);
 }
 
+// A write path has to re-encode, and permute(..., true) is only an inverse of the
+// decode direction the reader already uses if table1 and table3 invert each other.
+// cyclic() takes no direction argument because it conjugates table2, which is an
+// involution, making the whole transform self-inverse.
+// [MS-PST] 5.1
+void test_crypt()
+{
+    using namespace pstsdk;
+    using namespace pstsdk::disk;
+
+    for(int i = 0; i < 256; ++i)
+    {
+        assert(table3[table1[i]] == i);
+        assert(table1[table3[i]] == i);
+        assert(table2[table2[i]] == i);
+    }
+
+    std::vector<byte> plain(1024);
+    for(size_t i = 0; i < plain.size(); ++i)
+        plain[i] = (byte)i;
+
+    std::vector<byte> buffer(plain);
+    permute(&buffer[0], (pstsdk::ulong)buffer.size(), true);
+    assert(buffer != plain);
+    permute(&buffer[0], (pstsdk::ulong)buffer.size(), false);
+    assert(buffer == plain);
+
+    const pstsdk::ulong keys[] = { 0, 1, 0x1234, 0xdeadbeef, 0xffffffff };
+    for(size_t i = 0; i < sizeof(keys) / sizeof(keys[0]); ++i)
+    {
+        buffer = plain;
+        cyclic(&buffer[0], (pstsdk::ulong)buffer.size(), keys[i]);
+        cyclic(&buffer[0], (pstsdk::ulong)buffer.size(), keys[i]);
+        assert(buffer == plain);
+    }
+}
+
 void test_disk() 
 {
     using namespace std;
     using namespace pstsdk;
+
+    test_crypt();
+
     file uni(L"test_unicode.pst");
     file ansi(L"test_ansi.pst");
 

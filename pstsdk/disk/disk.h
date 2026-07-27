@@ -108,6 +108,20 @@ enum crypt_method
 //! \tparam T \ref ulonglong for a unicode store, \ref ulong for an ANSI store
 //! \sa [MS-PST] 2.2.2.5
 //! \ingroup disk_headerrelated
+//! \brief Values for \ref root::fAMapValid
+//!
+//! A store marked \ref invalid_amap has its allocation maps rebuilt from the BBT
+//! by the next client to open it, which is how an in place edit can free space
+//! without maintaining the AMaps itself.
+//! \sa [MS-PST] 2.2.2.5/fAMapValid
+//! \ingroup disk_headerrelated
+enum amap_validity
+{
+    invalid_amap = 0, //!< The AMaps are stale and must be rebuilt before use
+    valid_amap1 = 1,  //!< \deprecated Valid, written by pre Outlook 2007 SP2
+    valid_amap2 = 2   //!< Valid
+};
+
 template<typename T>
 struct root
 {
@@ -795,6 +809,14 @@ struct nbt_leaf_entry
 static_assert(sizeof(nbt_leaf_entry<ulong>) == 16, "nbt_leaf_entry<ulong> incorrect size");
 static_assert(sizeof(nbt_leaf_entry<ulonglong>) == 32, "nbt_leaf_entry<ulonglong> incorrect size");
 //! \endcond
+
+//! \brief The value of \ref bbt_leaf_entry::ref_count for an unreferenced block
+//!
+//! The count is the number of references plus one, so a block with exactly one
+//! owner reads as 2.
+//! \sa [MS-PST] 2.2.2.7.7.3
+//! \ingroup disk_pagerelated
+const ushort block_unreferenced = 1;
 
 //! \brief BBT Leaf Entry
 //!
