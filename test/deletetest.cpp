@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <map>
 #include <vector>
 
 #include "pstsdk/ndb.h"
@@ -338,10 +339,208 @@ void test_nbt_drain(const std::string& sample)
     std::filesystem::remove(narrow(path));
 }
 
+std::map<pstsdk::block_id, pstsdk::block_info> bbt_snapshot(const pstsdk::shared_db_ptr& db)
+{
+    std::map<pstsdk::block_id, pstsdk::block_info> blocks;
+    std::shared_ptr<pstsdk::bbt_page> root = db->read_bbt_root();
+
+    for(pstsdk::const_blockinfo_iterator i = root->begin(); i != root->end(); ++i)
+        blocks[(*i).id] = *i;
+
+    return blocks;
+}
+
+template<typename T>
+std::vector<pstsdk::byte> read_raw_block(pstsdk::file& f,
+                                         const std::map<pstsdk::block_id, pstsdk::block_info>& bbt,
+                                         pstsdk::block_id bid)
+{
+    using namespace pstsdk;
+
+    std::map<block_id, block_info>::const_iterator entry =
+        bbt.find(bid & ~block_id(disk::block_id_attached_bit));
+    assert(entry != bbt.end());
+
+    std::vector<byte> buffer(disk::align_disk<T>(entry->second.size));
+    f.read(buffer, entry->second.address);
+    buffer.resize(entry->second.size);
+    return buffer;
+}
+
+template<typename T>
+void count_subnode_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk::block_info>& bbt,
+                        pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs);
+
+template<typename T>
+void count_data_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk::block_info>& bbt,
+                     pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs)
+{
+    using namespace pstsdk;
+
+    if(bid == 0)
+        return;
+
+    ++refs[bid & ~block_id(disk::block_id_attached_bit)];
+
+    if(disk::bid_is_external(bid))
+        return;
+
+    std::vector<byte> raw = read_raw_block<T>(f, bbt, bid);
+    const disk::extended_block<T>* xblock =
+        reinterpret_cast<const disk::extended_block<T>*>(&raw[0]);
+
+    for(pstsdk::ushort i = 0; i < xblock->count; ++i)
+        count_data_tree<T>(f, bbt, xblock->bid[i], refs);
+}
+
+template<typename T>
+void count_subnode_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk::block_info>& bbt,
+                        pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs)
+{
+    using namespace pstsdk;
+
+    if(bid == 0)
+        return;
+
+    ++refs[bid & ~block_id(disk::block_id_attached_bit)];
+
+    std::vector<byte> raw = read_raw_block<T>(f, bbt, bid);
+    const disk::sub_block<T, disk::sub_leaf_entry<T> >* leaf =
+        reinterpret_cast<const disk::sub_block<T, disk::sub_leaf_entry<T> >*>(&raw[0]);
+
+    if(leaf->level == 0)
+    {
+        for(pstsdk::ushort i = 0; i < leaf->count; ++i)
+        {
+            count_data_tree<T>(f, bbt, leaf->entry[i].data, refs);
+            count_subnode_tree<T>(f, bbt, leaf->entry[i].sub, refs);
+        }
+
+        return;
+    }
+
+    const disk::sub_block<T, disk::sub_nonleaf_entry<T> >* nonleaf =
+        reinterpret_cast<const disk::sub_block<T, disk::sub_nonleaf_entry<T> >*>(&raw[0]);
+
+    for(pstsdk::ushort i = 0; i < nonleaf->count; ++i)
+        count_subnode_tree<T>(f, bbt, nonleaf->entry[i].sub_block_bid, refs);
+}
+
+// Rebuilds the true reference graph from the NBT down and holds the BBT to it.
+// This is the oracle that catches a delete which collected too few blocks: an
+// uncollected one is still in the tree but nothing points at it any more.
+template<typename T>
+void check_refcounts(const pstsdk::shared_db_ptr& db, const std::wstring& path)
+{
+    using namespace pstsdk;
+
+    std::map<block_id, block_info> bbt = bbt_snapshot(db);
+    std::map<block_id, unsigned> refs;
+    file f(path);
+
+    std::shared_ptr<nbt_page> root = db->read_nbt_root();
+    for(const_nodeinfo_iterator i = root->begin(); i != root->end(); ++i)
+    {
+        count_data_tree<T>(f, bbt, (*i).data_bid, refs);
+        count_subnode_tree<T>(f, bbt, (*i).sub_bid, refs);
+    }
+
+    for(std::map<block_id, block_info>::const_iterator i = bbt.begin(); i != bbt.end(); ++i)
+    {
+        const unsigned actual = refs.count(i->first) ? refs[i->first] : 0;
+        assert(actual > 0);
+        assert(i->second.ref_count == actual + disk::block_unreferenced);
+    }
+}
+
+// Deletes every node in turn, each from a fresh copy, and diffs the BBT across
+// the delete. A block that lost its last owner has to be gone from the tree and
+// zeroed on disk; a block someone else still owns has to survive intact with its
+// count down by exactly one.
+template<typename T>
+void test_delete_node(const std::string& sample)
+{
+    using namespace pstsdk;
+
+    std::vector<node_id> nids;
+    {
+        shared_db_ptr db = open_database(widen(sample));
+        nids = all_nids(db);
+    }
+
+    size_t scrubbed = 0;
+    size_t decremented = 0;
+
+    for(size_t victim = 0; victim < nids.size(); ++victim)
+    {
+        std::wstring path = copy_sample(sample, "delnode");
+
+        std::map<block_id, block_info> before;
+        {
+            shared_db_ptr db = open_database(path);
+            before = bbt_snapshot(db);
+        }
+
+        {
+            std::shared_ptr<file> f(new file(path, true));
+            std::shared_ptr<database_impl<T> > impl =
+                std::dynamic_pointer_cast<database_impl<T> >(open_database(f));
+            db_writer<T> writer(impl);
+            writer.delete_node(nids[victim]);
+            writer.commit();
+        }
+
+        shared_db_ptr db = open_database(path);
+        std::map<block_id, block_info> after = bbt_snapshot(db);
+        file raw(path);
+
+        for(std::map<block_id, block_info>::const_iterator i = before.begin(); i != before.end(); ++i)
+        {
+            std::map<block_id, block_info>::const_iterator survivor = after.find(i->first);
+
+            if(survivor == after.end())
+            {
+                std::vector<byte> extent(disk::align_disk<T>(i->second.size));
+                raw.read(extent, i->second.address);
+
+                for(size_t b = 0; b < extent.size(); ++b)
+                    assert(extent[b] == 0);
+
+                ++scrubbed;
+                continue;
+            }
+
+            assert(survivor->second.address == i->second.address);
+            assert(survivor->second.ref_count == i->second.ref_count ||
+                   survivor->second.ref_count == i->second.ref_count - 1);
+
+            if(survivor->second.ref_count < i->second.ref_count)
+                ++decremented;
+        }
+
+        assert(all_nids(db).size() == nids.size() - 1);
+        check_refcounts<T>(db, path);
+
+        db.reset();
+        std::filesystem::remove(narrow(path));
+    }
+
+    assert(scrubbed > 0);
+    // the empty-table blocks every sample store shares, losing one owner apiece
+    assert(decremented > 0);
+}
+
 } // end anonymous namespace
 
 void test_delete()
 {
+    // the invariant the delete tests lean on has to hold before they start
+    check_refcounts<pstsdk::ulonglong>(pstsdk::open_database(widen("test_unicode.pst")), widen("test_unicode.pst"));
+    check_refcounts<pstsdk::ulong>(pstsdk::open_database(widen("test_ansi.pst")), widen("test_ansi.pst"));
+    check_refcounts<pstsdk::ulonglong>(pstsdk::open_database(widen("submessage.pst")), widen("submessage.pst"));
+    check_refcounts<pstsdk::ulonglong>(pstsdk::open_database(widen("sample1.pst")), widen("sample1.pst"));
+    check_refcounts<pstsdk::ulong>(pstsdk::open_database(widen("sample2.pst")), widen("sample2.pst"));
+
     test_block_roundtrip<pstsdk::ulonglong>("test_unicode.pst");
     test_block_roundtrip<pstsdk::ulong>("test_ansi.pst");
     test_block_roundtrip<pstsdk::ulonglong>("submessage.pst");
@@ -355,4 +554,8 @@ void test_delete()
 
     test_nbt_drain<pstsdk::ulonglong>("test_unicode.pst");
     test_nbt_drain<pstsdk::ulong>("test_ansi.pst");
+
+    test_delete_node<pstsdk::ulonglong>("test_unicode.pst");
+    test_delete_node<pstsdk::ulong>("test_ansi.pst");
+    test_delete_node<pstsdk::ulonglong>("submessage.pst");
 }

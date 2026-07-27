@@ -16,6 +16,7 @@
 #ifndef PSTSDK_NDB_WRITER_H
 #define PSTSDK_NDB_WRITER_H
 
+#include <algorithm>
 #include <cstring>
 #include <vector>
 
@@ -82,6 +83,23 @@ public:
     //! \param[in] count The new count, where \ref disk::block_unreferenced means free
     void bbt_set_ref_count(block_id bid, ushort count);
 
+    //! \brief Drop one reference to a block, scrubbing it when the last one goes
+    //!
+    //! A block still owned by someone else keeps its bytes and only loses a
+    //! reference. The last owner's departure zeroes the block's whole aligned
+    //! extent, which is what actually removes the data from the store.
+    //! \param[in] bid The block to release
+    void release_block(block_id bid);
+
+    //! \brief Unlink a node and scrub everything only it owned
+    //!
+    //! Collects the node's data tree and subnode tree first, because neither is
+    //! reachable once the NBT entry is gone, then unlinks before scrubbing so the
+    //! store is structurally valid at every point in between.
+    //! \throws key_not_found<node_id> if the node is not in the tree
+    //! \param[in] nid The node to delete
+    void delete_node(node_id nid);
+
     //! \brief Mark the header as needing a restamp on the next \ref commit
     void touch() { m_dirty = true; }
 
@@ -117,6 +135,11 @@ private:
                           size_t depth, T key);
     //! Locate a leaf entry so a caller can patch its non-key fields in place
     void bt_find(ulonglong root, T key, ulonglong& address, uint& index);
+
+    //! Walk a data tree, appending every block that makes it up
+    void collect_data_tree(block_id bid, std::vector<block_id>& blocks);
+    //! Walk a subnode tree, appending its blocks and those of every subnode
+    void collect_subnode_tree(block_id bid, std::vector<block_id>& blocks);
 
     ulonglong nbt_root() const { return m_db->get_header().root_info.brefNBT.ib; }
     ulonglong bbt_root() const { return m_db->get_header().root_info.brefBBT.ib; }
@@ -424,6 +447,100 @@ inline void pstsdk::db_writer<T>::bbt_set_ref_count(block_id bid, ushort count)
         reinterpret_cast<disk::bbt_leaf_entry<T>*>(&page[index * bt_entry_size(page)]);
     entry->ref_count = count;
     write_page_raw(address, page);
+}
+
+template<typename T>
+inline void pstsdk::db_writer<T>::collect_data_tree(block_id bid, std::vector<block_id>& blocks)
+{
+    if(bid == 0)
+        return;
+
+    blocks.push_back(bid);
+
+    if(disk::bid_is_external(bid))
+        return;
+
+    std::vector<byte> raw = read_block(bid);
+    const disk::extended_block<T>* xblock =
+        reinterpret_cast<const disk::extended_block<T>*>(&raw[0]);
+
+    if(xblock->block_type != disk::block_type_extended)
+        throw unexpected_block("expected an extended block in a data tree");
+
+    for(ushort i = 0; i < xblock->count; ++i)
+        collect_data_tree(xblock->bid[i], blocks);
+}
+
+template<typename T>
+inline void pstsdk::db_writer<T>::collect_subnode_tree(block_id bid, std::vector<block_id>& blocks)
+{
+    if(bid == 0)
+        return;
+
+    blocks.push_back(bid);
+
+    std::vector<byte> raw = read_block(bid);
+    const disk::sub_block<T, disk::sub_leaf_entry<T> >* sblock =
+        reinterpret_cast<const disk::sub_block<T, disk::sub_leaf_entry<T> >*>(&raw[0]);
+
+    if(sblock->block_type != disk::block_type_sub)
+        throw unexpected_block("expected a subnode block in a subnode tree");
+
+    if(sblock->level == 0)
+    {
+        for(ushort i = 0; i < sblock->count; ++i)
+        {
+            // a subnode owns a data tree and a subnode tree of its own, which is
+            // how attachments and embedded messages hang off a message
+            collect_data_tree(sblock->entry[i].data, blocks);
+            collect_subnode_tree(sblock->entry[i].sub, blocks);
+        }
+
+        return;
+    }
+
+    const disk::sub_block<T, disk::sub_nonleaf_entry<T> >* nonleaf =
+        reinterpret_cast<const disk::sub_block<T, disk::sub_nonleaf_entry<T> >*>(&raw[0]);
+
+    for(ushort i = 0; i < nonleaf->count; ++i)
+        collect_subnode_tree(nonleaf->entry[i].sub_block_bid, blocks);
+}
+
+template<typename T>
+inline void pstsdk::db_writer<T>::release_block(block_id bid)
+{
+    block_info bi = m_db->lookup_block_info(bid);
+
+    if(bi.ref_count > disk::block_unreferenced + 1)
+    {
+        bbt_set_ref_count(bid, (ushort)(bi.ref_count - 1));
+        return;
+    }
+
+    const ulonglong address = bi.address;
+    const size_t extent = disk::align_disk<T>(bi.size);
+
+    bbt_remove(bid);
+    zero_extent(address, extent);
+}
+
+template<typename T>
+inline void pstsdk::db_writer<T>::delete_node(node_id nid)
+{
+    node_info ni = m_db->lookup_node_info(nid);
+
+    std::vector<block_id> blocks;
+    collect_data_tree(ni.data_bid, blocks);
+    collect_subnode_tree(ni.sub_bid, blocks);
+
+    // a block reachable twice within one node must still only lose one reference
+    std::sort(blocks.begin(), blocks.end());
+    blocks.erase(std::unique(blocks.begin(), blocks.end()), blocks.end());
+
+    nbt_remove(nid);
+
+    for(size_t i = 0; i < blocks.size(); ++i)
+        release_block(blocks[i]);
 }
 
 template<typename T>
