@@ -813,8 +813,7 @@ static_assert(sizeof(nbt_leaf_entry<ulonglong>) == 32, "nbt_leaf_entry<ulonglong
 //! \brief The value of \ref bbt_leaf_entry::ref_count for an unreferenced block
 //!
 //! The count is the number of references plus one, so a block with exactly one
-//! owner reads as 2. Confirmed against every block of every store under test/,
-//! ANSI and Unicode: nothing referenced once ever reads anything but 2.
+//! owner reads as 2.
 //! \sa [MS-PST] 2.2.2.7.7.3
 //! \ingroup disk_pagerelated
 const ushort block_unreferenced = 1;

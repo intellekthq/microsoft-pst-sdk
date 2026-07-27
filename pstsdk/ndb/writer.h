@@ -2,15 +2,12 @@
 //! \brief In place edits of an open store
 //!
 //! Every edit here writes back to the address it read from, at the same size or
-//! smaller. That is what lets the library delete items without owning an
-//! allocator: nothing is ever relocated, no block or page is ever created, and
-//! the space that falls out is recovered by the client's AMap rebuild rather
-//! than by us.
+//! smaller. Nothing is relocated, no block or page is ever created, and the
+//! space that falls out is recovered by the client's AMap rebuild rather than
+//! by us.
 //!
-//! The two rules that fall out of having no allocator:
-//! - a block with more than one reference can be unlinked but never modified,
-//!   because there is nowhere to copy it to first
-//! - a block can shrink but never grow
+//! A block with more than one reference can be unlinked but never modified,
+//! because there is nowhere to copy it to first.
 //! \ingroup ndb
 
 #ifndef PSTSDK_NDB_WRITER_H
@@ -59,44 +56,16 @@ public:
     //! \param[in] payload The new contents, at most the block's current size
     void write_block(block_id bid, const std::vector<byte>& payload);
 
-    //! \brief Overwrite a range of the file with zeroes
-    //! \param[in] address The offset to start at
-    //! \param[in] size The number of bytes to zero
-    void zero_extent(ulonglong address, size_t size);
-
     //! \brief Remove a node's entry from the NBT
     //! \throws key_not_found<node_id> if the node is not in the tree
     //! \param[in] nid The node to unlink
     void nbt_remove(node_id nid);
 
-    //! \brief Remove a block's entry from the BBT
-    //! \throws key_not_found<block_id> if the block is not in the tree
-    //! \param[in] bid The block to unlink
-    void bbt_remove(block_id bid);
-
-    //! \brief Overwrite the unaligned size recorded for a block
-    //! \param[in] bid The block to update
-    //! \param[in] cb The block's new unaligned size
-    void bbt_set_size(block_id bid, ushort cb);
-
-    //! \brief Overwrite the reference count recorded for a block
-    //! \param[in] bid The block to update
-    //! \param[in] count The new count, where \ref disk::block_unreferenced means free
-    void bbt_set_ref_count(block_id bid, ushort count);
-
-    //! \brief Drop one reference to a block, scrubbing it when the last one goes
-    //!
-    //! A block still owned by someone else keeps its bytes and only loses a
-    //! reference. The last owner's departure zeroes the block's whole aligned
-    //! extent, which is what actually removes the data from the store.
-    //! \param[in] bid The block to release
-    void release_block(block_id bid);
-
     //! \brief Unlink a node and scrub everything only it owned
     //!
-    //! Collects the node's data tree and subnode tree first, because neither is
-    //! reachable once the NBT entry is gone, then unlinks before scrubbing so the
-    //! store is structurally valid at every point in between.
+    //! Both trees are collected first, because neither is reachable once the NBT
+    //! entry is gone, then unlinked before scrubbing so the store stays
+    //! structurally valid throughout.
     //! \throws key_not_found<node_id> if the node is not in the tree
     //! \param[in] nid The node to delete
     void delete_node(node_id nid);
@@ -147,29 +116,16 @@ public:
     //! \returns true when the tree has no blocks left
     bool shrink_data_tail(block_id bid, size_t new_size);
 
-    //! \brief The external blocks making up a node's data, in logical order
-    //!
-    //! A heap spans these blocks, one heap block apiece, so this is how the LTP
-    //! layer turns a heap page number into something it can write.
-    //! \param[in] nid The node to walk
-    std::vector<block_id> node_external_blocks(node_id nid);
 
     //! \brief Zero every byte the store does not reference
     //!
-    //! Deleting an item scrubs what that item owned, but a store arrives already
-    //! carrying text in space its original client freed years earlier, and that
-    //! is just as readable. This clears all of it.
-    //!
-    //! What survives is the header region, the allocation map pages at their
-    //! fixed offsets, every BTree page, and every block the BBT still lists.
-    //! BTree pages are the trap: they are allocated from bidNextP and never
-    //! appear in the BBT, so anything that treats "outside the BBT" as free
-    //! destroys the store.
+    //! What survives is the header region, every page that validates as one, and
+    //! every block the BBT lists. BTree pages are the trap: they come from
+    //! bidNextP and never appear in the BBT, so anything treating "outside the
+    //! BBT" as free destroys the store.
     //! \returns The number of bytes zeroed
     ulonglong wipe_free_space();
 
-    //! \brief Mark the header as needing a restamp on the next \ref commit
-    void touch() { m_dirty = true; }
 
     //! \brief Flush the header and drop the store's cached BTree roots
     //!
@@ -178,6 +134,13 @@ public:
     void commit();
 
 private:
+    void zero_extent(ulonglong address, size_t size);
+    void bbt_remove(block_id bid);
+    void bbt_set_size(block_id bid, ushort cb);
+    void bbt_set_ref_count(block_id bid, ushort count);
+    //! A block someone else still owns keeps its bytes and only loses a reference
+    void release_block(block_id bid);
+
     //! Offset of a BTree page's four metadata bytes: count, max, entry size, level
     static const size_t bt_meta = disk::page<T>::page_data_size - sizeof(T);
 
@@ -195,7 +158,6 @@ private:
     std::vector<byte> read_page_raw(ulonglong address);
     void write_page_raw(ulonglong address, std::vector<byte>& page);
 
-    //! Walk to the leaf holding an exact key, recording the path taken
     void bt_descend(ulonglong root, T key, std::vector<ulonglong>& path, std::vector<uint>& indices);
     void bt_remove(ulonglong root, T key);
     //! Retarget the ancestors that named a page by its old first key
@@ -204,12 +166,9 @@ private:
     //! Locate a leaf entry so a caller can patch its non-key fields in place
     void bt_find(ulonglong root, T key, ulonglong& address, uint& index);
 
-    //! Walk a data tree, appending every block that makes it up
     void collect_data_tree(block_id bid, std::vector<block_id>& blocks);
-    //! Walk a subnode tree, appending its blocks and those of every subnode
     void collect_subnode_tree(block_id bid, std::vector<block_id>& blocks);
 
-    //! The blocks an internal block points at, or nothing for an external one
     void block_children(block_id bid, std::vector<block_id>& children);
 
     //! Work out what dropping a reference to a tree costs, without changing anything
@@ -220,9 +179,7 @@ private:
                        const std::map<block_id, block_info>& info,
                        const std::vector<block_id>& order);
 
-    //! Every page of a BTree, leaf and nonleaf alike
     void collect_pages(ulonglong address, std::vector<ulonglong>& pages);
-    //! Whether a 512 byte window validates as a page of any kind
     bool looks_like_page(ulonglong address);
 
     ulonglong nbt_root() const { return m_db->get_header().root_info.brefNBT.ib; }
@@ -604,11 +561,6 @@ inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::external_blocks(block
     return external;
 }
 
-template<typename T>
-inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::node_external_blocks(node_id nid)
-{
-    return external_blocks(m_db->lookup_node_info(nid).data_bid);
-}
 
 template<typename T>
 inline typename pstsdk::db_writer<T>::data_ref pstsdk::db_writer<T>::node_ref(node_id nid)
@@ -914,8 +866,6 @@ inline void pstsdk::db_writer<T>::delete_node(node_id nid)
 {
     const node_info ni = m_db->lookup_node_info(nid);
 
-    // Both trees are read before the first write, because neither is reachable
-    // once the NBT entry is gone.
     std::map<block_id, ushort> remaining;
     std::map<block_id, block_info> info;
     std::vector<block_id> order;
@@ -999,9 +949,6 @@ inline pstsdk::ulonglong pstsdk::db_writer<T>::wipe_free_space()
 
     std::sort(live.begin(), live.end());
 
-    // Anything left in the gaps that still validates as a page is an allocation
-    // map page of some kind. Asking the bytes beats working out where each kind
-    // is meant to sit, and it covers the deprecated PMap and FMap pages too.
     std::vector<std::pair<ulonglong, ulonglong> > keep;
     ulonglong at = 0;
 

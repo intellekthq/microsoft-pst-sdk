@@ -27,7 +27,7 @@ namespace pstsdk
 
 class node;
 
-template<typename T>
+template<typename T> 
 class database_impl;
 typedef database_impl<ulonglong> large_pst;
 typedef database_impl<ulong> small_pst;

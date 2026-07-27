@@ -32,10 +32,10 @@ namespace pstsdk
 
 //! \cond write_api
 
-//! \brief The \ref PR_MESSAGE_FLAGS bit that marks a message read
+//! \brief The \ref PR_MESSAGE_FLAGS bit marking a message read
 //!
-//! Needed because an unread message costs its folder a count in
-//! \ref PR_CONTENT_UNREAD as well as one in \ref PR_CONTENT_COUNT.
+//! An unread message costs its folder a \ref PR_CONTENT_UNREAD as well as a
+//! \ref PR_CONTENT_COUNT.
 //! \sa [MS-OXCMSG] 2.2.1.6
 const slong mapi_message_read = 0x1;
 
@@ -94,7 +94,7 @@ namespace pstsdk
 namespace detail
 {
 
-//! Read a property that may not be there, without disturbing the store
+//! An absent property leaves value untouched and reads as false
 inline bool try_read_long(const shared_db_ptr& db, node_id nid, prop_id id, slong& value)
 {
     try
@@ -128,7 +128,6 @@ inline std::vector<row_id> table_row_ids(const shared_db_ptr& db, node_id nid)
     return rows;
 }
 
-//! The row ids of a table carried by one of a node's subnodes
 inline std::vector<row_id> table_row_ids(const shared_db_ptr& db, node_id owner, node_id sub)
 {
     std::vector<row_id> rows;
@@ -170,7 +169,6 @@ inline void sweep_search_folders(db_writer<T>& writer, const std::vector<node_id
     {
         try { tc_remove_row(writer, tables[i], message); }
         catch(key_not_found<row_id>&) { }
-        catch(database_corrupt&) { }
     }
 }
 
@@ -275,6 +273,15 @@ inline void delete_attachment_impl(const std::shared_ptr<database_impl<T> >& db,
 }
 
 template<typename T>
+inline ulonglong wipe_impl(const std::shared_ptr<database_impl<T> >& db)
+{
+    db_writer<T> writer(db);
+    const ulonglong wiped = writer.wipe_free_space();
+    writer.commit();
+    return wiped;
+}
+
+template<typename T>
 inline void delete_folder_contents(db_writer<T>& writer, const std::shared_ptr<database_impl<T> >& db,
                                    node_id folder, const std::vector<node_id>& search)
 {
@@ -341,119 +348,48 @@ inline void delete_folder_impl(const std::shared_ptr<database_impl<T> >& db, nod
     writer.commit();
 }
 
-//! Pick the store's format the way open_database does
-template<typename Unicode, typename Ansi>
-inline void dispatch(const shared_db_ptr& db, Unicode unicode, Ansi ansi)
-{
-    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
-    {
-        unicode(large);
-        return;
-    }
-
-    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
-    {
-        ansi(small);
-        return;
-    }
-
-    throw invalid_format();
-}
-
-struct delete_message_unicode
-{
-    node_id nid;
-    void operator()(const std::shared_ptr<large_pst>& db) const { delete_message_impl(db, nid); }
-};
-
-struct delete_message_ansi
-{
-    node_id nid;
-    void operator()(const std::shared_ptr<small_pst>& db) const { delete_message_impl(db, nid); }
-};
-
-struct delete_attachment_unicode
-{
-    node_id message;
-    node_id attachment;
-    void operator()(const std::shared_ptr<large_pst>& db) const
-        { delete_attachment_impl(db, message, attachment); }
-};
-
-struct delete_attachment_ansi
-{
-    node_id message;
-    node_id attachment;
-    void operator()(const std::shared_ptr<small_pst>& db) const
-        { delete_attachment_impl(db, message, attachment); }
-};
-
-struct wipe_unicode
-{
-    ulonglong* wiped;
-    void operator()(const std::shared_ptr<large_pst>& db) const
-    {
-        db_writer<ulonglong> writer(db);
-        *wiped = writer.wipe_free_space();
-        writer.commit();
-    }
-};
-
-struct wipe_ansi
-{
-    ulonglong* wiped;
-    void operator()(const std::shared_ptr<small_pst>& db) const
-    {
-        db_writer<ulong> writer(db);
-        *wiped = writer.wipe_free_space();
-        writer.commit();
-    }
-};
-
-struct delete_folder_unicode
-{
-    node_id nid;
-    void operator()(const std::shared_ptr<large_pst>& db) const { delete_folder_impl(db, nid); }
-};
-
-struct delete_folder_ansi
-{
-    node_id nid;
-    void operator()(const std::shared_ptr<small_pst>& db) const { delete_folder_impl(db, nid); }
-};
-
 } // end detail namespace
 } // end pstsdk namespace
 
 inline void pstsdk::delete_message(const shared_db_ptr& db, node_id nid)
 {
-    detail::delete_message_unicode unicode = { nid };
-    detail::delete_message_ansi ansi = { nid };
-    detail::dispatch(db, unicode, ansi);
+    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::delete_message_impl(large, nid);
+    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::delete_message_impl(small, nid);
+
+    throw invalid_format();
 }
 
 inline void pstsdk::delete_attachment(const shared_db_ptr& db, node_id message_nid,
                                       node_id attachment_nid)
 {
-    detail::delete_attachment_unicode unicode = { message_nid, attachment_nid };
-    detail::delete_attachment_ansi ansi = { message_nid, attachment_nid };
-    detail::dispatch(db, unicode, ansi);
+    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::delete_attachment_impl(large, message_nid, attachment_nid);
+    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::delete_attachment_impl(small, message_nid, attachment_nid);
+
+    throw invalid_format();
 }
 
 inline pstsdk::ulonglong pstsdk::wipe_free_space(const shared_db_ptr& db)
 {
-    ulonglong wiped = 0;
-    detail::wipe_unicode unicode = { &wiped };
-    detail::wipe_ansi ansi = { &wiped };
-    detail::dispatch(db, unicode, ansi);
-    return wiped;
+    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::wipe_impl(large);
+    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::wipe_impl(small);
+
+    throw invalid_format();
 }
 
 inline void pstsdk::delete_folder(const shared_db_ptr& db, node_id nid)
 {
-    detail::delete_folder_unicode unicode = { nid };
-    detail::delete_folder_ansi ansi = { nid };
-    detail::dispatch(db, unicode, ansi);
+    if(std::shared_ptr<large_pst> large = std::dynamic_pointer_cast<large_pst>(db))
+        return detail::delete_folder_impl(large, nid);
+    if(std::shared_ptr<small_pst> small = std::dynamic_pointer_cast<small_pst>(db))
+        return detail::delete_folder_impl(small, nid);
+
+    throw invalid_format();
 }
 //! \endcond
 

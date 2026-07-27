@@ -53,17 +53,6 @@ public:
     //! \brief The heap's root allocation, as recorded in its first block
     heap_id root_id();
 
-    std::vector<byte> read_block(uint page) { return m_writer.read_block(m_blocks.at(page)); }
-    void write_block(uint page, const std::vector<byte>& data)
-        { m_writer.write_block(m_blocks.at(page), data); }
-
-    //! \brief Locate an allocation within its heap block
-    //! \param[in] id The allocation to resolve
-    //! \param[out] page The heap block holding it
-    //! \param[out] offset Its offset within that block
-    //! \param[out] size Its length in bytes
-    void locate(heap_id id, uint& page, size_t& offset, size_t& size);
-
     //! \brief Read an allocation's bytes
     std::vector<byte> read_alloc(heap_id id);
 
@@ -80,6 +69,11 @@ public:
     void shrink_alloc(heap_id id, size_t size);
 
 private:
+    std::vector<byte> read_block(uint page) { return m_writer.read_block(m_blocks.at(page)); }
+    void write_block(uint page, const std::vector<byte>& data)
+        { m_writer.write_block(m_blocks.at(page), data); }
+    void locate(heap_id id, uint& page, size_t& offset, size_t& size);
+
     db_writer<T>& m_writer;
     typename db_writer<T>::data_ref m_ref;
     std::vector<block_id> m_blocks;
@@ -89,7 +83,7 @@ private:
 //!
 //! A \ref disk::prop_entry carries values of four bytes or fewer in its id field
 //! rather than pointing at them, so this is a same size edit. Used for the folder
-//! counts and the message flags that have to track a delete.
+//! counts and \ref PR_HASATTACH.
 //! \throws key_not_found<prop_id> if the property is not present
 //! \ingroup ltp_pcrelated
 template<typename T>
@@ -205,7 +199,6 @@ inline void pstsdk::heap_writer<T>::shrink_alloc(heap_id id, size_t size)
 
     const size_t used = map->allocs[map->num_allocs];
 
-    // slide everything above the allocation down over the bytes being given up
     memmove(&block[offset + size], &block[offset + current], used - offset - current);
     memset(&block[used - freed], 0, freed);
 
@@ -242,7 +235,6 @@ inline bool cell_is_hnid(ushort type)
     }
 }
 
-//! The heap allocations a row's cells point at, skipping columns it does not have
 inline void row_heap_cells(const std::vector<byte>& header, const byte* row,
                            size_t exists_at, std::vector<heap_id>& cells)
 {
@@ -273,8 +265,7 @@ inline void row_heap_cells(const std::vector<byte>& header, const byte* row,
 //! A small table holds its rows in a heap allocation. Once they outgrow one,
 //! which happens at a few dozen rows, the client moves them into a subnode with
 //! its own blocks. Both are the same fixed width array to a caller; only the
-//! shrink differs, and that is the whole reason the subnode case needs the block
-//! level primitives rather than the heap ones.
+//! shrink differs.
 template<typename T>
 class matrix_writer
 {
@@ -318,7 +309,7 @@ public:
         store(index, block);
     }
 
-    //! \returns true once the matrix holds no rows at all
+    // true once the matrix is empty
     bool drop_last_row()
     {
         if(m_inline)
@@ -434,7 +425,6 @@ inline void bth_write_at(std::vector<byte>& alloc, size_t offset, size_t width, 
     memcpy(&alloc[offset], &value, width);
 }
 
-//! Walk a BTH to the allocation holding an exact key, recording the path
 template<typename T>
 inline void bth_descend(heap_writer<T>& heap, const bth_layout& layout, ulong key,
                         std::vector<heap_id>& path, std::vector<uint>& indices)

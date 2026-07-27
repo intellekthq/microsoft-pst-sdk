@@ -123,7 +123,7 @@ void test_crypt()
     }
 }
 
-void test_disk()
+void test_disk() 
 {
     using namespace std;
     using namespace pstsdk;

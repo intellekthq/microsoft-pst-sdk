@@ -118,7 +118,7 @@ void test_block_roundtrip(const std::string& sample)
     std::filesystem::remove(narrow(path));
 }
 
-// Shrinking is the only resize primitive B allows, and the interesting case is a
+// Shrinking is the only resize write_block allows, and the interesting case is a
 // shrink that crosses a 64 byte slot boundary, because that moves the trailer and
 // leaves the old one behind unless the whole extent is cleared first.
 template<typename T>
@@ -168,7 +168,6 @@ void test_block_shrink(const std::string& sample)
             ++shrunk;
         }
 
-        // growth has nowhere to go, so it must be refused outright
         block_info bi = db->lookup_block_info(bids[0]);
         bool refused = false;
         try { writer.write_block(bids[0], std::vector<byte>(bi.size + 1, 0)); }
@@ -238,7 +237,7 @@ T check_bt_page(pstsdk::file& f, pstsdk::ulonglong address, std::vector<T>& keys
 // Drops one node id at a time, each from a fresh copy, and checks that what is
 // left is still a well formed tree. Deleting a node without also unlinking what
 // points at it leaves the store semantically inconsistent, which is fine: this
-// exercises primitive A on its own.
+// exercises nbt_remove on its own.
 template<typename T>
 void test_nbt_remove(const std::string& sample)
 {
@@ -596,15 +595,6 @@ void test_pc_set_inline(const std::string& sample)
     std::filesystem::remove(narrow(path));
 }
 
-std::vector<pstsdk::row_id> table_rows(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid);
-
-// Same as table_rows, but tolerates a table node that is not there
-std::vector<pstsdk::row_id> table_rows_or_empty(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid)
-{
-    try { return table_rows(db, nid); }
-    catch(pstsdk::key_not_found<pstsdk::node_id>&) { return std::vector<pstsdk::row_id>(); }
-}
-
 std::vector<pstsdk::row_id> table_rows(const pstsdk::node& owner, pstsdk::node_id sub)
 {
     pstsdk::table tc(owner.lookup(sub));
@@ -625,6 +615,12 @@ std::vector<pstsdk::row_id> table_rows(const pstsdk::shared_db_ptr& db, pstsdk::
         rows.push_back(tc[i].get_row_id());
 
     return rows;
+}
+
+std::vector<pstsdk::row_id> table_rows_or_empty(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid)
+{
+    try { return table_rows(db, nid); }
+    catch(pstsdk::key_not_found<pstsdk::node_id>&) { return std::vector<pstsdk::row_id>(); }
 }
 
 // Reads a table's row index straight out of the heap and holds it against the row
@@ -1068,7 +1064,6 @@ void test_delete_attachment(const std::string& sample)
     }
     assert(!owners.empty());
 
-    size_t cleared = 0;
 
     for(size_t m = 0; m < owners.size(); ++m)
     {
@@ -1106,15 +1101,12 @@ void test_delete_attachment(const std::string& sample)
 
             // These stores do not record PR_HASATTACH anywhere, in the message
             // or in the folder's cached row, so a client derives it from the
-            // attachment table. Checked when present, not required to be.
+            // attachment table.
             if(left.empty())
             {
                 property_bag bag(db->lookup_node(owners[m].first));
                 if(bag.prop_exists(PR_HASATTACH))
-                {
                     assert(!bag.read_prop<slong>(PR_HASATTACH));
-                    ++cleared;
-                }
             }
 
             check_refcounts<T>(db, path);
@@ -1125,7 +1117,6 @@ void test_delete_attachment(const std::string& sample)
         }
     }
 
-    (void)cleared;
 }
 
 // The one test that speaks to the point of the feature: after deleting an item
@@ -1371,16 +1362,22 @@ void test_corpus()
     }
 }
 
+template<typename T>
+void check_pristine(const std::string& sample)
+{
+    check_refcounts<T>(pstsdk::open_database(widen(sample)), widen(sample));
+}
+
 } // end anonymous namespace
 
 void test_delete()
 {
     // the invariant the delete tests lean on has to hold before they start
-    check_refcounts<pstsdk::ulonglong>(pstsdk::open_database(widen("test_unicode.pst")), widen("test_unicode.pst"));
-    check_refcounts<pstsdk::ulong>(pstsdk::open_database(widen("test_ansi.pst")), widen("test_ansi.pst"));
-    check_refcounts<pstsdk::ulonglong>(pstsdk::open_database(widen("submessage.pst")), widen("submessage.pst"));
-    check_refcounts<pstsdk::ulonglong>(pstsdk::open_database(widen("sample1.pst")), widen("sample1.pst"));
-    check_refcounts<pstsdk::ulong>(pstsdk::open_database(widen("sample2.pst")), widen("sample2.pst"));
+    check_pristine<pstsdk::ulonglong>("test_unicode.pst");
+    check_pristine<pstsdk::ulong>("test_ansi.pst");
+    check_pristine<pstsdk::ulonglong>("submessage.pst");
+    check_pristine<pstsdk::ulonglong>("sample1.pst");
+    check_pristine<pstsdk::ulong>("sample2.pst");
 
     test_block_roundtrip<pstsdk::ulonglong>("test_unicode.pst");
     test_block_roundtrip<pstsdk::ulong>("test_ansi.pst");

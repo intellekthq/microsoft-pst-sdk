@@ -56,7 +56,7 @@ public:
 
 //! \brief The database is corrupt.
 //! \ingroup exception
-class database_corrupt : public std::runtime_error
+class database_corrupt : public std::runtime_error 
 {
 public:
     explicit database_corrupt(const std::string& error)
