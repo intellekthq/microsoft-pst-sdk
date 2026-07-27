@@ -180,6 +180,8 @@ private:
                        const std::vector<block_id>& order);
 
     void collect_pages(ulonglong address, std::vector<ulonglong>& pages);
+    //! The bytes a block stands for, which for an extended block is not its size
+    size_t logical_size(block_id bid);
     bool looks_like_page(ulonglong address);
 
     ulonglong nbt_root() const { return m_db->get_header().root_info.brefNBT.ib; }
@@ -632,15 +634,19 @@ inline bool pstsdk::db_writer<T>::subnode_remove(block_id tree, node_id sub)
         disk::sub_block<T, disk::sub_nonleaf_entry<T> >* nonleaf =
             reinterpret_cast<disk::sub_block<T, disk::sub_nonleaf_entry<T> >*>(&raw[0]);
 
-        for(ushort i = 0; i < nonleaf->count; ++i)
+        // entries are ordered by nid, so the subtree that can hold sub is the
+        // last one whose key does not exceed it
+        ushort i = 0;
+        while(i + 1 < nonleaf->count && nonleaf->entry[i + 1].nid_key <= sub)
+            ++i;
+
+        if(nonleaf->count == 0 || sub < nonleaf->entry[0].nid_key)
+            throw key_not_found<node_id>(sub);
+
         {
             block_id child = nonleaf->entry[i].sub_block_bid;
 
-            bool emptied = false;
-            try { emptied = subnode_remove(child, sub); }
-            catch(key_not_found<node_id>&) { continue; }
-
-            if(!emptied)
+            if(!subnode_remove(child, sub))
                 return false;
 
             if(i + 1 < nonleaf->count)
@@ -656,8 +662,6 @@ inline bool pstsdk::db_writer<T>::subnode_remove(block_id tree, node_id sub)
             release_block(child);
             return false;
         }
-
-        throw key_not_found<node_id>(sub);
     }
 
     for(ushort i = 0; i < leaf->count; ++i)
@@ -674,10 +678,9 @@ inline bool pstsdk::db_writer<T>::subnode_remove(block_id tree, node_id sub)
         memset(&leaf->entry[leaf->count - 1], 0, sizeof(disk::sub_leaf_entry<T>));
         --leaf->count;
 
-        // the entry is gone from the block before anything it pointed at is
-        // released, so the store never references a scrubbed block
-        if(leaf->count > 0)
-            write_block(tree, raw);
+        // the entry has to reach disk before anything it named is released, or
+        // the store is left pointing at scrubbed blocks
+        write_block(tree, raw);
 
         std::map<block_id, ushort> remaining;
         std::map<block_id, block_info> info;
@@ -717,7 +720,7 @@ inline bool pstsdk::db_writer<T>::shrink_data_tail(block_id bid, size_t new_size
 
     const ushort last = (ushort)(xblock->count - 1);
     const block_id child = xblock->bid[last];
-    const size_t was = m_db->lookup_block_info(child).size;
+    const size_t was = logical_size(child);
 
     if(!shrink_data_tail(child, new_size))
     {
@@ -726,17 +729,31 @@ inline bool pstsdk::db_writer<T>::shrink_data_tail(block_id bid, size_t new_size
         return false;
     }
 
-    // the child gave up its last row, so it leaves the tree with it
+    // The child emptied. If it was the only one the whole tree goes, and the
+    // caller releases the root rather than this dismantling it halfway.
+    if(xblock->count == 1)
+        return true;
+
     xblock->total_size -= (ulong)was;
     xblock->bid[last] = 0;
     --xblock->count;
 
-    if(xblock->count == 0)
-        return true;
-
     write_block(bid, raw);
     release_block(child);
     return false;
+}
+
+// A block's BBT size is its own length. For an extended block that is the bid
+// array, not the bytes it stands for, which is what the parent's total_size
+// counts.
+template<typename T>
+inline size_t pstsdk::db_writer<T>::logical_size(block_id bid)
+{
+    if(disk::bid_is_external(bid))
+        return m_db->lookup_block_info(bid).size;
+
+    std::vector<byte> raw = read_block(bid);
+    return reinterpret_cast<const disk::extended_block<T>*>(&raw[0])->total_size;
 }
 
 template<typename T>
@@ -1001,8 +1018,18 @@ inline void pstsdk::db_writer<T>::zero_extent(ulonglong address, size_t size)
     if(size == 0)
         return;
 
-    std::vector<byte> zeroes(size, 0);
-    m_db->get_file().write(zeroes, address);
+    const size_t chunk = 1024 * 1024;
+    std::vector<byte> zeroes(size < chunk ? size : chunk, 0);
+
+    for(ulonglong at = address; at < address + size; at += zeroes.size())
+    {
+        const ulonglong left = address + size - at;
+        if(left < zeroes.size())
+            zeroes.resize((size_t)left);
+
+        m_db->get_file().write(zeroes, at);
+    }
+
     m_dirty = true;
 }
 

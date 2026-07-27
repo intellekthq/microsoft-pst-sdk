@@ -229,6 +229,7 @@ inline bool cell_is_hnid(ushort type)
     case prop_type_wstring:
     case prop_type_binary:
     case prop_type_object:
+    case prop_type_guid:
         return true;
     default:
         return (type & 0x1000) != 0;
@@ -236,7 +237,8 @@ inline bool cell_is_hnid(ushort type)
 }
 
 inline void row_heap_cells(const std::vector<byte>& header, const byte* row,
-                           size_t exists_at, std::vector<heap_id>& cells)
+                           size_t exists_at, std::vector<heap_id>& cells,
+                           std::vector<node_id>* subnodes = 0)
 {
     const disk::tc_header* tc = reinterpret_cast<const disk::tc_header*>(&header[0]);
 
@@ -253,10 +255,13 @@ inline void row_heap_cells(const std::vector<byte>& header, const byte* row,
         heapnode_id hnid;
         memcpy(&hnid, row + column.offset, sizeof(hnid));
 
-        // a subnode cell would need the subnode removed too, which is a
-        // different primitive; only heap allocations are ours to free here
-        if(hnid != 0 && is_heap_id(hnid))
+        if(hnid == 0)
+            continue;
+
+        if(is_heap_id(hnid))
             cells.push_back(hnid);
+        else if(subnodes)
+            subnodes->push_back(hnid);
     }
 }
 
@@ -374,6 +379,17 @@ private:
     size_t m_rows_per_block;
     std::vector<block_id> m_blocks;
 };
+
+//! A row's oversized cells live in the table's own subnode tree, so they outlive
+//! the row unless they are taken out with it.
+template<typename T>
+inline void free_row_subnodes(db_writer<T>& writer,
+                              const typename db_writer<T>::data_ref& table,
+                              const std::vector<node_id>& subnodes)
+{
+    for(size_t i = 0; i < subnodes.size(); ++i)
+        writer.subnode_remove(table.sub, subnodes[i]);
+}
 
 //! \brief How a particular BTH lays its entries out on disk
 //!
@@ -622,24 +638,41 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer,
                                               layout.value_size);
     const size_t last = count - 1;
 
-    // Cells wider than the row point at heap allocations. Nothing references them
-    // once the row is gone, and they hold the cached subject and sender in clear
-    // text, so they are freed rather than merely orphaned.
+    if(target > last)
+        throw database_corrupt("row index points past the matrix");
+
+    // Cells wider than the row point at heap allocations or subnodes. Nothing
+    // references them once the row is gone, and they hold the cached subject and
+    // sender in clear text, so they are freed rather than merely orphaned.
     std::vector<byte> doomed_row = matrix.read_row(target);
     std::vector<heap_id> doomed_cells;
-    detail::row_heap_cells(raw, &doomed_row[0], exists_at, doomed_cells);
+    std::vector<node_id> doomed_subnodes;
+    detail::row_heap_cells(raw, &doomed_row[0], exists_at, doomed_cells, &doomed_subnodes);
+
+    // the index and the matrix have to agree about which row this is
+    row_id at_target;
+    memcpy(&at_target, &doomed_row[0], sizeof(row_id));
+    if(at_target != id)
+        throw database_corrupt("row index and row matrix disagree");
+
+    // Resolve the moved row's index entry before the swap, so a key that is not
+    // there is reported while the table is still untouched.
+    std::vector<byte> moving;
+    std::vector<heap_id> moved_path;
+    std::vector<uint> moved_indices;
+
+    if(target != last)
+    {
+        moving = matrix.read_row(last);
+        row_id moved;
+        memcpy(&moved, &moving[0], sizeof(row_id));
+        detail::bth_descend(heap, layout, moved, moved_path, moved_indices);
+    }
 
     if(target != last)
     {
         // the moved row keeps its id, so the index has to learn its new position
-        std::vector<byte> moving = matrix.read_row(last);
-        row_id moved;
-        memcpy(&moved, &moving[0], sizeof(row_id));
         matrix.write_row(target, moving);
-
-        std::vector<heap_id> moved_path;
-        std::vector<uint> moved_indices;
-        detail::bth_descend(heap, layout, moved, moved_path, moved_indices);
 
         std::vector<byte> moved_leaf = heap.read_alloc(moved_path.back());
         detail::bth_write_at(moved_leaf, layout.value_offset(moved_indices.back()),
@@ -663,11 +696,14 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer,
             if(std::find(kept.begin(), kept.end(), doomed_cells[i]) == kept.end())
                 heap.shrink_alloc(doomed_cells[i], 0);
 
+        detail::free_row_subnodes(writer, table, doomed_subnodes);
         return;
     }
 
     for(size_t i = 0; i < doomed_cells.size(); ++i)
         heap.shrink_alloc(doomed_cells[i], 0);
+
+    detail::free_row_subnodes(writer, table, doomed_subnodes);
 
     // an emptied table carries neither a matrix nor a row index root on disk,
     // which is what one that was never populated looks like
@@ -676,6 +712,9 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer,
     std::vector<byte> header_raw = heap.read_alloc(root);
     reinterpret_cast<disk::tc_header*>(&header_raw[0])->row_matrix_id = 0;
     heap.write_alloc(root, header_raw);
+
+    if(is_subnode_id(matrix_id))
+        writer.subnode_remove(table.sub, (node_id)matrix_id);
 }
 //! \endcond
 

@@ -15,6 +15,7 @@
 #ifndef PSTSDK_PST_DELETE_H
 #define PSTSDK_PST_DELETE_H
 
+#include <set>
 #include <vector>
 
 #include "pstsdk/util/errors.h"
@@ -283,13 +284,18 @@ inline ulonglong wipe_impl(const std::shared_ptr<database_impl<T> >& db)
 
 template<typename T>
 inline void delete_folder_contents(db_writer<T>& writer, const std::shared_ptr<database_impl<T> >& db,
-                                   node_id folder, const std::vector<node_id>& search)
+                                   node_id folder, const std::vector<node_id>& search,
+                                   std::set<node_id>& seen)
 {
+    // a hierarchy table naming an ancestor would otherwise recurse forever
+    if(!seen.insert(folder).second)
+        return;
+
     const std::vector<row_id> subfolders =
         table_row_ids(db, folder_table(folder, nid_type_hierarchy_table));
 
     for(size_t i = 0; i < subfolders.size(); ++i)
-        delete_folder_contents(writer, db, subfolders[i], search);
+        delete_folder_contents(writer, db, subfolders[i], search, seen);
 
     // The tables go with the folder, so the messages only need their nodes
     // unlinked; there is no row left to take them out of.
@@ -301,11 +307,15 @@ inline void delete_folder_contents(db_writer<T>& writer, const std::shared_ptr<d
     for(size_t i = 0; i < messages.size(); ++i)
     {
         sweep_search_folders(writer, search, (node_id)messages[i]);
-        writer.delete_node(messages[i]);
+        try { writer.delete_node(messages[i]); }
+        catch(key_not_found<node_id>&) { }
     }
 
     for(size_t i = 0; i < associated.size(); ++i)
-        writer.delete_node(associated[i]);
+    {
+        try { writer.delete_node(associated[i]); }
+        catch(key_not_found<node_id>&) { }
+    }
 
     const nid_type tables[] = { nid_type_contents_table, nid_type_hierarchy_table,
                                 nid_type_associated_contents_table };
@@ -316,7 +326,8 @@ inline void delete_folder_contents(db_writer<T>& writer, const std::shared_ptr<d
         catch(key_not_found<node_id>&) { }
     }
 
-    writer.delete_node(folder);
+    try { writer.delete_node(folder); }
+    catch(key_not_found<node_id>&) { }
 }
 
 template<typename T>
@@ -344,7 +355,8 @@ inline void delete_folder_impl(const std::shared_ptr<database_impl<T> >& db, nod
         }
     }
 
-    delete_folder_contents(writer, db, nid, search);
+    std::set<node_id> seen;
+    delete_folder_contents(writer, db, nid, search, seen);
     writer.commit();
 }
 
