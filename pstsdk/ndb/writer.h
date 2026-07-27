@@ -101,11 +101,35 @@ public:
     //! \param[in] nid The node to delete
     void delete_node(node_id nid);
 
-    //! \brief The data block of one of a node's subnodes
-    //! \throws key_not_found<node_id> if the node has no such subnode
-    //! \param[in] nid The node owning the subnode tree
+    //! \brief Where a node or subnode keeps its data and its own subnodes
+    //!
+    //! Subnodes carry both, which is how a message's attachment table has a heap
+    //! of its own and a row matrix hanging off it.
+    struct data_ref
+    {
+        block_id data;
+        block_id sub;
+    };
+
+    //! \brief The pair belonging to a top level node
+    //! \throws key_not_found<node_id> if the node is not in the store
+    data_ref node_ref(node_id nid);
+
+    //! \brief The pair belonging to a subnode of a given subnode tree
+    //! \throws key_not_found<node_id> if the tree has no such subnode
+    //! \param[in] tree The root of the subnode tree to search
     //! \param[in] sub The subnode to find
-    block_id subnode_data(node_id nid, node_id sub);
+    data_ref subnode_ref(block_id tree, node_id sub);
+
+    //! \brief Drop a subnode from a subnode tree and release what it owned
+    //!
+    //! The entry count governs, so the block keeps its size and only loses the
+    //! entry. Empty leaves are taken out of their parent the same way.
+    //! \throws key_not_found<node_id> if the tree has no such subnode
+    //! \param[in] tree The root of the subnode tree
+    //! \param[in] sub The subnode to remove
+    //! \returns true when the tree has no subnodes left
+    bool subnode_remove(block_id tree, node_id sub);
 
     //! \brief The external blocks of a data tree, in logical order
     //! \param[in] bid The root of the tree
@@ -568,10 +592,21 @@ inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::node_external_blocks(
 }
 
 template<typename T>
-inline pstsdk::block_id pstsdk::db_writer<T>::subnode_data(node_id nid, node_id sub)
+inline typename pstsdk::db_writer<T>::data_ref pstsdk::db_writer<T>::node_ref(node_id nid)
+{
+    const node_info ni = m_db->lookup_node_info(nid);
+    data_ref ref;
+    ref.data = ni.data_bid;
+    ref.sub = ni.sub_bid;
+    return ref;
+}
+
+template<typename T>
+inline typename pstsdk::db_writer<T>::data_ref
+pstsdk::db_writer<T>::subnode_ref(block_id tree, node_id sub)
 {
     std::vector<block_id> pending;
-    pending.push_back(m_db->lookup_node_info(nid).sub_bid);
+    pending.push_back(tree);
 
     while(!pending.empty())
     {
@@ -597,8 +632,90 @@ inline pstsdk::block_id pstsdk::db_writer<T>::subnode_data(node_id nid, node_id 
         }
 
         for(ushort i = 0; i < leaf->count; ++i)
-            if(leaf->entry[i].nid == sub)
-                return leaf->entry[i].data;
+        {
+            if(leaf->entry[i].nid != sub)
+                continue;
+
+            data_ref ref;
+            ref.data = leaf->entry[i].data;
+            ref.sub = leaf->entry[i].sub;
+            return ref;
+        }
+    }
+
+    throw key_not_found<node_id>(sub);
+}
+
+template<typename T>
+inline bool pstsdk::db_writer<T>::subnode_remove(block_id tree, node_id sub)
+{
+    if(tree == 0)
+        throw key_not_found<node_id>(sub);
+
+    std::vector<byte> raw = read_block(tree);
+    disk::sub_block<T, disk::sub_leaf_entry<T> >* leaf =
+        reinterpret_cast<disk::sub_block<T, disk::sub_leaf_entry<T> >*>(&raw[0]);
+
+    if(leaf->level != 0)
+    {
+        disk::sub_block<T, disk::sub_nonleaf_entry<T> >* nonleaf =
+            reinterpret_cast<disk::sub_block<T, disk::sub_nonleaf_entry<T> >*>(&raw[0]);
+
+        for(ushort i = 0; i < nonleaf->count; ++i)
+        {
+            block_id child = nonleaf->entry[i].sub_block_bid;
+
+            bool emptied = false;
+            try { emptied = subnode_remove(child, sub); }
+            catch(key_not_found<node_id>&) { continue; }
+
+            if(!emptied)
+                return false;
+
+            if(i + 1 < nonleaf->count)
+                memmove(&nonleaf->entry[i], &nonleaf->entry[i + 1],
+                        (nonleaf->count - i - 1) * sizeof(disk::sub_nonleaf_entry<T>));
+            memset(&nonleaf->entry[nonleaf->count - 1], 0, sizeof(disk::sub_nonleaf_entry<T>));
+            --nonleaf->count;
+
+            if(nonleaf->count == 0)
+                return true;
+
+            write_block(tree, raw);
+            release_block(child);
+            return false;
+        }
+
+        throw key_not_found<node_id>(sub);
+    }
+
+    for(ushort i = 0; i < leaf->count; ++i)
+    {
+        if(leaf->entry[i].nid != sub)
+            continue;
+
+        const block_id data = leaf->entry[i].data;
+        const block_id owned = leaf->entry[i].sub;
+
+        if(i + 1 < leaf->count)
+            memmove(&leaf->entry[i], &leaf->entry[i + 1],
+                    (leaf->count - i - 1) * sizeof(disk::sub_leaf_entry<T>));
+        memset(&leaf->entry[leaf->count - 1], 0, sizeof(disk::sub_leaf_entry<T>));
+        --leaf->count;
+
+        // the entry is gone from the block before anything it pointed at is
+        // released, so the store never references a scrubbed block
+        if(leaf->count > 0)
+            write_block(tree, raw);
+
+        std::map<block_id, ushort> remaining;
+        std::map<block_id, block_info> info;
+        std::vector<block_id> order;
+        plan_release(data, remaining, info, order);
+        plan_release(owned, remaining, info, order);
+        apply_release(remaining, info, order);
+
+        return leaf->count == 0;
     }
 
     throw key_not_found<node_id>(sub);

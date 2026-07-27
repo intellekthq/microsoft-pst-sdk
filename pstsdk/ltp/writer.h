@@ -40,7 +40,15 @@ class heap_writer
 {
 public:
     heap_writer(db_writer<T>& writer, node_id nid)
-        : m_writer(writer), m_blocks(writer.node_external_blocks(nid)) { }
+        : m_writer(writer), m_ref(writer.node_ref(nid)),
+          m_blocks(writer.external_blocks(m_ref.data)) { }
+
+    //! A heap carried by a subnode, which is where an attachment table lives
+    heap_writer(db_writer<T>& writer, const typename db_writer<T>::data_ref& ref)
+        : m_writer(writer), m_ref(ref), m_blocks(writer.external_blocks(ref.data)) { }
+
+    //! \brief Where this heap's owner keeps its data and its own subnodes
+    const typename db_writer<T>::data_ref& ref() const { return m_ref; }
 
     //! \brief The heap's root allocation, as recorded in its first block
     heap_id root_id();
@@ -73,6 +81,7 @@ public:
 
 private:
     db_writer<T>& m_writer;
+    typename db_writer<T>::data_ref m_ref;
     std::vector<block_id> m_blocks;
 };
 
@@ -98,6 +107,14 @@ void pc_set_inline(db_writer<T>& writer, node_id nid, prop_id id, ulong value);
 //! \ingroup ltp_tcrelated
 template<typename T>
 void tc_remove_row(db_writer<T>& writer, node_id nid, row_id id);
+
+//! \brief Remove a row from a table context carried by a subnode
+//!
+//! A message's attachment and recipient tables live this way.
+//! \throws key_not_found<row_id> if the row is not in the table
+//! \ingroup ltp_tcrelated
+template<typename T>
+void tc_remove_row(db_writer<T>& writer, const typename db_writer<T>::data_ref& table, row_id id);
 
 //! \endcond
 
@@ -262,15 +279,15 @@ template<typename T>
 class matrix_writer
 {
 public:
-    matrix_writer(db_writer<T>& writer, heap_writer<T>& heap, node_id table,
-                  heapnode_id matrix, size_t cb_per_row)
-        : m_writer(writer), m_heap(heap), m_table(table), m_matrix(matrix),
+    matrix_writer(db_writer<T>& writer, heap_writer<T>& heap, heapnode_id matrix,
+                  size_t cb_per_row)
+        : m_writer(writer), m_heap(heap), m_matrix(matrix),
           m_cb_per_row(cb_per_row), m_inline(!is_subnode_id(matrix)), m_rows_per_block(0)
     {
         if(m_inline)
             return;
 
-        m_blocks = writer.external_blocks(writer.subnode_data(table, (node_id)matrix));
+        m_blocks = writer.external_blocks(root());
         if(m_blocks.empty())
             throw database_corrupt("row matrix subnode has no blocks");
 
@@ -327,7 +344,11 @@ public:
     }
 
 private:
-    block_id root() { return m_writer.subnode_data(m_table, (node_id)m_matrix); }
+    // the matrix hangs off the table's own subnode tree, not the store's
+    block_id root()
+    {
+        return m_writer.subnode_ref(m_heap.ref().sub, (node_id)m_matrix).data;
+    }
 
     size_t last_block_rows()
     {
@@ -356,7 +377,6 @@ private:
 
     db_writer<T>& m_writer;
     heap_writer<T>& m_heap;
-    node_id m_table;
     heapnode_id m_matrix;
     size_t m_cb_per_row;
     bool m_inline;
@@ -548,7 +568,14 @@ inline void pstsdk::pc_set_inline(db_writer<T>& writer, node_id nid, prop_id id,
 template<typename T>
 inline void pstsdk::tc_remove_row(db_writer<T>& writer, node_id nid, row_id id)
 {
-    heap_writer<T> heap(writer, nid);
+    tc_remove_row(writer, writer.node_ref(nid), id);
+}
+
+template<typename T>
+inline void pstsdk::tc_remove_row(db_writer<T>& writer,
+                                  const typename db_writer<T>::data_ref& table, row_id id)
+{
+    heap_writer<T> heap(writer, table);
     const heap_id root = heap.root_id();
 
     std::vector<byte> raw = heap.read_alloc(root);
@@ -566,7 +593,7 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer, node_id nid, row_id id)
         throw key_not_found<row_id>(id);
 
     detail::bth_layout layout = detail::bth_read_layout(heap, row_btree);
-    detail::matrix_writer<T> matrix(writer, heap, nid, matrix_id, cb_per_row);
+    detail::matrix_writer<T> matrix(writer, heap, matrix_id, cb_per_row);
 
     const size_t count = matrix.rows();
     if(count == 0)

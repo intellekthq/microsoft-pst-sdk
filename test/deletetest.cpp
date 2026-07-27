@@ -605,6 +605,17 @@ std::vector<pstsdk::row_id> table_rows_or_empty(const pstsdk::shared_db_ptr& db,
     catch(pstsdk::key_not_found<pstsdk::node_id>&) { return std::vector<pstsdk::row_id>(); }
 }
 
+std::vector<pstsdk::row_id> table_rows(const pstsdk::node& owner, pstsdk::node_id sub)
+{
+    pstsdk::table tc(owner.lookup(sub));
+    std::vector<pstsdk::row_id> rows;
+
+    for(size_t i = 0; i < tc.size(); ++i)
+        rows.push_back(tc[i].get_row_id());
+
+    return rows;
+}
+
 std::vector<pstsdk::row_id> table_rows(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid)
 {
     pstsdk::table tc(db->lookup_node(nid));
@@ -1013,6 +1024,94 @@ void test_delete_folder(const std::string& sample)
     }
 }
 
+// Deletes every attachment of every message that has one, from a fresh copy each
+// time. The message has to survive with one fewer attachment and the rest intact,
+// and the attachment's own subnode has to be gone rather than orphaned.
+template<typename T>
+void test_delete_attachment(const std::string& sample)
+{
+    using namespace pstsdk;
+
+    std::vector<std::pair<node_id, std::vector<row_id> > > owners;
+    {
+        shared_db_ptr db = open_database(widen(sample));
+        std::vector<node_id> nids = all_nids(db);
+
+        for(size_t i = 0; i < nids.size(); ++i)
+        {
+            if(get_nid_type(nids[i]) != nid_type_message)
+                continue;
+
+            std::vector<row_id> rows;
+            try { rows = table_rows(db->lookup_node(nids[i]), nid_attachment_table); }
+            catch(key_not_found<node_id>&) { continue; }
+
+            if(!rows.empty())
+                owners.push_back(std::make_pair(nids[i], rows));
+        }
+    }
+    assert(!owners.empty());
+
+    size_t cleared = 0;
+
+    for(size_t m = 0; m < owners.size(); ++m)
+    {
+        const std::vector<row_id>& all = owners[m].second;
+
+        for(size_t victim = 0; victim < all.size(); ++victim)
+        {
+            std::wstring path = copy_sample(sample, "delatt");
+
+            {
+                std::shared_ptr<file> f(new file(path, true));
+                shared_db_ptr db = open_database(f);
+                delete_attachment(db, owners[m].first, (node_id)all[victim]);
+            }
+
+            shared_db_ptr db = open_database(path);
+            node owner = db->lookup_node(owners[m].first);
+            std::vector<row_id> left = table_rows(owner, nid_attachment_table);
+            assert(left.size() == all.size() - 1);
+
+            for(size_t i = 0; i < left.size(); ++i)
+            {
+                assert(left[i] != all[victim]);
+                // the survivors still resolve to real subnodes
+                owner.lookup((node_id)left[i]);
+            }
+
+            bool gone = false;
+            try { owner.lookup((node_id)all[victim]); }
+            catch(key_not_found<node_id>&) { gone = true; }
+            assert(gone);
+
+            message item(db->lookup_node(owners[m].first));
+            assert(item.get_attachment_count() == left.size());
+
+            // These stores do not record PR_HASATTACH anywhere, in the message
+            // or in the folder's cached row, so a client derives it from the
+            // attachment table. Checked when present, not required to be.
+            if(left.empty())
+            {
+                property_bag bag(db->lookup_node(owners[m].first));
+                if(bag.prop_exists(PR_HASATTACH))
+                {
+                    assert(!bag.read_prop<slong>(PR_HASATTACH));
+                    ++cleared;
+                }
+            }
+
+            check_refcounts<T>(db, path);
+            db.reset();
+
+            walk_store(path);
+            std::filesystem::remove(narrow(path));
+        }
+    }
+
+    (void)cleared;
+}
+
 // Every store under test/ keeps its row matrices inline, so nothing here reaches
 // the subnode path, which is the one a real folder takes past a few dozen
 // messages. Point PSTSDK_TEST_CORPUS at a directory of real stores to cover it:
@@ -1071,6 +1170,89 @@ void drain_store(const std::string& source)
     std::filesystem::remove(narrow(path));
 }
 
+// Strips every attachment from every message, then confirms the messages are all
+// still there and readable. Real stores carry the attachment shapes the samples
+// do not: many per message, embedded messages, and blocks big enough to need an
+// extended data tree.
+template<typename T>
+void strip_attachments(const std::string& source)
+{
+    using namespace pstsdk;
+
+    const std::wstring path = widen(source + ".stripping");
+    std::filesystem::copy_file(source, narrow(path),
+                               std::filesystem::copy_options::overwrite_existing);
+
+    size_t removed = 0;
+    size_t messages = 0;
+
+    for(;;)
+    {
+        node_id owner = 0;
+        row_id victim = 0;
+        {
+            shared_db_ptr db = open_database(path);
+            std::vector<node_id> nids = all_nids(db);
+
+            for(size_t i = 0; i < nids.size() && owner == 0; ++i)
+            {
+                if(get_nid_type(nids[i]) != nid_type_message)
+                    continue;
+
+                std::vector<row_id> rows;
+                try { rows = table_rows(db->lookup_node(nids[i]), nid_attachment_table); }
+                catch(key_not_found<node_id>&) { continue; }
+
+                if(rows.empty())
+                    continue;
+
+                owner = nids[i];
+                victim = rows[0];
+            }
+
+            if(owner == 0)
+            {
+                messages = 0;
+                std::shared_ptr<nbt_page> root = db->read_nbt_root();
+                for(const_nodeinfo_iterator i = root->begin(); i != root->end(); ++i)
+                    if(get_nid_type((*i).id) == nid_type_message)
+                        ++messages;
+            }
+        }
+
+        if(owner == 0)
+            break;
+
+        {
+            std::shared_ptr<file> f(new file(path, true));
+            shared_db_ptr db = open_database(f);
+            delete_attachment(db, owner, (node_id)victim);
+        }
+
+        ++removed;
+
+        if(removed % 25 == 0)
+        {
+            shared_db_ptr db = open_database(path);
+            check_refcounts<T>(db, path);
+            db.reset();
+            walk_store(path);
+        }
+    }
+
+    {
+        shared_db_ptr db = open_database(path);
+        check_refcounts<T>(db, path);
+        db.reset();
+        walk_store(path);
+    }
+
+    std::wcout << L"  stripped " << removed << L" attachments from "
+               << widen(source) << L", " << messages << L" messages intact" << std::endl;
+
+    std::filesystem::remove(narrow(path));
+}
+
 void test_corpus()
 {
     const char* corpus = getenv("PSTSDK_TEST_CORPUS");
@@ -1092,9 +1274,15 @@ void test_corpus()
         memcpy(&version, &head[10], sizeof(version));
 
         if(version >= pstsdk::disk::database_format_unicode_min)
+        {
+            strip_attachments<pstsdk::ulonglong>(source);
             drain_store<pstsdk::ulonglong>(source);
+        }
         else
+        {
+            strip_attachments<pstsdk::ulong>(source);
             drain_store<pstsdk::ulong>(source);
+        }
     }
 }
 
@@ -1141,6 +1329,8 @@ void test_delete()
     test_delete_folder<pstsdk::ulonglong>("test_unicode.pst");
     test_delete_folder<pstsdk::ulong>("test_ansi.pst");
     test_delete_folder<pstsdk::ulonglong>("submessage.pst");
+
+    test_delete_attachment<pstsdk::ulonglong>("submessage.pst");
 
     test_corpus();
 }

@@ -51,6 +51,18 @@ const slong mapi_message_read = 0x1;
 //! \ingroup pst_messagerelated
 void delete_message(const shared_db_ptr& db, node_id nid);
 
+//! \brief Delete one attachment, leaving the message in place
+//!
+//! Takes the attachment's row out of the message's attachment table, drops its
+//! subnode and everything that hung off it including an embedded message, and
+//! clears \ref PR_HASATTACH when it was the last one.
+//! \throws key_not_found<node_id> if the message or attachment is not there
+//! \param[in] db The store to edit, opened writable
+//! \param[in] message_nid The message owning the attachment
+//! \param[in] attachment_nid The attachment's subnode id
+//! \ingroup pst_messagerelated
+void delete_attachment(const shared_db_ptr& db, node_id message_nid, node_id attachment_nid);
+
 //! \brief Delete a folder, its subfolders and everything in them
 //!
 //! Removes the folder's row from its parent's hierarchy table and clears
@@ -106,6 +118,18 @@ inline std::vector<row_id> table_row_ids(const shared_db_ptr& db, node_id nid)
     return rows;
 }
 
+//! The row ids of a table carried by one of a node's subnodes
+inline std::vector<row_id> table_row_ids(const shared_db_ptr& db, node_id owner, node_id sub)
+{
+    std::vector<row_id> rows;
+
+    table tc(db->lookup_node(owner).lookup(sub));
+    for(size_t i = 0; i < tc.size(); ++i)
+        rows.push_back(tc[i].get_row_id());
+
+    return rows;
+}
+
 inline node_id folder_table(node_id folder, nid_type type)
 {
     return make_nid(type, get_nid_index(folder));
@@ -122,7 +146,6 @@ inline bool remove_message_row(db_writer<T>& writer, node_id folder, node_id mes
         return true;
     }
     catch(key_not_found<row_id>&) { }
-    catch(key_not_found<node_id>&) { }
 
     try
     {
@@ -131,7 +154,6 @@ inline bool remove_message_row(db_writer<T>& writer, node_id folder, node_id mes
         return true;
     }
     catch(key_not_found<row_id>&) { }
-    catch(key_not_found<node_id>&) { }
 
     return false;
 }
@@ -170,6 +192,37 @@ inline void delete_message_impl(const std::shared_ptr<database_impl<T> >& db, no
         pc_set_inline(writer, folder, (prop_id)PR_CONTENT_UNREAD, unread_count - 1);
 
     writer.delete_node(nid);
+    writer.commit();
+}
+
+template<typename T>
+inline void delete_attachment_impl(const std::shared_ptr<database_impl<T> >& db,
+                                   node_id message_nid, node_id attachment_nid)
+{
+    db_writer<T> writer(db);
+    const typename db_writer<T>::data_ref message = writer.node_ref(message_nid);
+
+    if(message.sub == 0)
+        throw key_not_found<node_id>(attachment_nid);
+
+    const typename db_writer<T>::data_ref table =
+        writer.subnode_ref(message.sub, nid_attachment_table);
+
+    tc_remove_row(writer, table, attachment_nid);
+    writer.subnode_remove(message.sub, attachment_nid);
+
+    // the table survives with no rows, the way a message that never had an
+    // attachment carries one, so the flag is what a client actually reads
+    size_t left = 0;
+    try { left = table_row_ids(db, message_nid, nid_attachment_table).size(); }
+    catch(key_not_found<node_id>&) { }
+
+    if(left == 0)
+    {
+        try { pc_set_inline(writer, message_nid, (prop_id)PR_HASATTACH, 0); }
+        catch(key_not_found<prop_id>&) { }
+    }
+
     writer.commit();
 }
 
@@ -223,7 +276,6 @@ inline void delete_folder_impl(const std::shared_ptr<database_impl<T> >& db, nod
     {
         try { tc_remove_row(writer, folder_table(parent, nid_type_hierarchy_table), nid); }
         catch(key_not_found<row_id>&) { }
-        catch(key_not_found<node_id>&) { }
 
         // the expander in a client reads this flag rather than counting rows
         if(siblings == 1)
@@ -268,6 +320,22 @@ struct delete_message_ansi
     void operator()(const std::shared_ptr<small_pst>& db) const { delete_message_impl(db, nid); }
 };
 
+struct delete_attachment_unicode
+{
+    node_id message;
+    node_id attachment;
+    void operator()(const std::shared_ptr<large_pst>& db) const
+        { delete_attachment_impl(db, message, attachment); }
+};
+
+struct delete_attachment_ansi
+{
+    node_id message;
+    node_id attachment;
+    void operator()(const std::shared_ptr<small_pst>& db) const
+        { delete_attachment_impl(db, message, attachment); }
+};
+
 struct delete_folder_unicode
 {
     node_id nid;
@@ -287,6 +355,14 @@ inline void pstsdk::delete_message(const shared_db_ptr& db, node_id nid)
 {
     detail::delete_message_unicode unicode = { nid };
     detail::delete_message_ansi ansi = { nid };
+    detail::dispatch(db, unicode, ansi);
+}
+
+inline void pstsdk::delete_attachment(const shared_db_ptr& db, node_id message_nid,
+                                      node_id attachment_nid)
+{
+    detail::delete_attachment_unicode unicode = { message_nid, attachment_nid };
+    detail::delete_attachment_ansi ansi = { message_nid, attachment_nid };
     detail::dispatch(db, unicode, ansi);
 }
 
