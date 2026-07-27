@@ -204,6 +204,10 @@ inline size_t pstsdk::file::write(const std::vector<byte>& buffer, ulonglong off
     if(write != buffer.size())
         throw std::out_of_range("fwrite failed");
 
+    // another handle on this file has its own buffer, and on Windows those are
+    // not coherent with this one until the bytes actually land
+    fflush(m_pfile);
+
     return write;
 }
 //! \endcond

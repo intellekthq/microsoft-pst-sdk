@@ -1372,6 +1372,9 @@ void check_pristine(const std::string& sample)
 
 void test_delete()
 {
+    using std::cout;
+    using std::endl;
+
     // the invariant the delete tests lean on has to hold before they start
     check_pristine<pstsdk::ulonglong>("test_unicode.pst");
     check_pristine<pstsdk::ulong>("test_ansi.pst");
@@ -1379,43 +1382,55 @@ void test_delete()
     check_pristine<pstsdk::ulonglong>("sample1.pst");
     check_pristine<pstsdk::ulong>("sample2.pst");
 
+    cout << "  test_block_roundtrip" << endl;
     test_block_roundtrip<pstsdk::ulonglong>("test_unicode.pst");
     test_block_roundtrip<pstsdk::ulong>("test_ansi.pst");
     test_block_roundtrip<pstsdk::ulonglong>("submessage.pst");
     test_block_roundtrip<pstsdk::ulong>("sample2.pst");
 
+    cout << "  test_block_shrink" << endl;
     test_block_shrink<pstsdk::ulonglong>("test_unicode.pst");
     test_block_shrink<pstsdk::ulong>("test_ansi.pst");
 
+    cout << "  test_nbt_remove" << endl;
     test_nbt_remove<pstsdk::ulonglong>("test_unicode.pst");
     test_nbt_remove<pstsdk::ulong>("test_ansi.pst");
 
+    cout << "  test_nbt_drain" << endl;
     test_nbt_drain<pstsdk::ulonglong>("test_unicode.pst");
     test_nbt_drain<pstsdk::ulong>("test_ansi.pst");
 
+    cout << "  test_delete_node" << endl;
     test_delete_node<pstsdk::ulonglong>("test_unicode.pst");
     test_delete_node<pstsdk::ulong>("test_ansi.pst");
     test_delete_node<pstsdk::ulonglong>("submessage.pst");
 
+    cout << "  test_pc_set_inline" << endl;
     test_pc_set_inline<pstsdk::ulonglong>("test_unicode.pst");
     test_pc_set_inline<pstsdk::ulong>("test_ansi.pst");
 
+    cout << "  test_tc_remove_row" << endl;
     test_tc_remove_row<pstsdk::ulonglong>("test_unicode.pst");
     test_tc_remove_row<pstsdk::ulong>("test_ansi.pst");
     test_tc_remove_row<pstsdk::ulonglong>("submessage.pst");
 
+    cout << "  test_delete_message" << endl;
     test_delete_message<pstsdk::ulonglong>("test_unicode.pst");
     test_delete_message<pstsdk::ulong>("test_ansi.pst");
     test_delete_message<pstsdk::ulonglong>("submessage.pst");
 
+    cout << "  test_delete_folder" << endl;
     test_delete_folder<pstsdk::ulonglong>("test_unicode.pst");
     test_delete_folder<pstsdk::ulong>("test_ansi.pst");
     test_delete_folder<pstsdk::ulonglong>("submessage.pst");
 
+    cout << "  test_delete_attachment" << endl;
     test_delete_attachment<pstsdk::ulonglong>("submessage.pst");
 
+    cout << "  test_wipe_free_space" << endl;
     test_wipe_free_space<pstsdk::ulonglong>(
         "submessage.pst", L"This is a message which has an embedded message attached");
 
+    cout << "  test_corpus" << endl;
     test_corpus();
 }
