@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <cstring>
 #include <map>
+#include <set>
 #include <vector>
 
 #include "pstsdk/util/errors.h"
@@ -344,10 +345,21 @@ inline void pstsdk::db_writer<T>::bt_descend(ulonglong root, T key,
                                              std::vector<uint>& indices)
 {
     ulonglong address = root;
+    uint above = 0;
+    bool descending = false;
 
     for(;;)
     {
         std::vector<byte> page = read_page_raw(address);
+
+        // Levels strictly decrease on the way down. A tree that says otherwise is
+        // corrupt, and following it would never terminate.
+        if(descending && bt_level(page) >= above)
+            throw database_corrupt("btree level did not decrease");
+
+        above = bt_level(page);
+        descending = true;
+
         int position = bt_search(page, key);
 
         if(position < 0)
@@ -579,6 +591,7 @@ inline typename pstsdk::db_writer<T>::data_ref
 pstsdk::db_writer<T>::subnode_ref(block_id tree, node_id sub)
 {
     std::vector<block_id> pending;
+    std::set<block_id> seen;
     pending.push_back(tree);
 
     while(!pending.empty())
@@ -587,6 +600,10 @@ pstsdk::db_writer<T>::subnode_ref(block_id tree, node_id sub)
         pending.pop_back();
 
         if(bid == 0)
+            continue;
+
+        // a subnode tree that names a block twice would otherwise be walked forever
+        if(!seen.insert(bid & ~(block_id(disk::block_id_attached_bit))).second)
             continue;
 
         std::vector<byte> raw = read_block(bid);
