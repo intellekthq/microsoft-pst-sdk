@@ -100,6 +100,13 @@ public:
     //! \param[in] nid The node to delete
     void delete_node(node_id nid);
 
+    //! \brief The external blocks making up a node's data, in logical order
+    //!
+    //! A heap spans these blocks, one heap block apiece, so this is how the LTP
+    //! layer turns a heap page number into something it can write.
+    //! \param[in] nid The node to walk
+    std::vector<block_id> node_external_blocks(node_id nid);
+
     //! \brief Mark the header as needing a restamp on the next \ref commit
     void touch() { m_dirty = true; }
 
@@ -504,6 +511,22 @@ inline void pstsdk::db_writer<T>::collect_subnode_tree(block_id bid, std::vector
 
     for(ushort i = 0; i < nonleaf->count; ++i)
         collect_subnode_tree(nonleaf->entry[i].sub_block_bid, blocks);
+}
+
+template<typename T>
+inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::node_external_blocks(node_id nid)
+{
+    node_info ni = m_db->lookup_node_info(nid);
+
+    std::vector<block_id> tree;
+    collect_data_tree(ni.data_bid, tree);
+
+    std::vector<block_id> external;
+    for(size_t i = 0; i < tree.size(); ++i)
+        if(disk::bid_is_external(tree[i]))
+            external.push_back(tree[i]);
+
+    return external;
 }
 
 template<typename T>

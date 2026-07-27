@@ -6,6 +6,7 @@
 #include "pstsdk/ltp/object.h"
 #include "pstsdk/ltp/propbag.h"
 #include "pstsdk/ltp/table.h"
+#include "pstsdk/ltp/writer.h"
 #include "pstsdk/ltp/nameid.h"
 
 #endif

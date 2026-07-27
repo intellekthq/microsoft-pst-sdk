@@ -1,11 +1,14 @@
+#include <algorithm>
 #include <cassert>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <utility>
 #include <vector>
 
+#include "pstsdk/ltp.h"
 #include "pstsdk/ndb.h"
 #include "pstsdk/pst.h"
 
@@ -530,6 +533,217 @@ void test_delete_node(const std::string& sample)
     assert(decremented > 0);
 }
 
+// Folder counts are PT_I4, which a property context carries inside the entry
+// rather than behind it, so updating one after a delete is a same size poke.
+template<typename T>
+void test_pc_set_inline(const std::string& sample)
+{
+    using namespace pstsdk;
+
+    std::wstring path = copy_sample(sample, "pcinline");
+    node_id folder = 0;
+
+    {
+        shared_db_ptr db = open_database(path);
+        std::vector<node_id> nids = all_nids(db);
+
+        for(size_t i = 0; i < nids.size() && folder == 0; ++i)
+            if(get_nid_type(nids[i]) == nid_type_folder)
+                folder = nids[i];
+    }
+    assert(folder != 0);
+
+    {
+        std::shared_ptr<file> f(new file(path, true));
+        std::shared_ptr<database_impl<T> > impl =
+            std::dynamic_pointer_cast<database_impl<T> >(open_database(f));
+        db_writer<T> writer(impl);
+
+        pc_set_inline(writer, folder, (prop_id)PR_CONTENT_COUNT, 4242);
+
+        bool missing = false;
+        try { pc_set_inline(writer, folder, (prop_id)0x7ffe, 1); }
+        catch(key_not_found<prop_id>&) { missing = true; }
+        assert(missing);
+
+        writer.commit();
+    }
+
+    shared_db_ptr db = open_database(path);
+    property_bag bag(db->lookup_node(folder));
+    assert(bag.read_prop<slong>(PR_CONTENT_COUNT) == 4242);
+
+    // the poke must not have disturbed anything else in the heap
+    assert(bag.read_prop<slong>(PR_CONTENT_UNREAD) >= 0);
+    check_refcounts<T>(db, path);
+
+    db.reset();
+    std::filesystem::remove(narrow(path));
+}
+
+std::vector<pstsdk::row_id> table_rows(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid)
+{
+    pstsdk::table tc(db->lookup_node(nid));
+    std::vector<pstsdk::row_id> rows;
+
+    for(size_t i = 0; i < tc.size(); ++i)
+        rows.push_back(tc[i].get_row_id());
+
+    return rows;
+}
+
+// Reads a table's row index straight out of the heap and holds it against the row
+// matrix. The SDK never calls lookup_row, so enumerating rows proves nothing about
+// the index, which is the half Outlook actually uses to find a message.
+void check_row_index(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid)
+{
+    using namespace pstsdk;
+
+    node n = db->lookup_node(nid);
+    std::vector<byte> page(n.get_page_size(0));
+    n.read(page, 0, 0);
+
+    const disk::heap_first_header* heap =
+        reinterpret_cast<const disk::heap_first_header*>(&page[0]);
+    const disk::heap_page_map* map =
+        reinterpret_cast<const disk::heap_page_map*>(&page[heap->page_map_offset]);
+
+    // heap ids number allocations from one, and only page zero is in play here
+    const disk::tc_header* tc = reinterpret_cast<const disk::tc_header*>(
+        &page[map->allocs[get_heap_index(heap->root_id)]]);
+
+    const size_t cb_per_row = tc->size_offsets[disk::tc_offsets_bitmap];
+    const disk::bth_header* bth = reinterpret_cast<const disk::bth_header*>(
+        &page[map->allocs[get_heap_index(tc->row_btree_id)]]);
+
+    size_t rows = 0;
+    const byte* matrix = 0;
+    if(tc->row_matrix_id != 0)
+    {
+        assert(!is_subnode_id(tc->row_matrix_id));
+        const uint index = get_heap_index(tc->row_matrix_id);
+        matrix = &page[map->allocs[index]];
+        rows = (map->allocs[index + 1] - map->allocs[index]) / cb_per_row;
+    }
+
+    if(bth->root == 0)
+    {
+        assert(rows == 0);
+        return;
+    }
+
+    // the sample stores are all single level; anything deeper needs a walk
+    assert(bth->num_levels == 0);
+
+    const uint leaf = get_heap_index(bth->root);
+    const size_t stride = bth->key_size + bth->entry_size;
+    const byte* entries = &page[map->allocs[leaf]];
+    const size_t count = (map->allocs[leaf + 1] - map->allocs[leaf]) / stride;
+
+    assert(count == rows);
+
+    std::vector<size_t> seen;
+    pstsdk::ulong previous = 0;
+
+    for(size_t i = 0; i < count; ++i)
+    {
+        pstsdk::ulong key = 0;
+        size_t position = 0;
+        memcpy(&key, entries + i * stride, bth->key_size);
+        memcpy(&position, entries + i * stride + bth->key_size, bth->entry_size);
+
+        assert(i == 0 || previous < key);
+        previous = key;
+
+        assert(position < rows);
+        pstsdk::ulong at_position = 0;
+        memcpy(&at_position, matrix + position * cb_per_row, sizeof(pstsdk::ulong));
+        assert(at_position == key);
+
+        seen.push_back(position);
+    }
+
+    // every row is indexed exactly once
+    std::sort(seen.begin(), seen.end());
+    for(size_t i = 0; i < seen.size(); ++i)
+        assert(seen[i] == i);
+}
+
+// Takes every row out of every populated table, one per copy, and checks that the
+// survivors are exactly the rows that were there before minus the one removed.
+// The row moved by swap-with-last is the interesting survivor: its index changed,
+// so the row index has to have been retargeted.
+template<typename T>
+void test_tc_remove_row(const std::string& sample)
+{
+    using namespace pstsdk;
+
+    std::vector<std::pair<node_id, std::vector<row_id> > > tables;
+    {
+        shared_db_ptr db = open_database(widen(sample));
+        std::vector<node_id> nids = all_nids(db);
+
+        for(size_t i = 0; i < nids.size(); ++i)
+        {
+            const nid_type type = get_nid_type(nids[i]);
+            if(type != nid_type_contents_table && type != nid_type_hierarchy_table &&
+               type != nid_type_associated_contents_table)
+                continue;
+
+            std::vector<row_id> rows = table_rows(db, nids[i]);
+            if(!rows.empty())
+                tables.push_back(std::make_pair(nids[i], rows));
+        }
+    }
+    assert(!tables.empty());
+
+    size_t emptied = 0;
+
+    for(size_t t = 0; t < tables.size(); ++t)
+    {
+        const std::vector<row_id>& original = tables[t].second;
+
+        for(size_t victim = 0; victim < original.size(); ++victim)
+        {
+            std::wstring path = copy_sample(sample, "tcrow");
+
+            {
+                std::shared_ptr<file> f(new file(path, true));
+                std::shared_ptr<database_impl<T> > impl =
+                    std::dynamic_pointer_cast<database_impl<T> >(open_database(f));
+                db_writer<T> writer(impl);
+                tc_remove_row(writer, tables[t].first, original[victim]);
+                writer.commit();
+            }
+
+            shared_db_ptr db = open_database(path);
+            std::vector<row_id> remaining = table_rows(db, tables[t].first);
+            assert(remaining.size() == original.size() - 1);
+
+            std::vector<row_id> expected;
+            for(size_t i = 0; i < original.size(); ++i)
+                if(i != victim)
+                    expected.push_back(original[i]);
+
+            std::sort(expected.begin(), expected.end());
+            std::sort(remaining.begin(), remaining.end());
+            assert(expected == remaining);
+
+            if(remaining.empty())
+                ++emptied;
+
+            check_refcounts<T>(db, path);
+            check_row_index(db, tables[t].first);
+
+            db.reset();
+            std::filesystem::remove(narrow(path));
+        }
+    }
+
+    // the one-row tables in these stores make the drop-to-empty path real
+    assert(emptied > 0);
+}
+
 } // end anonymous namespace
 
 void test_delete()
@@ -558,4 +772,11 @@ void test_delete()
     test_delete_node<pstsdk::ulonglong>("test_unicode.pst");
     test_delete_node<pstsdk::ulong>("test_ansi.pst");
     test_delete_node<pstsdk::ulonglong>("submessage.pst");
+
+    test_pc_set_inline<pstsdk::ulonglong>("test_unicode.pst");
+    test_pc_set_inline<pstsdk::ulong>("test_ansi.pst");
+
+    test_tc_remove_row<pstsdk::ulonglong>("test_unicode.pst");
+    test_tc_remove_row<pstsdk::ulong>("test_ansi.pst");
+    test_tc_remove_row<pstsdk::ulonglong>("submessage.pst");
 }
