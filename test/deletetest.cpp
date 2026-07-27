@@ -31,6 +31,35 @@ std::wstring copy_sample(const std::string& sample, const std::string& tag)
     return widen(copy);
 }
 
+// Owns the working copy and removes it on the way out. Declare it before any
+// handle on the file: destruction runs in reverse, so the handles close first,
+// and Windows will not unlink a file that is still open.
+class scratch_file
+{
+public:
+    scratch_file(const std::string& sample, const std::string& tag)
+        : m_path(copy_sample(sample, tag)) { }
+
+    //! A copy beside the original, for stores that live outside test/
+    scratch_file(const std::string& source, const std::string& suffix, bool beside)
+        : m_path(widen(source + suffix))
+    {
+        (void)beside;
+        std::filesystem::copy_file(source, narrow(m_path),
+                                   std::filesystem::copy_options::overwrite_existing);
+    }
+
+    ~scratch_file() { std::filesystem::remove(narrow(m_path)); }
+
+    const std::wstring& path() const { return m_path; }
+
+private:
+    scratch_file(const scratch_file&);
+    scratch_file& operator=(const scratch_file&);
+
+    std::wstring m_path;
+};
+
 std::vector<pstsdk::byte> slurp(const std::wstring& path)
 {
     std::ifstream in(narrow(path), std::ios::binary);
@@ -58,7 +87,8 @@ void test_block_roundtrip(const std::string& sample)
 {
     using namespace pstsdk;
 
-    std::wstring path = copy_sample(sample, "roundtrip");
+    scratch_file scratch(sample, "roundtrip");
+    const std::wstring& path = scratch.path();
     std::vector<byte> before = slurp(path);
     size_t shared = 0;
 
@@ -115,7 +145,6 @@ void test_block_roundtrip(const std::string& sample)
         assert(std::dynamic_pointer_cast<database_impl<T> >(db));
     }
 
-    std::filesystem::remove(narrow(path));
 }
 
 // Shrinking is the only resize write_block allows, and the interesting case is a
@@ -126,7 +155,8 @@ void test_block_shrink(const std::string& sample)
 {
     using namespace pstsdk;
 
-    std::wstring path = copy_sample(sample, "shrink");
+    scratch_file scratch(sample, "shrink");
+    const std::wstring& path = scratch.path();
     size_t shrunk = 0;
 
     {
@@ -178,7 +208,6 @@ void test_block_shrink(const std::string& sample)
     }
 
     assert(shrunk > 0);
-    std::filesystem::remove(narrow(path));
 }
 
 std::vector<pstsdk::node_id> all_nids(const pstsdk::shared_db_ptr& db)
@@ -252,7 +281,8 @@ void test_nbt_remove(const std::string& sample)
 
     for(size_t victim = 0; victim < original.size(); ++victim)
     {
-        std::wstring path = copy_sample(sample, "nbtremove");
+        scratch_file scratch(sample, "nbtremove");
+    const std::wstring& path = scratch.path();
 
         {
             std::shared_ptr<file> f(new file(path, true));
@@ -288,7 +318,6 @@ void test_nbt_remove(const std::string& sample)
         assert(missing);
 
         db.reset();
-        std::filesystem::remove(narrow(path));
     }
 }
 
@@ -300,7 +329,8 @@ void test_nbt_drain(const std::string& sample)
 {
     using namespace pstsdk;
 
-    std::wstring path = copy_sample(sample, "nbtdrain");
+    scratch_file scratch(sample, "nbtdrain");
+    const std::wstring& path = scratch.path();
     std::vector<node_id> nids;
     ulonglong root;
 
@@ -340,7 +370,6 @@ void test_nbt_drain(const std::string& sample)
     check_bt_page<T>(check, root, keys);
     assert(keys.size() == 1);
 
-    std::filesystem::remove(narrow(path));
 }
 
 std::map<pstsdk::block_id, pstsdk::block_info> bbt_snapshot(const pstsdk::shared_db_ptr& db)
@@ -490,7 +519,8 @@ void test_delete_node(const std::string& sample)
 
     for(size_t victim = 0; victim < nids.size(); ++victim)
     {
-        std::wstring path = copy_sample(sample, "delnode");
+        scratch_file scratch(sample, "delnode");
+    const std::wstring& path = scratch.path();
 
         std::map<block_id, block_info> before;
         {
@@ -539,7 +569,6 @@ void test_delete_node(const std::string& sample)
         check_refcounts<T>(db, path);
 
         db.reset();
-        std::filesystem::remove(narrow(path));
     }
 
     assert(scrubbed > 0);
@@ -554,7 +583,8 @@ void test_pc_set_inline(const std::string& sample)
 {
     using namespace pstsdk;
 
-    std::wstring path = copy_sample(sample, "pcinline");
+    scratch_file scratch(sample, "pcinline");
+    const std::wstring& path = scratch.path();
     node_id folder = 0;
 
     {
@@ -592,7 +622,6 @@ void test_pc_set_inline(const std::string& sample)
     check_refcounts<T>(db, path);
 
     db.reset();
-    std::filesystem::remove(narrow(path));
 }
 
 std::vector<pstsdk::row_id> table_rows(const pstsdk::node& owner, pstsdk::node_id sub)
@@ -736,7 +765,8 @@ void test_tc_remove_row(const std::string& sample)
 
         for(size_t victim = 0; victim < original.size(); ++victim)
         {
-            std::wstring path = copy_sample(sample, "tcrow");
+            scratch_file scratch(sample, "tcrow");
+    const std::wstring& path = scratch.path();
 
             {
                 std::shared_ptr<file> f(new file(path, true));
@@ -767,7 +797,6 @@ void test_tc_remove_row(const std::string& sample)
             check_row_index(db, tables[t].first);
 
             db.reset();
-            std::filesystem::remove(narrow(path));
         }
     }
 
@@ -888,7 +917,8 @@ void test_delete_message(const std::string& sample)
 
     for(size_t victim = 0; victim < messages.size(); ++victim)
     {
-        std::wstring path = copy_sample(sample, "delmsg");
+        scratch_file scratch(sample, "delmsg");
+    const std::wstring& path = scratch.path();
         const node_id message = messages[victim];
 
         node_id folder = 0;
@@ -956,7 +986,6 @@ void test_delete_message(const std::string& sample)
         db.reset();
 
         walk_store(path);
-        std::filesystem::remove(narrow(path));
     }
 }
 
@@ -981,7 +1010,8 @@ void test_delete_folder(const std::string& sample)
 
     for(size_t victim = 0; victim < folders.size(); ++victim)
     {
-        std::wstring path = copy_sample(sample, "delfolder");
+        scratch_file scratch(sample, "delfolder");
+    const std::wstring& path = scratch.path();
         const node_id target = folders[victim];
 
         node_id parent = 0;
@@ -1032,7 +1062,6 @@ void test_delete_folder(const std::string& sample)
         db.reset();
 
         walk_store(path);
-        std::filesystem::remove(narrow(path));
     }
 }
 
@@ -1071,7 +1100,8 @@ void test_delete_attachment(const std::string& sample)
 
         for(size_t victim = 0; victim < all.size(); ++victim)
         {
-            std::wstring path = copy_sample(sample, "delatt");
+            scratch_file scratch(sample, "delatt");
+    const std::wstring& path = scratch.path();
 
             {
                 std::shared_ptr<file> f(new file(path, true));
@@ -1113,7 +1143,6 @@ void test_delete_attachment(const std::string& sample)
             db.reset();
 
             walk_store(path);
-            std::filesystem::remove(narrow(path));
         }
     }
 
@@ -1128,7 +1157,8 @@ void test_wipe_free_space(const std::string& sample, const std::wstring& text)
 {
     using namespace pstsdk;
 
-    std::wstring path = copy_sample(sample, "wipe");
+    scratch_file scratch(sample, "wipe");
+    const std::wstring& path = scratch.path();
     const std::vector<byte> needle = encoded_needle(text);
     assert(count_occurrences(slurp(path), needle) > 0);
 
@@ -1171,7 +1201,6 @@ void test_wipe_free_space(const std::string& sample, const std::wstring& text)
     db.reset();
 
     walk_store(path);
-    std::filesystem::remove(narrow(path));
 }
 
 // Every store under test/ keeps its row matrices inline, so nothing here reaches
@@ -1187,9 +1216,8 @@ void drain_store(const std::string& source)
 {
     using namespace pstsdk;
 
-    const std::wstring path = widen(source + ".draining");
-    std::filesystem::copy_file(source, narrow(path),
-                               std::filesystem::copy_options::overwrite_existing);
+    scratch_file scratch(source, ".draining", true);
+    const std::wstring& path = scratch.path();
 
     size_t deleted = 0;
 
@@ -1243,7 +1271,6 @@ void drain_store(const std::string& source)
     std::wcout << L"  drained " << deleted << L" messages from "
                << widen(source) << std::endl;
 
-    std::filesystem::remove(narrow(path));
 }
 
 // Strips every attachment from every message, then confirms the messages are all
@@ -1255,9 +1282,8 @@ void strip_attachments(const std::string& source)
 {
     using namespace pstsdk;
 
-    const std::wstring path = widen(source + ".stripping");
-    std::filesystem::copy_file(source, narrow(path),
-                               std::filesystem::copy_options::overwrite_existing);
+    scratch_file scratch(source, ".stripping", true);
+    const std::wstring& path = scratch.path();
 
     size_t removed = 0;
     size_t messages = 0;
@@ -1326,7 +1352,6 @@ void strip_attachments(const std::string& source)
     std::wcout << L"  stripped " << removed << L" attachments from "
                << widen(source) << L", " << messages << L" messages intact" << std::endl;
 
-    std::filesystem::remove(narrow(path));
 }
 
 void test_corpus()
