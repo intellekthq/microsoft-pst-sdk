@@ -392,6 +392,7 @@ private:
 //! 6 bytes at a time.
 struct bth_layout
 {
+    heap_id header;
     size_t key_size;
     size_t value_size;
     byte levels;
@@ -412,6 +413,7 @@ inline bth_layout bth_read_layout(heap_writer<T>& heap, heap_id bth_root)
         throw database_corrupt("invalid BTH signature");
 
     bth_layout layout;
+    layout.header = bth_root;
     layout.key_size = header->key_size;
     layout.value_size = header->entry_size;
     layout.levels = header->num_levels;
@@ -474,6 +476,19 @@ inline void bth_descend(heap_writer<T>& heap, const bth_layout& layout, ulong ke
     throw key_not_found<ulong>(key);
 }
 
+//! An empty tree has to say so in its header. Leaving num_levels alone while the
+//! root goes to zero makes bth_node::open_nonleaf index an empty allocation,
+//! which only bites once a table is big enough to need more than one level.
+template<typename T>
+inline void bth_empty(heap_writer<T>& heap, const bth_layout& layout)
+{
+    std::vector<byte> raw = heap.read_alloc(layout.header);
+    disk::bth_header* header = reinterpret_cast<disk::bth_header*>(&raw[0]);
+    header->root = 0;
+    header->num_levels = 0;
+    heap.write_alloc(layout.header, raw);
+}
+
 //! Drop one leaf entry, fixing the ancestors that named the leaf by its first key
 template<typename T>
 inline void bth_remove_key(heap_writer<T>& heap, const bth_layout& layout, ulong key)
@@ -493,6 +508,12 @@ inline void bth_remove_key(heap_writer<T>& heap, const bth_layout& layout, ulong
 
     heap.write_alloc(path.back(), alloc);
     heap.shrink_alloc(path.back(), (count - 1) * stride);
+
+    if(count == 1 && path.size() == 1)
+    {
+        bth_empty(heap, layout);
+        return;
+    }
 
     if(count > 1)
     {
@@ -533,6 +554,9 @@ inline void bth_remove_key(heap_writer<T>& heap, const bth_layout& layout, ulong
 
         if(parent_count > 1)
             return;
+
+        if(depth == 0)
+            bth_empty(heap, layout);
     }
 }
 
@@ -657,9 +681,7 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer,
 
     // an emptied table carries neither a matrix nor a row index root on disk,
     // which is what one that was never populated looks like
-    std::vector<byte> bth_raw = heap.read_alloc(row_btree);
-    reinterpret_cast<disk::bth_header*>(&bth_raw[0])->root = 0;
-    heap.write_alloc(row_btree, bth_raw);
+    detail::bth_empty(heap, layout);
 
     std::vector<byte> header_raw = heap.read_alloc(root);
     reinterpret_cast<disk::tc_header*>(&header_raw[0])->row_matrix_id = 0;
