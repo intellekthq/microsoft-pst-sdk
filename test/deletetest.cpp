@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdlib>
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -1012,6 +1013,91 @@ void test_delete_folder(const std::string& sample)
     }
 }
 
+// Every store under test/ keeps its row matrices inline, so nothing here reaches
+// the subnode path, which is the one a real folder takes past a few dozen
+// messages. Point PSTSDK_TEST_CORPUS at a directory of real stores to cover it:
+//
+//   PSTSDK_TEST_CORPUS=~/corpus ninja -C build test
+//
+// Each store is copied, then every message in it is deleted one at a time, with
+// the reference graph checked as it goes.
+template<typename T>
+void drain_store(const std::string& source)
+{
+    using namespace pstsdk;
+
+    const std::wstring path = widen(source + ".draining");
+    std::filesystem::copy_file(source, narrow(path),
+                               std::filesystem::copy_options::overwrite_existing);
+
+    size_t deleted = 0;
+
+    for(;;)
+    {
+        std::vector<node_id> left;
+        {
+            shared_db_ptr db = open_database(path);
+            std::vector<node_id> nids = all_nids(db);
+
+            for(size_t i = 0; i < nids.size(); ++i)
+                if(get_nid_type(nids[i]) == nid_type_message)
+                    left.push_back(nids[i]);
+        }
+
+        if(left.empty())
+            break;
+
+        {
+            std::shared_ptr<file> f(new file(path, true));
+            shared_db_ptr db = open_database(f);
+            delete_message(db, left[0]);
+        }
+
+        ++deleted;
+
+        if(deleted % 25 == 0 || left.size() == 1)
+        {
+            shared_db_ptr db = open_database(path);
+            check_refcounts<T>(db, path);
+            db.reset();
+            walk_store(path);
+        }
+    }
+
+    assert(deleted > 0);
+    std::wcout << L"  drained " << deleted << L" messages from "
+               << widen(source) << std::endl;
+
+    std::filesystem::remove(narrow(path));
+}
+
+void test_corpus()
+{
+    const char* corpus = getenv("PSTSDK_TEST_CORPUS");
+    if(!corpus)
+        return;
+
+    for(std::filesystem::directory_iterator i(corpus);
+        i != std::filesystem::directory_iterator(); ++i)
+    {
+        if(i->path().extension() != ".pst")
+            continue;
+
+        const std::string source = i->path().string();
+        std::vector<pstsdk::byte> head = slurp(widen(source));
+        if(head.size() < 12)
+            continue;
+
+        pstsdk::ushort version;
+        memcpy(&version, &head[10], sizeof(version));
+
+        if(version >= pstsdk::disk::database_format_unicode_min)
+            drain_store<pstsdk::ulonglong>(source);
+        else
+            drain_store<pstsdk::ulong>(source);
+    }
+}
+
 } // end anonymous namespace
 
 void test_delete()
@@ -1055,4 +1141,6 @@ void test_delete()
     test_delete_folder<pstsdk::ulonglong>("test_unicode.pst");
     test_delete_folder<pstsdk::ulong>("test_ansi.pst");
     test_delete_folder<pstsdk::ulonglong>("submessage.pst");
+
+    test_corpus();
 }

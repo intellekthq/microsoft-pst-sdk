@@ -101,6 +101,28 @@ public:
     //! \param[in] nid The node to delete
     void delete_node(node_id nid);
 
+    //! \brief The data block of one of a node's subnodes
+    //! \throws key_not_found<node_id> if the node has no such subnode
+    //! \param[in] nid The node owning the subnode tree
+    //! \param[in] sub The subnode to find
+    block_id subnode_data(node_id nid, node_id sub);
+
+    //! \brief The external blocks of a data tree, in logical order
+    //! \param[in] bid The root of the tree
+    std::vector<block_id> external_blocks(block_id bid);
+
+    //! \brief Shrink the last external block of a data tree
+    //!
+    //! Passing zero drops the block instead, taking it out of its parent and
+    //! releasing it, which is how a row matrix gives back a whole page. The
+    //! parent's total_size is kept in step because
+    //! \ref extended_block::get_page_count derives the page count from it and
+    //! asserts the result against the real child count.
+    //! \param[in] bid The root of the tree
+    //! \param[in] new_size The last block's new size, or zero to drop it
+    //! \returns true when the tree has no blocks left
+    bool shrink_data_tail(block_id bid, size_t new_size);
+
     //! \brief The external blocks making up a node's data, in logical order
     //!
     //! A heap spans these blocks, one heap block apiece, so this is how the LTP
@@ -526,12 +548,10 @@ inline void pstsdk::db_writer<T>::collect_subnode_tree(block_id bid, std::vector
 }
 
 template<typename T>
-inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::node_external_blocks(node_id nid)
+inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::external_blocks(block_id bid)
 {
-    node_info ni = m_db->lookup_node_info(nid);
-
     std::vector<block_id> tree;
-    collect_data_tree(ni.data_bid, tree);
+    collect_data_tree(bid, tree);
 
     std::vector<block_id> external;
     for(size_t i = 0; i < tree.size(); ++i)
@@ -539,6 +559,96 @@ inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::node_external_blocks(
             external.push_back(tree[i]);
 
     return external;
+}
+
+template<typename T>
+inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::node_external_blocks(node_id nid)
+{
+    return external_blocks(m_db->lookup_node_info(nid).data_bid);
+}
+
+template<typename T>
+inline pstsdk::block_id pstsdk::db_writer<T>::subnode_data(node_id nid, node_id sub)
+{
+    std::vector<block_id> pending;
+    pending.push_back(m_db->lookup_node_info(nid).sub_bid);
+
+    while(!pending.empty())
+    {
+        const block_id bid = pending.back();
+        pending.pop_back();
+
+        if(bid == 0)
+            continue;
+
+        std::vector<byte> raw = read_block(bid);
+        const disk::sub_block<T, disk::sub_leaf_entry<T> >* leaf =
+            reinterpret_cast<const disk::sub_block<T, disk::sub_leaf_entry<T> >*>(&raw[0]);
+
+        if(leaf->level != 0)
+        {
+            const disk::sub_block<T, disk::sub_nonleaf_entry<T> >* nonleaf =
+                reinterpret_cast<const disk::sub_block<T, disk::sub_nonleaf_entry<T> >*>(&raw[0]);
+
+            for(ushort i = 0; i < nonleaf->count; ++i)
+                pending.push_back(nonleaf->entry[i].sub_block_bid);
+
+            continue;
+        }
+
+        for(ushort i = 0; i < leaf->count; ++i)
+            if(leaf->entry[i].nid == sub)
+                return leaf->entry[i].data;
+    }
+
+    throw key_not_found<node_id>(sub);
+}
+
+template<typename T>
+inline bool pstsdk::db_writer<T>::shrink_data_tail(block_id bid, size_t new_size)
+{
+    if(disk::bid_is_external(bid))
+    {
+        if(new_size == 0)
+            return true;
+
+        std::vector<byte> payload = read_block(bid);
+        payload.resize(new_size);
+        write_block(bid, payload);
+        return false;
+    }
+
+    std::vector<byte> raw = read_block(bid);
+    disk::extended_block<T>* xblock = reinterpret_cast<disk::extended_block<T>*>(&raw[0]);
+
+    if(xblock->block_type != disk::block_type_extended)
+        throw unexpected_block("expected an extended block in a data tree");
+
+    if(xblock->count == 0)
+        return true;
+
+    const ushort last = (ushort)(xblock->count - 1);
+    const block_id child = xblock->bid[last];
+    const size_t was = m_db->lookup_block_info(child).size;
+
+    if(!shrink_data_tail(child, new_size))
+    {
+        xblock->total_size -= (ulong)(was - new_size);
+        write_block(bid, raw);
+        return false;
+    }
+
+    // the child gave up its last row, so it leaves the tree with it
+    xblock->total_size -= (ulong)was;
+    xblock->bid[last] = 0;
+    --xblock->count;
+
+    if(xblock->count == 0)
+        return true;
+
+    write_block(bid, raw);
+    release_block(child);
+    return false;
 }
 
 template<typename T>

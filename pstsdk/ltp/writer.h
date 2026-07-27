@@ -251,6 +251,119 @@ inline void row_heap_cells(const std::vector<byte>& header, const byte* row,
     }
 }
 
+//! \brief Reads and shrinks a table's row matrix wherever the table keeps it
+//!
+//! A small table holds its rows in a heap allocation. Once they outgrow one,
+//! which happens at a few dozen rows, the client moves them into a subnode with
+//! its own blocks. Both are the same fixed width array to a caller; only the
+//! shrink differs, and that is the whole reason the subnode case needs the block
+//! level primitives rather than the heap ones.
+template<typename T>
+class matrix_writer
+{
+public:
+    matrix_writer(db_writer<T>& writer, heap_writer<T>& heap, node_id table,
+                  heapnode_id matrix, size_t cb_per_row)
+        : m_writer(writer), m_heap(heap), m_table(table), m_matrix(matrix),
+          m_cb_per_row(cb_per_row), m_inline(!is_subnode_id(matrix)), m_rows_per_block(0)
+    {
+        if(m_inline)
+            return;
+
+        m_blocks = writer.external_blocks(writer.subnode_data(table, (node_id)matrix));
+        if(m_blocks.empty())
+            throw database_corrupt("row matrix subnode has no blocks");
+
+        m_rows_per_block = writer.read_block(m_blocks[0]).size() / cb_per_row;
+        if(m_rows_per_block == 0)
+            throw database_corrupt("row matrix block smaller than one row");
+    }
+
+    size_t rows()
+    {
+        if(m_inline)
+            return m_heap.read_alloc(m_matrix).size() / m_cb_per_row;
+
+        return (m_blocks.size() - 1) * m_rows_per_block + last_block_rows();
+    }
+
+    std::vector<byte> read_row(size_t index)
+    {
+        std::vector<byte> block = load(index);
+        const size_t at = offset_of(index);
+        return std::vector<byte>(block.begin() + at, block.begin() + at + m_cb_per_row);
+    }
+
+    void write_row(size_t index, const std::vector<byte>& row)
+    {
+        std::vector<byte> block = load(index);
+        memcpy(&block[offset_of(index)], &row[0], m_cb_per_row);
+        store(index, block);
+    }
+
+    //! \returns true once the matrix holds no rows at all
+    bool drop_last_row()
+    {
+        if(m_inline)
+        {
+            const size_t left = rows() - 1;
+            m_heap.shrink_alloc(m_matrix, left * m_cb_per_row);
+            return left == 0;
+        }
+
+        const size_t left_in_block = last_block_rows() - 1;
+        const size_t size = m_writer.read_block(m_blocks.back()).size();
+        const size_t shrunk = left_in_block ? size - m_cb_per_row : 0;
+
+        if(!m_writer.shrink_data_tail(root(), shrunk))
+        {
+            if(shrunk == 0)
+                m_blocks.pop_back();
+            return m_blocks.empty();
+        }
+
+        m_blocks.clear();
+        return true;
+    }
+
+private:
+    block_id root() { return m_writer.subnode_data(m_table, (node_id)m_matrix); }
+
+    size_t last_block_rows()
+    {
+        return m_writer.read_block(m_blocks.back()).size() / m_cb_per_row;
+    }
+
+    size_t block_of(size_t index) const { return m_inline ? 0 : index / m_rows_per_block; }
+    size_t offset_of(size_t index) const
+    {
+        return (m_inline ? index : index % m_rows_per_block) * m_cb_per_row;
+    }
+
+    std::vector<byte> load(size_t index)
+    {
+        return m_inline ? m_heap.read_alloc(m_matrix)
+                        : m_writer.read_block(m_blocks[block_of(index)]);
+    }
+
+    void store(size_t index, const std::vector<byte>& block)
+    {
+        if(m_inline)
+            m_heap.write_alloc(m_matrix, block);
+        else
+            m_writer.write_block(m_blocks[block_of(index)], block);
+    }
+
+    db_writer<T>& m_writer;
+    heap_writer<T>& m_heap;
+    node_id m_table;
+    heapnode_id m_matrix;
+    size_t m_cb_per_row;
+    bool m_inline;
+    size_t m_rows_per_block;
+    std::vector<block_id> m_blocks;
+};
+
 //! \brief How a particular BTH lays its entries out on disk
 //!
 //! The strides come from the BTH header rather than from sizeof, because the
@@ -445,23 +558,17 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer, node_id nid, row_id id)
         throw database_corrupt("not a table context");
 
     const size_t cb_per_row = header->size_offsets[disk::tc_offsets_bitmap];
+    const size_t exists_at = header->size_offsets[disk::tc_offsets_one];
     const heap_id row_btree = header->row_btree_id;
-    const heapnode_id matrix = header->row_matrix_id;
+    const heapnode_id matrix_id = header->row_matrix_id;
 
-    if(matrix == 0)
+    if(matrix_id == 0 || cb_per_row == 0)
         throw key_not_found<row_id>(id);
 
-    // Every table in every store under test/ keeps its matrix inline. A folder
-    // big enough to outgrow a heap allocation moves it into a subnode, which
-    // needs a block level shrink instead and is not handled yet.
-    if(is_subnode_id(matrix))
-        throw not_implemented("row matrix held in a subnode");
-
     detail::bth_layout layout = detail::bth_read_layout(heap, row_btree);
+    detail::matrix_writer<T> matrix(writer, heap, nid, matrix_id, cb_per_row);
 
-    std::vector<byte> rows = heap.read_alloc(matrix);
-    const size_t count = cb_per_row ? rows.size() / cb_per_row : 0;
-
+    const size_t count = matrix.rows();
     if(count == 0)
         throw key_not_found<row_id>(id);
 
@@ -474,16 +581,20 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer, node_id nid, row_id id)
                                               layout.value_size);
     const size_t last = count - 1;
 
-    std::vector<byte> doomed_row(rows.begin() + target * cb_per_row,
-                                 rows.begin() + (target + 1) * cb_per_row);
+    // Cells wider than the row point at heap allocations. Nothing references them
+    // once the row is gone, and they hold the cached subject and sender in clear
+    // text, so they are freed rather than merely orphaned.
+    std::vector<byte> doomed_row = matrix.read_row(target);
+    std::vector<heap_id> doomed_cells;
+    detail::row_heap_cells(raw, &doomed_row[0], exists_at, doomed_cells);
 
     if(target != last)
     {
         // the moved row keeps its id, so the index has to learn its new position
+        std::vector<byte> moving = matrix.read_row(last);
         row_id moved;
-        memcpy(&moved, &rows[last * cb_per_row], sizeof(row_id));
-        memcpy(&rows[target * cb_per_row], &rows[last * cb_per_row], cb_per_row);
-        heap.write_alloc(matrix, rows);
+        memcpy(&moved, &moving[0], sizeof(row_id));
+        matrix.write_row(target, moving);
 
         std::vector<heap_id> moved_path;
         std::vector<uint> moved_indices;
@@ -495,38 +606,27 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer, node_id nid, row_id id)
         heap.write_alloc(moved_path.back(), moved_leaf);
     }
 
-    // Cells wider than the row point at heap allocations. Nothing will reference
-    // them once the row is gone, and they hold the cached subject and sender in
-    // clear text, so they have to be freed rather than merely orphaned.
-    std::vector<heap_id> doomed_cells;
-    detail::row_heap_cells(raw, &doomed_row[0], header->size_offsets[disk::tc_offsets_one],
-                           doomed_cells);
-
-    heap.shrink_alloc(matrix, last * cb_per_row);
+    const bool emptied = matrix.drop_last_row();
     detail::bth_remove_key(heap, layout, id);
 
-    if(last > 0 && !doomed_cells.empty())
+    if(!emptied)
     {
-        // keep anything a surviving row still points at
-        std::vector<byte> survivors = heap.read_alloc(matrix);
         std::vector<heap_id> kept;
-
         for(size_t r = 0; r < last; ++r)
-            detail::row_heap_cells(raw, &survivors[r * cb_per_row],
-                                   header->size_offsets[disk::tc_offsets_one], kept);
+        {
+            std::vector<byte> survivor = matrix.read_row(r);
+            detail::row_heap_cells(raw, &survivor[0], exists_at, kept);
+        }
 
         for(size_t i = 0; i < doomed_cells.size(); ++i)
             if(std::find(kept.begin(), kept.end(), doomed_cells[i]) == kept.end())
                 heap.shrink_alloc(doomed_cells[i], 0);
-    }
-    else
-    {
-        for(size_t i = 0; i < doomed_cells.size(); ++i)
-            heap.shrink_alloc(doomed_cells[i], 0);
+
+        return;
     }
 
-    if(last > 0)
-        return;
+    for(size_t i = 0; i < doomed_cells.size(); ++i)
+        heap.shrink_alloc(doomed_cells[i], 0);
 
     // an emptied table carries neither a matrix nor a row index root on disk,
     // which is what one that was never populated looks like
