@@ -47,7 +47,8 @@ public:
     //! \brief Construct a file object from the given filename
     //! \throw runtime_error if an error occurs opening the file
     //! \param[in] filename The file to open
-    file(const std::wstring& filename);
+    //! \param[in] writable Open for update, so \ref write can be used
+    file(const std::wstring& filename, bool writable = false);
     
     //! \brief Close the file
     ~file();
@@ -142,10 +143,12 @@ std::vector<byte> wstring_to_bytes(const std::wstring &wstr);
 
 } // end pstsdk namespace
 
-inline pstsdk::file::file(const std::wstring& filename)
+inline pstsdk::file::file(const std::wstring& filename, bool writable)
 : m_filename(filename)
 {
-    const char* mode = "rb";
+    // "r+b" rather than "w+b": every write in this library is an in-place edit of
+    // an existing store, so truncating on open would destroy it.
+    const char* mode = writable ? "r+b" : "rb";
 
 #ifdef _MSC_VER 
     errno_t err = fopen_s(&m_pfile, std::string(filename.begin(), filename.end()).c_str(), mode);

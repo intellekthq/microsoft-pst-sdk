@@ -6,5 +6,6 @@
 #include "pstsdk/ndb/database_iface.h"
 #include "pstsdk/ndb/node.h"
 #include "pstsdk/ndb/page.h"
+#include "pstsdk/ndb/writer.h"
 
 #endif

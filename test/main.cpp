@@ -25,6 +25,8 @@ int main()
         // test_highlevel();
         cout << "test_pstlevel();" << endl;
         test_pstlevel();
+        cout << "test_delete();" << endl;
+        test_delete();
     } 
     catch(exception& e)
     {

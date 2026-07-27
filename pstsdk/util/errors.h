@@ -42,9 +42,21 @@ public:
         : runtime_error(error) { }
 };
 
+//! \brief An edit was attempted on a block with more than one reference.
+//!
+//! In place edits have nowhere to copy a shared block to, so the caller has to
+//! either unlink it instead or leave it alone.
+//! \ingroup exception
+class shared_block : public std::runtime_error
+{
+public:
+    explicit shared_block(const std::string& error)
+        : runtime_error(error) { }
+};
+
 //! \brief The database is corrupt.
 //! \ingroup exception
-class database_corrupt : public std::runtime_error 
+class database_corrupt : public std::runtime_error
 {
 public:
     explicit database_corrupt(const std::string& error)
