@@ -581,6 +581,15 @@ void test_pc_set_inline(const std::string& sample)
     std::filesystem::remove(narrow(path));
 }
 
+std::vector<pstsdk::row_id> table_rows(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid);
+
+// Same as table_rows, but tolerates a table node that is not there
+std::vector<pstsdk::row_id> table_rows_or_empty(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid)
+{
+    try { return table_rows(db, nid); }
+    catch(pstsdk::key_not_found<pstsdk::node_id>&) { return std::vector<pstsdk::row_id>(); }
+}
+
 std::vector<pstsdk::row_id> table_rows(const pstsdk::shared_db_ptr& db, pstsdk::node_id nid)
 {
     pstsdk::table tc(db->lookup_node(nid));
@@ -744,6 +753,176 @@ void test_tc_remove_row(const std::string& sample)
     assert(emptied > 0);
 }
 
+// Opens everything the pst layer can reach and touches enough of each item to
+// force the blocks behind it to be read and validated.
+void walk_store(const std::wstring& path)
+{
+    using namespace pstsdk;
+
+    pst store(path);
+
+    for(pst::folder_iterator i = store.folder_begin(); i != store.folder_end(); ++i)
+    {
+        // Bind the folder rather than working through the iterator: it yields by
+        // value, and const_table_row_iter::equal compares the table pointer, so
+        // begin() and end() taken off two temporaries never meet.
+        folder f = *i;
+        f.get_name();
+
+        for(folder::message_iterator m = f.message_begin(); m != f.message_end(); ++m)
+        {
+            message item = *m;
+            item.get_attachment_count();
+            item.get_recipient_count();
+
+            if(item.has_subject())
+                item.get_subject();
+        }
+    }
+}
+
+// Deletes every message in the store, one per copy, through the public entry
+// point. This is the first test that holds the whole stack to account at once:
+// the node is gone, the folder's row and count agree, the row index still lines
+// up with the matrix, no block is orphaned, and the store still reads.
+template<typename T>
+void test_delete_message(const std::string& sample)
+{
+    using namespace pstsdk;
+
+    std::vector<node_id> messages;
+    {
+        shared_db_ptr db = open_database(widen(sample));
+        std::vector<node_id> nids = all_nids(db);
+
+        for(size_t i = 0; i < nids.size(); ++i)
+            if(get_nid_type(nids[i]) == nid_type_message)
+                messages.push_back(nids[i]);
+    }
+    assert(!messages.empty());
+
+    for(size_t victim = 0; victim < messages.size(); ++victim)
+    {
+        std::wstring path = copy_sample(sample, "delmsg");
+        const node_id message = messages[victim];
+
+        node_id folder = 0;
+        {
+            shared_db_ptr db = open_database(path);
+            folder = db->lookup_node_info(message).parent_id;
+        }
+
+        {
+            std::shared_ptr<file> f(new file(path, true));
+            shared_db_ptr db = open_database(f);
+            delete_message(db, message);
+        }
+
+        shared_db_ptr db = open_database(path);
+
+        bool missing = false;
+        try { db->lookup_node_info(message); }
+        catch(key_not_found<node_id>&) { missing = true; }
+        assert(missing);
+
+        if(folder != 0)
+        {
+            const node_id contents = make_nid(nid_type_contents_table, get_nid_index(folder));
+            std::vector<row_id> rows = table_rows(db, contents);
+
+            for(size_t i = 0; i < rows.size(); ++i)
+                assert(rows[i] != message);
+
+            property_bag bag(db->lookup_node(folder));
+            assert(bag.read_prop<slong>(PR_CONTENT_COUNT) == (slong)rows.size());
+
+            check_row_index(db, contents);
+        }
+
+        check_refcounts<T>(db, path);
+        db.reset();
+
+        walk_store(path);
+        std::filesystem::remove(narrow(path));
+    }
+}
+
+// Deletes each folder below the root, one per copy. A folder takes its property
+// context, its three tables and everything underneath it, so the check is that
+// none of those node ids survive and the store still reads.
+template<typename T>
+void test_delete_folder(const std::string& sample)
+{
+    using namespace pstsdk;
+
+    std::vector<node_id> folders;
+    {
+        shared_db_ptr db = open_database(widen(sample));
+        std::vector<node_id> nids = all_nids(db);
+
+        for(size_t i = 0; i < nids.size(); ++i)
+            if(get_nid_type(nids[i]) == nid_type_folder && nids[i] != nid_root_folder)
+                folders.push_back(nids[i]);
+    }
+    assert(!folders.empty());
+
+    for(size_t victim = 0; victim < folders.size(); ++victim)
+    {
+        std::wstring path = copy_sample(sample, "delfolder");
+        const node_id target = folders[victim];
+
+        node_id parent = 0;
+        std::vector<node_id> doomed;
+        {
+            shared_db_ptr db = open_database(path);
+            parent = db->lookup_node_info(target).parent_id;
+
+            doomed.push_back(target);
+            const nid_type tables[] = { nid_type_contents_table, nid_type_hierarchy_table,
+                                        nid_type_associated_contents_table };
+
+            for(size_t i = 0; i < sizeof(tables) / sizeof(tables[0]); ++i)
+                doomed.push_back(make_nid(tables[i], get_nid_index(target)));
+
+            std::vector<row_id> messages =
+                table_rows_or_empty(db, make_nid(nid_type_contents_table, get_nid_index(target)));
+            for(size_t i = 0; i < messages.size(); ++i)
+                doomed.push_back(messages[i]);
+        }
+
+        {
+            std::shared_ptr<file> f(new file(path, true));
+            shared_db_ptr db = open_database(f);
+            delete_folder(db, target);
+        }
+
+        shared_db_ptr db = open_database(path);
+
+        for(size_t i = 0; i < doomed.size(); ++i)
+        {
+            bool missing = false;
+            try { db->lookup_node_info(doomed[i]); }
+            catch(key_not_found<node_id>&) { missing = true; }
+            assert(missing);
+        }
+
+        if(parent != 0)
+        {
+            const node_id hierarchy = make_nid(nid_type_hierarchy_table, get_nid_index(parent));
+            std::vector<row_id> rows = table_rows_or_empty(db, hierarchy);
+
+            for(size_t i = 0; i < rows.size(); ++i)
+                assert(rows[i] != target);
+        }
+
+        check_refcounts<T>(db, path);
+        db.reset();
+
+        walk_store(path);
+        std::filesystem::remove(narrow(path));
+    }
+}
+
 } // end anonymous namespace
 
 void test_delete()
@@ -779,4 +958,12 @@ void test_delete()
     test_tc_remove_row<pstsdk::ulonglong>("test_unicode.pst");
     test_tc_remove_row<pstsdk::ulong>("test_ansi.pst");
     test_tc_remove_row<pstsdk::ulonglong>("submessage.pst");
+
+    test_delete_message<pstsdk::ulonglong>("test_unicode.pst");
+    test_delete_message<pstsdk::ulong>("test_ansi.pst");
+    test_delete_message<pstsdk::ulonglong>("submessage.pst");
+
+    test_delete_folder<pstsdk::ulonglong>("test_unicode.pst");
+    test_delete_folder<pstsdk::ulong>("test_ansi.pst");
+    test_delete_folder<pstsdk::ulonglong>("submessage.pst");
 }
