@@ -26,6 +26,10 @@
 #include <windows.h>
 #endif
 
+#ifdef _MSC_VER
+#include <share.h>
+#endif
+
 namespace pstsdk
 {
 
@@ -150,10 +154,10 @@ inline pstsdk::file::file(const std::wstring& filename, bool writable)
     // an existing store, so truncating on open would destroy it.
     const char* mode = writable ? "r+b" : "rb";
 
-#ifdef _MSC_VER 
-    errno_t err = fopen_s(&m_pfile, std::string(filename.begin(), filename.end()).c_str(), mode);
-    if(err != 0)
-        m_pfile = NULL;
+#ifdef _MSC_VER
+    // not fopen_s: it opens exclusively, so a second handle on the same store
+    // fails, and both this library and its callers open one store more than once
+    m_pfile = _fsopen(std::string(filename.begin(), filename.end()).c_str(), mode, _SH_DENYNO);
 #else
     m_pfile = fopen(std::string(filename.begin(), filename.end()).c_str(), mode);
 #endif
