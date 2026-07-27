@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <map>
 #include <vector>
 
 #include "pstsdk/util/errors.h"
@@ -147,6 +148,17 @@ private:
     void collect_data_tree(block_id bid, std::vector<block_id>& blocks);
     //! Walk a subnode tree, appending its blocks and those of every subnode
     void collect_subnode_tree(block_id bid, std::vector<block_id>& blocks);
+
+    //! The blocks an internal block points at, or nothing for an external one
+    void block_children(block_id bid, std::vector<block_id>& children);
+
+    //! Work out what dropping a reference to a tree costs, without changing anything
+    void plan_release(block_id root, std::map<block_id, ushort>& remaining,
+                      std::map<block_id, block_info>& info, std::vector<block_id>& order);
+    //! Carry out a plan: rewrite the counts that dropped, unlink and scrub the rest
+    void apply_release(const std::map<block_id, ushort>& remaining,
+                       const std::map<block_id, block_info>& info,
+                       const std::vector<block_id>& order);
 
     ulonglong nbt_root() const { return m_db->get_header().root_info.brefNBT.ib; }
     ulonglong bbt_root() const { return m_db->get_header().root_info.brefBBT.ib; }
@@ -530,40 +542,143 @@ inline std::vector<pstsdk::block_id> pstsdk::db_writer<T>::node_external_blocks(
 }
 
 template<typename T>
-inline void pstsdk::db_writer<T>::release_block(block_id bid)
+inline void pstsdk::db_writer<T>::block_children(block_id bid, std::vector<block_id>& children)
 {
-    block_info bi = m_db->lookup_block_info(bid);
+    if(disk::bid_is_external(bid))
+        return;
 
-    if(bi.ref_count > disk::block_unreferenced + 1)
+    std::vector<byte> raw = read_block(bid);
+
+    if(raw[0] == disk::block_type_extended)
     {
-        bbt_set_ref_count(bid, (ushort)(bi.ref_count - 1));
+        const disk::extended_block<T>* xblock =
+            reinterpret_cast<const disk::extended_block<T>*>(&raw[0]);
+
+        for(ushort i = 0; i < xblock->count; ++i)
+            children.push_back(xblock->bid[i]);
+
         return;
     }
 
-    const ulonglong address = bi.address;
-    const size_t extent = disk::align_disk<T>(bi.size);
+    if(raw[0] != disk::block_type_sub)
+        throw unexpected_block("unknown internal block type");
 
-    bbt_remove(bid);
-    zero_extent(address, extent);
+    const disk::sub_block<T, disk::sub_leaf_entry<T> >* leaf =
+        reinterpret_cast<const disk::sub_block<T, disk::sub_leaf_entry<T> >*>(&raw[0]);
+
+    if(leaf->level == 0)
+    {
+        for(ushort i = 0; i < leaf->count; ++i)
+        {
+            children.push_back(leaf->entry[i].data);
+            children.push_back(leaf->entry[i].sub);
+        }
+
+        return;
+    }
+
+    const disk::sub_block<T, disk::sub_nonleaf_entry<T> >* nonleaf =
+        reinterpret_cast<const disk::sub_block<T, disk::sub_nonleaf_entry<T> >*>(&raw[0]);
+
+    for(ushort i = 0; i < nonleaf->count; ++i)
+        children.push_back(nonleaf->entry[i].sub_block_bid);
+}
+
+// A block that keeps a reference keeps its children with it, so the walk stops at
+// anything that survives. Descending past one and freeing what it points at would
+// pull the data out from under whoever still owns it. Real stores do share
+// extended and subnode blocks, so this is not hypothetical.
+template<typename T>
+inline void pstsdk::db_writer<T>::plan_release(block_id root,
+                                               std::map<block_id, ushort>& remaining,
+                                               std::map<block_id, block_info>& info,
+                                               std::vector<block_id>& order)
+{
+    std::vector<block_id> pending;
+    pending.push_back(root);
+
+    while(!pending.empty())
+    {
+        const block_id raw = pending.back();
+        pending.pop_back();
+
+        if(raw == 0)
+            continue;
+
+        const block_id bid = raw & ~(block_id(disk::block_id_attached_bit));
+
+        if(remaining.find(bid) == remaining.end())
+        {
+            const block_info bi = m_db->lookup_block_info(bid);
+            info[bid] = bi;
+            remaining[bid] = bi.ref_count;
+            order.push_back(bid);
+        }
+
+        if(remaining[bid] <= disk::block_unreferenced)
+            throw database_corrupt("block released more often than it is referenced");
+
+        --remaining[bid];
+
+        if(remaining[bid] > disk::block_unreferenced)
+            continue;
+
+        block_children(bid, pending);
+    }
+}
+
+template<typename T>
+inline void pstsdk::db_writer<T>::apply_release(const std::map<block_id, ushort>& remaining,
+                                                const std::map<block_id, block_info>& info,
+                                                const std::vector<block_id>& order)
+{
+    for(size_t i = 0; i < order.size(); ++i)
+    {
+        const block_id bid = order[i];
+        const ushort count = remaining.find(bid)->second;
+
+        if(count > disk::block_unreferenced)
+        {
+            bbt_set_ref_count(bid, count);
+            continue;
+        }
+
+        const block_info& bi = info.find(bid)->second;
+        const ulonglong address = bi.address;
+        const size_t extent = disk::align_disk<T>(bi.size);
+
+        bbt_remove(bid);
+        zero_extent(address, extent);
+    }
+}
+
+template<typename T>
+inline void pstsdk::db_writer<T>::release_block(block_id bid)
+{
+    std::map<block_id, ushort> remaining;
+    std::map<block_id, block_info> info;
+    std::vector<block_id> order;
+
+    plan_release(bid, remaining, info, order);
+    apply_release(remaining, info, order);
 }
 
 template<typename T>
 inline void pstsdk::db_writer<T>::delete_node(node_id nid)
 {
-    node_info ni = m_db->lookup_node_info(nid);
+    const node_info ni = m_db->lookup_node_info(nid);
 
-    std::vector<block_id> blocks;
-    collect_data_tree(ni.data_bid, blocks);
-    collect_subnode_tree(ni.sub_bid, blocks);
+    // Both trees are read before the first write, because neither is reachable
+    // once the NBT entry is gone.
+    std::map<block_id, ushort> remaining;
+    std::map<block_id, block_info> info;
+    std::vector<block_id> order;
 
-    // a block reachable twice within one node must still only lose one reference
-    std::sort(blocks.begin(), blocks.end());
-    blocks.erase(std::unique(blocks.begin(), blocks.end()), blocks.end());
+    plan_release(ni.data_bid, remaining, info, order);
+    plan_release(ni.sub_bid, remaining, info, order);
 
     nbt_remove(nid);
-
-    for(size_t i = 0; i < blocks.size(); ++i)
-        release_block(blocks[i]);
+    apply_release(remaining, info, order);
 }
 
 template<typename T>

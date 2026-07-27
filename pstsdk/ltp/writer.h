@@ -15,6 +15,7 @@
 #ifndef PSTSDK_LTP_WRITER_H
 #define PSTSDK_LTP_WRITER_H
 
+#include <algorithm>
 #include <cstring>
 #include <vector>
 
@@ -204,6 +205,51 @@ namespace pstsdk
 {
 namespace detail
 {
+
+//! \brief Whether a column's value lives outside the row rather than inside it
+//!
+//! Anything variable length or multi valued is stored as a heap id in the cell,
+//! so the row is only a pointer to it.
+//! \sa [MS-PST] 2.3.4.2
+inline bool cell_is_hnid(ushort type)
+{
+    switch(type)
+    {
+    case prop_type_string:
+    case prop_type_wstring:
+    case prop_type_binary:
+    case prop_type_object:
+        return true;
+    default:
+        return (type & 0x1000) != 0;
+    }
+}
+
+//! The heap allocations a row's cells point at, skipping columns it does not have
+inline void row_heap_cells(const std::vector<byte>& header, const byte* row,
+                           size_t exists_at, std::vector<heap_id>& cells)
+{
+    const disk::tc_header* tc = reinterpret_cast<const disk::tc_header*>(&header[0]);
+
+    for(byte i = 0; i < tc->num_columns; ++i)
+    {
+        const disk::column_description& column = tc->columns[i];
+
+        if(column.size != sizeof(heapnode_id) || !cell_is_hnid(column.type))
+            continue;
+
+        if(!test_bit(row + exists_at, column.bit_offset))
+            continue;
+
+        heapnode_id hnid;
+        memcpy(&hnid, row + column.offset, sizeof(hnid));
+
+        // a subnode cell would need the subnode removed too, which is a
+        // different primitive; only heap allocations are ours to free here
+        if(hnid != 0 && is_heap_id(hnid))
+            cells.push_back(hnid);
+    }
+}
 
 //! \brief How a particular BTH lays its entries out on disk
 //!
@@ -428,6 +474,9 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer, node_id nid, row_id id)
                                               layout.value_size);
     const size_t last = count - 1;
 
+    std::vector<byte> doomed_row(rows.begin() + target * cb_per_row,
+                                 rows.begin() + (target + 1) * cb_per_row);
+
     if(target != last)
     {
         // the moved row keeps its id, so the index has to learn its new position
@@ -446,8 +495,35 @@ inline void pstsdk::tc_remove_row(db_writer<T>& writer, node_id nid, row_id id)
         heap.write_alloc(moved_path.back(), moved_leaf);
     }
 
+    // Cells wider than the row point at heap allocations. Nothing will reference
+    // them once the row is gone, and they hold the cached subject and sender in
+    // clear text, so they have to be freed rather than merely orphaned.
+    std::vector<heap_id> doomed_cells;
+    detail::row_heap_cells(raw, &doomed_row[0], header->size_offsets[disk::tc_offsets_one],
+                           doomed_cells);
+
     heap.shrink_alloc(matrix, last * cb_per_row);
     detail::bth_remove_key(heap, layout, id);
+
+    if(last > 0 && !doomed_cells.empty())
+    {
+        // keep anything a surviving row still points at
+        std::vector<byte> survivors = heap.read_alloc(matrix);
+        std::vector<heap_id> kept;
+
+        for(size_t r = 0; r < last; ++r)
+            detail::row_heap_cells(raw, &survivors[r * cb_per_row],
+                                   header->size_offsets[disk::tc_offsets_one], kept);
+
+        for(size_t i = 0; i < doomed_cells.size(); ++i)
+            if(std::find(kept.begin(), kept.end(), doomed_cells[i]) == kept.end())
+                heap.shrink_alloc(doomed_cells[i], 0);
+    }
+    else
+    {
+        for(size_t i = 0; i < doomed_cells.size(); ++i)
+            heap.shrink_alloc(doomed_cells[i], 0);
+    }
 
     if(last > 0)
         return;

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -372,20 +373,27 @@ std::vector<pstsdk::byte> read_raw_block(pstsdk::file& f,
 
 template<typename T>
 void count_subnode_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk::block_info>& bbt,
-                        pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs);
+                        pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs,
+                        std::set<pstsdk::block_id>& seen);
 
 template<typename T>
 void count_data_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk::block_info>& bbt,
-                     pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs)
+                     pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs,
+                     std::set<pstsdk::block_id>& seen)
 {
     using namespace pstsdk;
 
     if(bid == 0)
         return;
 
-    ++refs[bid & ~block_id(disk::block_id_attached_bit)];
+    const block_id key = bid & ~block_id(disk::block_id_attached_bit);
+    ++refs[key];
 
     if(disk::bid_is_external(bid))
+        return;
+
+    // count every edge, but walk a shared block's contents only once
+    if(!seen.insert(key).second)
         return;
 
     std::vector<byte> raw = read_raw_block<T>(f, bbt, bid);
@@ -393,19 +401,24 @@ void count_data_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk::b
         reinterpret_cast<const disk::extended_block<T>*>(&raw[0]);
 
     for(pstsdk::ushort i = 0; i < xblock->count; ++i)
-        count_data_tree<T>(f, bbt, xblock->bid[i], refs);
+        count_data_tree<T>(f, bbt, xblock->bid[i], refs, seen);
 }
 
 template<typename T>
 void count_subnode_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk::block_info>& bbt,
-                        pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs)
+                        pstsdk::block_id bid, std::map<pstsdk::block_id, unsigned>& refs,
+                        std::set<pstsdk::block_id>& seen)
 {
     using namespace pstsdk;
 
     if(bid == 0)
         return;
 
-    ++refs[bid & ~block_id(disk::block_id_attached_bit)];
+    const block_id key = bid & ~block_id(disk::block_id_attached_bit);
+    ++refs[key];
+
+    if(!seen.insert(key).second)
+        return;
 
     std::vector<byte> raw = read_raw_block<T>(f, bbt, bid);
     const disk::sub_block<T, disk::sub_leaf_entry<T> >* leaf =
@@ -415,8 +428,8 @@ void count_subnode_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk
     {
         for(pstsdk::ushort i = 0; i < leaf->count; ++i)
         {
-            count_data_tree<T>(f, bbt, leaf->entry[i].data, refs);
-            count_subnode_tree<T>(f, bbt, leaf->entry[i].sub, refs);
+            count_data_tree<T>(f, bbt, leaf->entry[i].data, refs, seen);
+            count_subnode_tree<T>(f, bbt, leaf->entry[i].sub, refs, seen);
         }
 
         return;
@@ -426,7 +439,7 @@ void count_subnode_tree(pstsdk::file& f, const std::map<pstsdk::block_id, pstsdk
         reinterpret_cast<const disk::sub_block<T, disk::sub_nonleaf_entry<T> >*>(&raw[0]);
 
     for(pstsdk::ushort i = 0; i < nonleaf->count; ++i)
-        count_subnode_tree<T>(f, bbt, nonleaf->entry[i].sub_block_bid, refs);
+        count_subnode_tree<T>(f, bbt, nonleaf->entry[i].sub_block_bid, refs, seen);
 }
 
 // Rebuilds the true reference graph from the NBT down and holds the BBT to it.
@@ -439,13 +452,14 @@ void check_refcounts(const pstsdk::shared_db_ptr& db, const std::wstring& path)
 
     std::map<block_id, block_info> bbt = bbt_snapshot(db);
     std::map<block_id, unsigned> refs;
+    std::set<block_id> seen;
     file f(path);
 
     std::shared_ptr<nbt_page> root = db->read_nbt_root();
     for(const_nodeinfo_iterator i = root->begin(); i != root->end(); ++i)
     {
-        count_data_tree<T>(f, bbt, (*i).data_bid, refs);
-        count_subnode_tree<T>(f, bbt, (*i).sub_bid, refs);
+        count_data_tree<T>(f, bbt, (*i).data_bid, refs, seen);
+        count_subnode_tree<T>(f, bbt, (*i).sub_bid, refs, seen);
     }
 
     for(std::map<block_id, block_info>::const_iterator i = bbt.begin(); i != bbt.end(); ++i)
@@ -781,6 +795,53 @@ void walk_store(const std::wstring& path)
     }
 }
 
+// The permute-encoded form of a string, which is how it actually sits on disk
+std::vector<pstsdk::byte> encoded_needle(const std::wstring& text)
+{
+    using namespace pstsdk;
+
+    std::vector<byte> raw;
+    for(size_t i = 0; i < text.size(); ++i)
+    {
+        raw.push_back((byte)(text[i] & 0xff));
+        raw.push_back((byte)((text[i] >> 8) & 0xff));
+    }
+
+    if(!raw.empty())
+        disk::permute(&raw[0], (pstsdk::ulong)raw.size(), true);
+
+    return raw;
+}
+
+// Occurrences that land inside a block the store still references. Free space is
+// deliberately excluded: real stores already carry stale plaintext there from
+// whatever the original client deleted, and an in place edit does not clear it.
+size_t count_in_live_blocks(const std::vector<pstsdk::byte>& hay,
+                            const std::vector<pstsdk::byte>& needle,
+                            const std::map<pstsdk::block_id, pstsdk::block_info>& bbt)
+{
+    using namespace pstsdk;
+
+    if(needle.empty() || hay.size() < needle.size())
+        return 0;
+
+    size_t hits = 0;
+    for(size_t i = 0; i + needle.size() <= hay.size(); ++i)
+    {
+        if(memcmp(&hay[i], &needle[0], needle.size()) != 0)
+            continue;
+
+        for(std::map<block_id, block_info>::const_iterator b = bbt.begin(); b != bbt.end(); ++b)
+            if(i >= b->second.address && i < b->second.address + b->second.size)
+            {
+                ++hits;
+                break;
+            }
+    }
+
+    return hits;
+}
+
 // Deletes every message in the store, one per copy, through the public entry
 // point. This is the first test that holds the whole stack to account at once:
 // the node is gone, the folder's row and count agree, the row index still lines
@@ -807,9 +868,29 @@ void test_delete_message(const std::string& sample)
         const node_id message = messages[victim];
 
         node_id folder = 0;
+        std::wstring subject;
+        bool unique_subject = false;
         {
             shared_db_ptr db = open_database(path);
             folder = db->lookup_node_info(message).parent_id;
+
+            // Only assert on a subject no other message shares, otherwise a
+            // surviving copy would look like a leak.
+            size_t sharing = 0;
+            for(size_t i = 0; i < messages.size(); ++i)
+            {
+                property_bag other(db->lookup_node(messages[i]));
+                if(!other.prop_exists(PR_SUBJECT_W))
+                    continue;
+
+                const std::wstring text = other.read_prop<std::wstring>(PR_SUBJECT_W);
+                if(messages[i] == message)
+                    subject = text;
+                else if(text == subject && !text.empty())
+                    ++sharing;
+            }
+
+            unique_subject = sharing == 0 && subject.size() > 4;
         }
 
         {
@@ -840,6 +921,14 @@ void test_delete_message(const std::string& sample)
         }
 
         check_refcounts<T>(db, path);
+
+        // A table cell wider than the row points at a heap allocation holding the
+        // cached subject in clear text. Removing the row has to free it, not just
+        // orphan it, or the text stays in a block the store still reads.
+        if(unique_subject)
+            assert(count_in_live_blocks(slurp(path), encoded_needle(subject),
+                                        bbt_snapshot(db)) == 0);
+
         db.reset();
 
         walk_store(path);
