@@ -31,8 +31,10 @@ int main()
     catch(exception& e)
     {
         cout << "*****" << typeid(e).name() << "*****" << endl;
-        cout << e.what();
-        throw;
+        cout << e.what() << endl;
+        // returning beats rethrowing: an abort here pops Windows Error Reporting,
+        // which blocks a CI runner until it is killed
+        return 1;
     }
 
 #ifdef _MSC_VER
