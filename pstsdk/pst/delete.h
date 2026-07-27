@@ -74,6 +74,16 @@ void delete_attachment(const shared_db_ptr& db, node_id message_nid, node_id att
 //! \ingroup pst_folderrelated
 void delete_folder(const shared_db_ptr& db, node_id nid);
 
+//! \brief Zero every byte the store does not reference
+//!
+//! Deleting an item clears what that item owned. This clears everything else the
+//! store is not using, including text left in free space by whatever client
+//! deleted things before the file reached you. Run it after the deletes.
+//! \param[in] db The store to edit, opened writable
+//! \returns The number of bytes zeroed
+//! \ingroup pst
+ulonglong wipe_free_space(const shared_db_ptr& db);
+
 //! \endcond
 
 } // end pstsdk namespace
@@ -378,6 +388,28 @@ struct delete_attachment_ansi
         { delete_attachment_impl(db, message, attachment); }
 };
 
+struct wipe_unicode
+{
+    ulonglong* wiped;
+    void operator()(const std::shared_ptr<large_pst>& db) const
+    {
+        db_writer<ulonglong> writer(db);
+        *wiped = writer.wipe_free_space();
+        writer.commit();
+    }
+};
+
+struct wipe_ansi
+{
+    ulonglong* wiped;
+    void operator()(const std::shared_ptr<small_pst>& db) const
+    {
+        db_writer<ulong> writer(db);
+        *wiped = writer.wipe_free_space();
+        writer.commit();
+    }
+};
+
 struct delete_folder_unicode
 {
     node_id nid;
@@ -406,6 +438,15 @@ inline void pstsdk::delete_attachment(const shared_db_ptr& db, node_id message_n
     detail::delete_attachment_unicode unicode = { message_nid, attachment_nid };
     detail::delete_attachment_ansi ansi = { message_nid, attachment_nid };
     detail::dispatch(db, unicode, ansi);
+}
+
+inline pstsdk::ulonglong pstsdk::wipe_free_space(const shared_db_ptr& db)
+{
+    ulonglong wiped = 0;
+    detail::wipe_unicode unicode = { &wiped };
+    detail::wipe_ansi ansi = { &wiped };
+    detail::dispatch(db, unicode, ansi);
+    return wiped;
 }
 
 inline void pstsdk::delete_folder(const shared_db_ptr& db, node_id nid)

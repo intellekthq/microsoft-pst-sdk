@@ -154,6 +154,20 @@ public:
     //! \param[in] nid The node to walk
     std::vector<block_id> node_external_blocks(node_id nid);
 
+    //! \brief Zero every byte the store does not reference
+    //!
+    //! Deleting an item scrubs what that item owned, but a store arrives already
+    //! carrying text in space its original client freed years earlier, and that
+    //! is just as readable. This clears all of it.
+    //!
+    //! What survives is the header region, the allocation map pages at their
+    //! fixed offsets, every BTree page, and every block the BBT still lists.
+    //! BTree pages are the trap: they are allocated from bidNextP and never
+    //! appear in the BBT, so anything that treats "outside the BBT" as free
+    //! destroys the store.
+    //! \returns The number of bytes zeroed
+    ulonglong wipe_free_space();
+
     //! \brief Mark the header as needing a restamp on the next \ref commit
     void touch() { m_dirty = true; }
 
@@ -205,6 +219,11 @@ private:
     void apply_release(const std::map<block_id, ushort>& remaining,
                        const std::map<block_id, block_info>& info,
                        const std::vector<block_id>& order);
+
+    //! Every page of a BTree, leaf and nonleaf alike
+    void collect_pages(ulonglong address, std::vector<ulonglong>& pages);
+    //! Whether a 512 byte window validates as a page of any kind
+    bool looks_like_page(ulonglong address);
 
     ulonglong nbt_root() const { return m_db->get_header().root_info.brefNBT.ib; }
     ulonglong bbt_root() const { return m_db->get_header().root_info.brefBBT.ib; }
@@ -906,6 +925,127 @@ inline void pstsdk::db_writer<T>::delete_node(node_id nid)
 
     nbt_remove(nid);
     apply_release(remaining, info, order);
+}
+
+template<typename T>
+inline void pstsdk::db_writer<T>::collect_pages(ulonglong address, std::vector<ulonglong>& pages)
+{
+    pages.push_back(address);
+
+    std::vector<byte> page = read_page_raw(address);
+    if(bt_level(page) == 0)
+        return;
+
+    for(uint i = 0; i < bt_count(page); ++i)
+        collect_pages(bt_child(page, i), pages);
+}
+
+// Rather than working out where every kind of allocation map page is supposed to
+// sit, ask the bytes. A page carries its type twice and a CRC over its contents,
+// so anything that validates is a real page of some kind and is left alone. That
+// covers the AMaps, the DList and the deprecated PMap and FMap pages without
+// this code having to know their spacing.
+template<typename T>
+inline bool pstsdk::db_writer<T>::looks_like_page(ulonglong address)
+{
+    std::vector<byte> page(disk::page_size);
+
+    try { m_db->get_file().read(page, address); }
+    catch(std::out_of_range&) { return false; }
+
+    const disk::page<T>* p = reinterpret_cast<const disk::page<T>*>(&page[0]);
+
+    if(p->trailer.page_type != p->trailer.page_type_repeat)
+        return false;
+
+    switch(p->trailer.page_type)
+    {
+    case disk::page_type_bbt:
+    case disk::page_type_nbt:
+    case disk::page_type_fmap:
+    case disk::page_type_pmap:
+    case disk::page_type_amap:
+    case disk::page_type_fpmap:
+    case disk::page_type_dlist:
+        break;
+    default:
+        return false;
+    }
+
+    return p->trailer.crc == disk::compute_crc(&page[0], disk::page<T>::page_data_size);
+}
+
+template<typename T>
+inline pstsdk::ulonglong pstsdk::db_writer<T>::wipe_free_space()
+{
+    const ulonglong eof = m_db->get_header().root_info.ibFileEof;
+    const ulonglong first = disk::first_amap_page_location;
+
+    std::vector<std::pair<ulonglong, ulonglong> > live;
+
+    // the header, the DList and everything reserved ahead of the first AMap
+    live.push_back(std::make_pair((ulonglong)0, first));
+
+    std::vector<ulonglong> pages;
+    collect_pages(nbt_root(), pages);
+    collect_pages(bbt_root(), pages);
+    for(size_t i = 0; i < pages.size(); ++i)
+        live.push_back(std::make_pair(pages[i], pages[i] + disk::page_size));
+
+    std::shared_ptr<bbt_page> root = m_db->read_bbt_root();
+    for(const_blockinfo_iterator i = root->begin(); i != root->end(); ++i)
+        live.push_back(std::make_pair((*i).address,
+                                      (*i).address + disk::align_disk<T>((*i).size)));
+
+    std::sort(live.begin(), live.end());
+
+    // Anything left in the gaps that still validates as a page is an allocation
+    // map page of some kind. Asking the bytes beats working out where each kind
+    // is meant to sit, and it covers the deprecated PMap and FMap pages too.
+    std::vector<std::pair<ulonglong, ulonglong> > keep;
+    ulonglong at = 0;
+
+    for(size_t i = 0; i <= live.size(); ++i)
+    {
+        const ulonglong stop = i < live.size() ? live[i].first : eof;
+
+        ulonglong page = at < first ? first : at;
+        if((page - first) % disk::page_size)
+            page += disk::page_size - ((page - first) % disk::page_size);
+
+        for(; page + disk::page_size <= stop; page += disk::page_size)
+            if(looks_like_page(page))
+                keep.push_back(std::make_pair(page, page + disk::page_size));
+
+        if(i < live.size() && live[i].second > at)
+            at = live[i].second;
+    }
+
+    live.insert(live.end(), keep.begin(), keep.end());
+    std::sort(live.begin(), live.end());
+
+    ulonglong wiped = 0;
+    at = 0;
+
+    for(size_t i = 0; i < live.size(); ++i)
+    {
+        if(live[i].first > at)
+        {
+            zero_extent(at, (size_t)(live[i].first - at));
+            wiped += live[i].first - at;
+        }
+
+        if(live[i].second > at)
+            at = live[i].second;
+    }
+
+    if(eof > at)
+    {
+        zero_extent(at, (size_t)(eof - at));
+        wiped += eof - at;
+    }
+
+    return wiped;
 }
 
 template<typename T>

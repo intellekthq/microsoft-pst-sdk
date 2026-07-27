@@ -825,6 +825,22 @@ std::vector<pstsdk::byte> encoded_needle(const std::wstring& text)
     return raw;
 }
 
+// Occurrences anywhere in the file, free space included. This is the measure
+// that matters once the wipe has run.
+size_t count_occurrences(const std::vector<pstsdk::byte>& hay,
+                         const std::vector<pstsdk::byte>& needle)
+{
+    if(needle.empty() || hay.size() < needle.size())
+        return 0;
+
+    size_t hits = 0;
+    for(size_t i = 0; i + needle.size() <= hay.size(); ++i)
+        if(memcmp(&hay[i], &needle[0], needle.size()) == 0)
+            ++hits;
+
+    return hits;
+}
+
 // Occurrences that land inside a block the store still references. Free space is
 // deliberately excluded: real stores already carry stale plaintext there from
 // whatever the original client deleted, and an in place edit does not clear it.
@@ -1112,6 +1128,61 @@ void test_delete_attachment(const std::string& sample)
     (void)cleared;
 }
 
+// The one test that speaks to the point of the feature: after deleting an item
+// and wiping, its text is absent from the whole file, not merely from the blocks
+// the store still references. submessage.pst ships with copies of a subject in
+// space its original client freed, so this covers inherited residue too.
+template<typename T>
+void test_wipe_free_space(const std::string& sample, const std::wstring& text)
+{
+    using namespace pstsdk;
+
+    std::wstring path = copy_sample(sample, "wipe");
+    const std::vector<byte> needle = encoded_needle(text);
+    assert(count_occurrences(slurp(path), needle) > 0);
+
+    node_id victim = 0;
+    {
+        shared_db_ptr db = open_database(path);
+        std::vector<node_id> nids = all_nids(db);
+
+        for(size_t i = 0; i < nids.size() && victim == 0; ++i)
+        {
+            if(get_nid_type(nids[i]) != nid_type_message)
+                continue;
+
+            // get_subject strips the two byte prefix the raw property carries
+            message item(db->lookup_node(nids[i]));
+            if(item.has_subject() && item.get_subject() == text)
+                victim = nids[i];
+        }
+    }
+    assert(victim != 0);
+
+    ulonglong wiped = 0;
+    {
+        std::shared_ptr<file> f(new file(path, true));
+        shared_db_ptr db = open_database(f);
+        delete_message(db, victim);
+    }
+    {
+        std::shared_ptr<file> f(new file(path, true));
+        shared_db_ptr db = open_database(f);
+        wiped = wipe_free_space(db);
+    }
+    assert(wiped > 0);
+
+    // gone from the file outright, not just from what the store reads
+    assert(count_occurrences(slurp(path), needle) == 0);
+
+    shared_db_ptr db = open_database(path);
+    check_refcounts<T>(db, path);
+    db.reset();
+
+    walk_store(path);
+    std::filesystem::remove(narrow(path));
+}
+
 // Every store under test/ keeps its row matrices inline, so nothing here reaches
 // the subnode path, which is the one a real folder takes past a few dozen
 // messages. Point PSTSDK_TEST_CORPUS at a directory of real stores to cover it:
@@ -1163,7 +1234,21 @@ void drain_store(const std::string& source)
         }
     }
 
+    ulonglong wiped = 0;
+    {
+        std::shared_ptr<file> f(new file(path, true));
+        shared_db_ptr db = open_database(f);
+        wiped = wipe_free_space(db);
+    }
+    {
+        shared_db_ptr db = open_database(path);
+        check_refcounts<T>(db, path);
+        db.reset();
+        walk_store(path);
+    }
+
     assert(deleted > 0);
+    std::wcout << L"  wiped " << wiped << L" bytes after draining" << std::endl;
     std::wcout << L"  drained " << deleted << L" messages from "
                << widen(source) << std::endl;
 
@@ -1331,6 +1416,9 @@ void test_delete()
     test_delete_folder<pstsdk::ulonglong>("submessage.pst");
 
     test_delete_attachment<pstsdk::ulonglong>("submessage.pst");
+
+    test_wipe_free_space<pstsdk::ulonglong>(
+        "submessage.pst", L"This is a message which has an embedded message attached");
 
     test_corpus();
 }
