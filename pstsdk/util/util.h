@@ -322,24 +322,10 @@ inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
     const int err = errno;
     ::iconv_close(cd);
     if(result == (size_t)(-1) || inbytesleft > 0 || outbytesleft % sizeof(wchar_t) != 0)
-    {
-        // TEMPORARY, for issue #3: macos fails here and linux does not, so say
-        // which bytes and which errno rather than guessing
-        std::string hex;
-        for(size_t i = 0; i < bytes.size() && i < 64; ++i)
-        {
-            char b[4];
-            snprintf(b, sizeof(b), "%02x ", bytes[i]);
-            hex += b;
-        }
-        throw std::runtime_error("Failed to convert from UTF-16LE to wstring"
-            " (errno=" + std::to_string(err) + " " + std::strerror(err) +
-            ", in=" + std::to_string(bytes.size()) +
-            ", inleft=" + std::to_string(inbytesleft) +
-            ", outleft=" + std::to_string(outbytesleft) +
-            ", sizeof(wchar_t)=" + std::to_string(sizeof(wchar_t)) +
-            ", bytes=" + hex + ")");
-    }
+        throw std::runtime_error("Failed to convert from UTF-16LE to wstring: "
+            + std::string(std::strerror(err)) + ", "
+            + std::to_string(inbytesleft) + " of "
+            + std::to_string(bytes.size()) + " bytes left");
 
     out.resize(out.size() - (outbytesleft / sizeof(wchar_t)));
     return out;
