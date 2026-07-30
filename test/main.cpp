@@ -20,9 +20,8 @@ int main()
         test_disk();
         cout << "test_db();" << endl;
         test_db();
-        // TODO https://github.com/intellekthq/microsoft-pst-sdk/issues/3
-        // cout << "test_highlevel();" << endl;
-        // test_highlevel();
+        cout << "test_highlevel();" << endl;
+        test_highlevel();
         cout << "test_pstlevel();" << endl;
         test_pstlevel();
         cout << "test_delete();" << endl;

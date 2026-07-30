@@ -12,6 +12,8 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <cerrno>
 #include <time.h>
 #include <memory>
 #include <string>
@@ -288,6 +290,14 @@ inline std::string pstsdk::bytes_to_string(const std::vector<byte> &bytes)
 // big wchar_t really is, or what encoding it uses.
 #include <iconv.h>
 
+// Not "WCHAR_T": libiconv implements that through the platform's mbrtowc, so
+// on macOS it follows LC_CTYPE and rejects anything outside it. Under the C
+// locale a right single quote comes back EILSEQ. glibc hardwires WCHAR_T to
+// UCS-4 and never showed this. Both libraries take a fixed width name, and
+// every platform reaching this branch is little endian with a 4 byte wchar_t.
+static_assert(sizeof(wchar_t) == 4, "expected a 4 byte wchar_t off Windows");
+#define PSTSDK_WCHAR_ENCODING "UTF-32LE"
+
 inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
 {
     if(bytes.size() == 0)
@@ -298,7 +308,7 @@ inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
         throw std::runtime_error("Cannot interpret odd number of bytes as UTF-16LE");
     std::wstring out(bytes.size() / 2, L'\0');
 
-    iconv_t cd(::iconv_open("WCHAR_T", "UTF-16LE"));
+    iconv_t cd(::iconv_open(PSTSDK_WCHAR_ENCODING, "UTF-16LE"));
     if(cd == (iconv_t)(-1)) {
         perror("bytes_to_wstring");
         throw std::runtime_error("Unable to convert from UTF-16LE to wstring");
@@ -309,9 +319,13 @@ inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
     char *outbuf = reinterpret_cast<char *>(&out[0]);
     size_t outbytesleft = out.size() * sizeof(wchar_t);
     size_t result = ::iconv(cd, const_cast<char **>(&inbuf), &inbytesleft, &outbuf, &outbytesleft);
+    const int err = errno;
     ::iconv_close(cd);
     if(result == (size_t)(-1) || inbytesleft > 0 || outbytesleft % sizeof(wchar_t) != 0)
-        throw std::runtime_error("Failed to convert from UTF-16LE to wstring");
+        throw std::runtime_error("Failed to convert from UTF-16LE to wstring: "
+            + std::string(std::strerror(err)) + ", "
+            + std::to_string(inbytesleft) + " of "
+            + std::to_string(bytes.size()) + " bytes left");
 
     out.resize(out.size() - (outbytesleft / sizeof(wchar_t)));
     return out;
@@ -359,7 +373,7 @@ inline std::vector<pstsdk::byte> pstsdk::wstring_to_bytes(const std::wstring &ws
     // Up to 4 bytes per character if all codepoints are surrogate pairs.
     std::vector<byte> out(wstr.size() * 4);
 
-    iconv_t cd(::iconv_open("UTF-16LE", "WCHAR_T"));
+    iconv_t cd(::iconv_open("UTF-16LE", PSTSDK_WCHAR_ENCODING));
     if(cd == (iconv_t)(-1)) {
         perror("wstring_to_bytes");
         throw std::runtime_error("Unable to convert from wstring to UTF-16LE");
