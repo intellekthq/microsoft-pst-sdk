@@ -290,6 +290,14 @@ inline std::string pstsdk::bytes_to_string(const std::vector<byte> &bytes)
 // big wchar_t really is, or what encoding it uses.
 #include <iconv.h>
 
+// Not "WCHAR_T": libiconv implements that through the platform's mbrtowc, so
+// on macOS it follows LC_CTYPE and rejects anything outside it. Under the C
+// locale a right single quote comes back EILSEQ. glibc hardwires WCHAR_T to
+// UCS-4 and never showed this. Both libraries take a fixed width name, and
+// every platform reaching this branch is little endian with a 4 byte wchar_t.
+static_assert(sizeof(wchar_t) == 4, "expected a 4 byte wchar_t off Windows");
+#define PSTSDK_WCHAR_ENCODING "UTF-32LE"
+
 inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
 {
     if(bytes.size() == 0)
@@ -300,7 +308,7 @@ inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
         throw std::runtime_error("Cannot interpret odd number of bytes as UTF-16LE");
     std::wstring out(bytes.size() / 2, L'\0');
 
-    iconv_t cd(::iconv_open("WCHAR_T", "UTF-16LE"));
+    iconv_t cd(::iconv_open(PSTSDK_WCHAR_ENCODING, "UTF-16LE"));
     if(cd == (iconv_t)(-1)) {
         perror("bytes_to_wstring");
         throw std::runtime_error("Unable to convert from UTF-16LE to wstring");
@@ -379,7 +387,7 @@ inline std::vector<pstsdk::byte> pstsdk::wstring_to_bytes(const std::wstring &ws
     // Up to 4 bytes per character if all codepoints are surrogate pairs.
     std::vector<byte> out(wstr.size() * 4);
 
-    iconv_t cd(::iconv_open("UTF-16LE", "WCHAR_T"));
+    iconv_t cd(::iconv_open("UTF-16LE", PSTSDK_WCHAR_ENCODING));
     if(cd == (iconv_t)(-1)) {
         perror("wstring_to_bytes");
         throw std::runtime_error("Unable to convert from wstring to UTF-16LE");
