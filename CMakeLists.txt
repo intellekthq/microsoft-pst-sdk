@@ -37,6 +37,23 @@ endif()
 # Use iconv if we have it.  This is required on non-Win32 platforms,
 # because we don't necessarily know the encoding of wchar_t.
 if (NOT MSVC)
+  # macOS ships an iconv whose UTF-16LE decoder is broken, and FindIconv picks
+  # it up before homebrew's GNU build. duckdb-pst hit the same thing, see
+  # intellekthq/duckdb-pst e766d3a.
+  if(APPLE)
+    execute_process(COMMAND brew --prefix libiconv
+                    OUTPUT_VARIABLE GNU_ICONV_PREFIX
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    ERROR_QUIET)
+    if(GNU_ICONV_PREFIX AND EXISTS "${GNU_ICONV_PREFIX}/lib/libiconv.dylib")
+      set(Iconv_INCLUDE_DIR "${GNU_ICONV_PREFIX}/include")
+      set(Iconv_LIBRARY "${GNU_ICONV_PREFIX}/lib/libiconv.dylib")
+      message(STATUS "Using GNU iconv from ${GNU_ICONV_PREFIX}")
+    else()
+      message(WARNING "GNU iconv not found, UTF-16LE decoding will be wrong")
+    endif()
+  endif()
+
   find_package(Iconv REQUIRED)
 endif()
 
