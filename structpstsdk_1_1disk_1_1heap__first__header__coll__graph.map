@@ -1,0 +1,11 @@
+<map id="pstsdk::disk::heap_first_header" name="pstsdk::disk::heap_first_header">
+<area shape="rect" id="Node000001" title="Header structure on the first heap block." alt="" coords="212,163,344,243"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,124,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,70,70,105,76,122,85,137,109,158,136,173,166,184,196,192,195,197,165,189,134,178,106,162,81,140,71,124,64,106,60,71"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="166,5,233,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="196,71,195,104,203,138,210,149,205,151,198,140,190,105,190,71"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="329,5,387,71"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="355,72,345,105,331,140,325,151,320,148,326,137,340,104,349,70"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="483,5,534,71"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="506,72,494,107,485,125,472,141,447,160,419,175,361,193,359,188,417,170,444,155,468,137,480,122,490,105,501,70"/>
+</map>

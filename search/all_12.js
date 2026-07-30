@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['table_0',['table',['../classpstsdk_1_1table.html#acb4db77ffd1cd1b15f911a5d5d4c73d0',1,'pstsdk::table::table(const node &amp;n)'],['../classpstsdk_1_1table.html#a83e8cf8cc2d2797edc260ef83bfed8a6',1,'pstsdk::table::table(const node &amp;n, alias_tag)'],['../classpstsdk_1_1table.html#ad8e2410df7ae3dd222ff073d543d4dd2',1,'pstsdk::table::table(const table &amp;other)'],['../classpstsdk_1_1table.html#adca9fb84d47ca1c52828feb8a44e13b1',1,'pstsdk::table::table(const table &amp;other, alias_tag)'],['../classpstsdk_1_1table.html',1,'pstsdk::table']]],
+  ['table_20context_20structures_1',['Table Context Structures',['../group__disk__tcrelated.html',1,'']]],
+  ['table_2eh_2',['table.h',['../table_8h.html',1,'']]],
+  ['table1_3',['table1',['../group__utilityrelated.html#ga71511f545c419a4360dbbd84f204db6f',1,'pstsdk::disk']]],
+  ['table2_4',['table2',['../group__utilityrelated.html#gaad14410d2b52a804bb70f690e3c5b275',1,'pstsdk::disk']]],
+  ['table3_5',['table3',['../group__utilityrelated.html#ga80b3c727a0a36c399b581dcd44581181',1,'pstsdk::disk']]],
+  ['table_5fimpl_6',['table_impl',['../classpstsdk_1_1table__impl.html',1,'pstsdk']]],
+  ['table_5fptr_7',['table_ptr',['../namespacepstsdk.html#a8851e2eeab4b6d5e363594624184a11a',1,'pstsdk']]],
+  ['tc_5fheader_8',['tc_header',['../structpstsdk_1_1disk_1_1tc__header.html',1,'pstsdk::disk']]],
+  ['tc_5foffsets_9',['tc_offsets',['../group__disk__tcrelated.html#ga5d18b211e9e57ab6b76531d01a98ea1f',1,'pstsdk::disk']]],
+  ['tc_5foffsets_5fbitmap_10',['tc_offsets_bitmap',['../group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fafacab6eefb277526f0f7492c1b70546a',1,'pstsdk::disk']]],
+  ['tc_5foffsets_5ffour_11',['tc_offsets_four',['../group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fa213b25e8bfee327808fe150eae312d12',1,'pstsdk::disk']]],
+  ['tc_5foffsets_5fmax_12',['tc_offsets_max',['../group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fa6f6193ba44679633716199421230d485',1,'pstsdk::disk']]],
+  ['tc_5foffsets_5fone_13',['tc_offsets_one',['../group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fabaf3daae8367e98dd36760a0ec9740ec',1,'pstsdk::disk']]],
+  ['tc_5foffsets_5ftwo_14',['tc_offsets_two',['../group__disk__tcrelated.html#gga5d18b211e9e57ab6b76531d01a98ea1fab68f57dead425ac4df27a4efca06ec63',1,'pstsdk::disk']]],
+  ['test_5fbit_15',['test_bit',['../group__util.html#ga8ce9ed58eb97b5f04694b0e753052af0',1,'pstsdk']]],
+  ['time_5ft_5fto_5ffiletime_16',['time_t_to_filetime',['../group__util.html#ga0f27818a2083fbecd809f90aecb446a0',1,'pstsdk']]],
+  ['time_5ft_5fto_5fvt_5fdate_17',['time_t_to_vt_date',['../group__util.html#ga337c650f450e903ba61b51094ebd2c6b',1,'pstsdk']]],
+  ['to_20id_20mapping_20structures_18',['Name to ID Mapping Structures',['../group__disk__nameidrelated.html',1,'']]],
+  ['total_5fsize_19',['total_size',['../structpstsdk_1_1disk_1_1extended__block_3_01ulong_01_4.html#a4c3cef4c96340860daec50de2b9ce461',1,'pstsdk::disk::extended_block&lt; ulong &gt;::total_size'],['../structpstsdk_1_1disk_1_1extended__block_3_01ulonglong_01_4.html#a75437188f46f34f38f3d1a736cd738f2',1,'pstsdk::disk::extended_block&lt; ulonglong &gt;::total_size']]],
+  ['trailer_20',['trailer',['../structpstsdk_1_1disk_1_1bt__page.html#afd8e466ca76fdbe080cdae560381d3f1',1,'pstsdk::disk::bt_page::trailer'],['../structpstsdk_1_1disk_1_1page.html#aca275a9574468484f3ee4db38648a1a4',1,'pstsdk::disk::page::trailer'],['../structpstsdk_1_1disk_1_1dlist__page.html#ad21f8a9f856d499b3f308dc428b89c0c',1,'pstsdk::disk::dlist_page::trailer']]],
+  ['trim_21',['trim',['../classpstsdk_1_1block.html#aaad15732a622c152d2589b77ff22dcd6',1,'pstsdk::block']]],
+  ['type_22',['type',['../structpstsdk_1_1distribution__list__wrapped__entry__id.html#a0e6d8237cc14a22e5be3334f9ec9815e',1,'pstsdk::distribution_list_wrapped_entry_id::type'],['../structpstsdk_1_1disk_1_1gust__column__description.html#a0a3a1b4ce203c5bd2e5f142cbe37744e',1,'pstsdk::disk::gust_column_description::type'],['../structpstsdk_1_1disk_1_1column__description.html#a4e7eca87ae1ba68614f5503597d8b687',1,'pstsdk::disk::column_description::type'],['../structpstsdk_1_1disk_1_1prop__entry.html#a5f42f74a07ff12867282bc34cb7da2f3',1,'pstsdk::disk::prop_entry::type']]],
+  ['types_23',['Primitive Types',['../group__primitive.html',1,'']]]
+];

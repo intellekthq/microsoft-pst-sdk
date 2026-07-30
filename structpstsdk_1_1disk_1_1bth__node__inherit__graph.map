@@ -1,0 +1,11 @@
+<map id="pstsdk::disk::bth_node&lt; EntryType &gt;" name="pstsdk::disk::bth_node&lt; EntryType &gt;">
+<area shape="rect" id="Node000001" title="BTH node." alt="" coords="133,5,293,85"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1bth__node.html" title=" " alt="" coords="5,163,200,243"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="155,97,144,111,128,137,117,164,112,162,124,134,139,108,151,93"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1disk_1_1bth__node.html" title=" " alt="" coords="225,163,426,243"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="273,93,285,108,301,134,314,161,309,163,296,137,281,111,269,97"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1disk_1_1bth__leaf__node.html" title="BTH Leaf node." alt="" coords="26,292,179,372"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="105,256,105,292,100,292,100,256"/>
+<area shape="rect" id="Node000005" href="$structpstsdk_1_1disk_1_1bth__nonleaf__node.html" title="BTH Nonleaf node." alt="" coords="237,292,414,372"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="328,256,328,292,323,292,323,256"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classboost_1_1iostreams_1_1device.html" title=" " alt="" coords="5,77,188,102"/>
+<area shape="rect" id="Node000001" href="$classpstsdk_1_1hid__stream__device.html" title="Defines a stream device for a heap allocation for use by boost iostream." alt="" coords="242,5,389,45"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="153,70,245,43,247,48,155,75"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1hnid__stream__device.html" title="Defines a stream device which can wrap one of the two prop sources." alt="" coords="238,69,393,109"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="202,87,238,87,238,92,202,92"/>
+<area shape="rect" id="Node000003" href="$classpstsdk_1_1node__stream__device.html" title="Defines a stream device for a node for use by boost iostream." alt="" coords="236,133,395,173"/>
+<area shape="poly" id="edge3_Node000000_Node000003" title=" " alt="" coords="155,103,247,131,245,136,153,109"/>
+</map>

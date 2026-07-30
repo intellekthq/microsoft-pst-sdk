@@ -1,0 +1,23 @@
+<map id="pstsdk/ndb/page.h" name="pstsdk/ndb/page.h">
+<area shape="rect" id="Node000001" title="Page definitions." alt="" coords="42,5,183,31"/>
+<area shape="rect" id="Node000002" href="$ndb_8h.html" title=" " alt="" coords="5,225,111,251"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,45,98,79,63,226,58,225,93,78,103,43"/>
+<area shape="rect" id="Node000003" href="$database_8h.html" title="Database implementation." alt="" coords="108,79,277,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="137,38,181,76,178,80,134,42"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="170,115,129,154,69,227,64,224,125,150,167,111"/>
+<area shape="rect" id="Node000004" href="$ndb_2writer_8h.html" title="In place edits of an open store." alt="" coords="139,152,286,177"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="202,117,212,151,207,153,197,118"/>
+<area shape="rect" id="Node000009" href="$pst_2pst_8h.html" title="PST implementation." alt="" coords="323,152,449,177"/>
+<area shape="poly" id="edge11_Node000003_Node000009" title=" " alt="" coords="237,106,355,149,353,154,235,111"/>
+<area shape="poly" id="edge9_Node000004_Node000002" title=" " alt="" coords="177,185,84,228,82,223,174,181"/>
+<area shape="rect" id="Node000005" href="$ltp_2writer_8h.html" title="In place edits of heaps, BTHs, property contexts and table contexts." alt="" coords="135,225,274,251"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="212,191,209,226,203,225,207,191"/>
+<area shape="rect" id="Node000007" href="$delete_8h.html" title="Deleting items from a store, in place." alt="" coords="214,299,361,324"/>
+<area shape="poly" id="edge10_Node000004_Node000007" title=" " alt="" coords="249,182,271,200,288,224,295,244,296,264,293,299,287,298,291,264,289,245,284,227,267,204,245,187"/>
+<area shape="rect" id="Node000006" href="$ltp_8h.html" title=" " alt="" coords="91,299,190,324"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="187,263,153,300,149,297,183,259"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="230,258,276,296,272,300,227,262"/>
+<area shape="rect" id="Node000008" href="$pst_8h.html" title=" " alt="" coords="291,372,393,397"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="307,333,335,370,331,374,303,337"/>
+<area shape="poly" id="edge12_Node000009_Node000008" title=" " alt="" coords="390,191,388,252,383,289,375,325,364,351,352,373,347,370,360,349,370,323,378,288,382,252,384,191"/>
+</map>

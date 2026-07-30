@@ -1,0 +1,15 @@
+<map id="pstsdk::block" name="pstsdk::block">
+<area shape="rect" id="Node000001" title="The base class of the block class hierarchy." alt="" coords="310,5,437,291"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1data__block.html" title="A block which represents end user data." alt="" coords="208,339,349,544"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="326,304,314,339,309,337,321,303"/>
+<area shape="rect" id="Node000005" href="$classpstsdk_1_1subnode__block.html" title="A block which contains information about subnodes." alt="" coords="387,379,549,504"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="426,303,451,378,445,379,421,305"/>
+<area shape="rect" id="Node000003" href="$classpstsdk_1_1extended__block.html" title="A data block which refers to other data blocks, in order to extend the physical size limit (8k) to a ..." alt="" coords="5,592,173,757"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="201,542,158,593,154,590,197,538"/>
+<area shape="rect" id="Node000004" href="$classpstsdk_1_1external__block.html" title="Contains actual data." alt="" coords="198,602,359,747"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="281,558,281,602,276,602,276,558"/>
+<area shape="rect" id="Node000006" href="$classpstsdk_1_1subnode__leaf__block.html" title="Contains the actual subnode information." alt="" coords="384,605,552,745"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="471,518,471,604,465,604,465,518"/>
+<area shape="rect" id="Node000007" href="$classpstsdk_1_1subnode__nonleaf__block.html" title="Contains references to subnode_leaf_blocks." alt="" coords="576,595,768,755"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="534,513,604,593,600,596,530,516"/>
+</map>

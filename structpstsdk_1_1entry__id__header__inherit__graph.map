@@ -1,0 +1,9 @@
+<map id="pstsdk::entry_id_header" name="pstsdk::entry_id_header">
+<area shape="rect" id="Node000001" title=" " alt="" coords="198,5,369,91"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1distribution__list__wrapped__entry__id.html" title=" " alt="" coords="5,159,169,259"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,101,150,161,146,156,220,97"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1entry__id__bytebag.html" title=" " alt="" coords="194,176,373,241"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="286,104,286,176,281,176,281,104"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1recipient__oneoff__entry__id.html" title="One&#45;off recipient EntryID [MS&#45;OXCDATA] 2.2.5.1." alt="" coords="397,139,567,279"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="348,97,398,137,395,141,345,101"/>
+</map>

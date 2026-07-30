@@ -1,0 +1,7 @@
+<map id="pstsdk::disk::nameid" name="pstsdk::disk::nameid">
+<area shape="rect" id="Node000001" title="Defines a id to name mapping." alt="" coords="25,163,175,228"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,72,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="36,71,35,104,42,138,49,149,44,151,38,140,29,105,30,71"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="99,5,226,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="158,72,136,140,131,150,126,147,131,138,153,70"/>
+</map>

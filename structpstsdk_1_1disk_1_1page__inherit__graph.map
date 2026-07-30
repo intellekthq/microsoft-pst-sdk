@@ -1,0 +1,11 @@
+<map id="pstsdk::disk::page&lt; T &gt;" name="pstsdk::disk::page&lt; T &gt;">
+<area shape="rect" id="Node000001" title="Generic page structure." alt="" coords="230,5,401,111"/>
+<area shape="rect" id="Node000002" href="$structpstsdk_1_1disk_1_1amap__page.html" title="The authoritative source of free space in the file." alt="" coords="5,159,143,239"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="220,117,143,161,141,156,217,113"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1disk_1_1fmap__page.html" title="A deprecated allocation system optimized for AMap page searching." alt="" coords="167,159,301,239"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="280,124,259,160,255,157,276,121"/>
+<area shape="rect" id="Node000004" href="$structpstsdk_1_1disk_1_1fpmap__page.html" title="A deprecated allocation system optimized for PMap page searching." alt="" coords="325,159,468,239"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="355,121,376,157,371,160,350,124"/>
+<area shape="rect" id="Node000005" href="$structpstsdk_1_1disk_1_1pmap__page.html" title="An old allocation system optimized for pages." alt="" coords="492,159,629,239"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="414,112,493,156,490,161,411,116"/>
+</map>

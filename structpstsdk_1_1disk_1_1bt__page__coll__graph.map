@@ -1,0 +1,13 @@
+<map id="pstsdk::disk::bt_page&lt; T, EntryType &gt;" name="pstsdk::disk::bt_page&lt; T, EntryType &gt;">
+<area shape="rect" id="Node000001" title="The fundamental page structure which forms the basis of the two BTrees." alt="" coords="173,192,325,272"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,57,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="33,70,38,120,47,144,61,166,82,184,105,199,158,217,156,222,103,203,79,189,57,170,42,147,33,121,27,71"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="116,5,195,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="159,70,166,118,174,143,184,167,192,178,187,181,180,169,169,145,161,119,154,71"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="219,5,278,71"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="251,71,251,175,246,175,246,71"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="345,5,472,71"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="412,72,404,120,395,146,381,170,363,188,341,203,338,198,359,184,377,166,391,144,399,119,406,71"/>
+<area shape="rect" id="Node000006" href="$classpage__trailer_3_01_t_01_4.html" title=" " alt="" coords="497,5,627,71"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="544,72,504,123,479,148,450,170,397,197,341,216,340,211,395,192,447,166,475,144,500,119,540,69"/>
+</map>

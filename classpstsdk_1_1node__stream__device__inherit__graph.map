@@ -1,0 +1,5 @@
+<map id="pstsdk::node_stream_device" name="pstsdk::node_stream_device">
+<area shape="rect" id="Node000001" title="Defines a stream device for a node for use by boost iostream." alt="" coords="28,133,201,253"/>
+<area shape="rect" id="Node000002" href="$classboost_1_1iostreams_1_1device.html" title=" " alt="" coords="5,5,224,85"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,99,117,133,112,133,112,99"/>
+</map>

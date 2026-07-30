@@ -1,0 +1,39 @@
+<map id="pstsdk/ndb/database_iface.h" name="pstsdk/ndb/database_iface.h">
+<area shape="rect" id="Node000001" title="Database interface." alt="" coords="417,5,575,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,167,83,192"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="441,48,92,165,90,160,439,43"/>
+<area shape="rect" id="Node000003" href="$util_2util_8h.html" title="General utility functions and classes." alt="" coords="433,93,559,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="499,46,499,79,493,79,493,46"/>
+<area shape="rect" id="Node000014" href="$primitives_8h.html" title="Primitive structures defined by MS&#45;PST and MAPI." alt="" coords="926,240,1098,265"/>
+<area shape="poly" id="edge20_Node000001_Node000014" title=" " alt="" coords="575,29,718,44,885,69,966,87,1037,109,1095,134,1116,149,1133,165,1139,177,1139,189,1125,209,1099,225,1068,238,1066,233,1096,221,1121,205,1134,187,1134,178,1129,168,1113,153,1092,139,1036,114,965,92,884,75,717,49,575,35"/>
+<area shape="poly" id="edge8_Node000003_Node000002" title=" " alt="" coords="433,118,284,139,97,169,96,164,283,133,432,113"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="107,167,168,192"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="433,121,320,141,182,169,181,164,319,136,432,115"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="193,167,258,192"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="453,121,272,169,271,163,452,116"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="520,313,587,339"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="433,117,386,126,345,141,330,151,321,162,318,175,324,191,340,215,361,236,409,270,461,294,508,311,506,316,459,299,407,274,358,240,336,218,319,193,313,176,316,160,327,147,343,136,385,121,432,111"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="334,167,397,192"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="476,121,400,162,397,158,474,116"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="421,167,485,192"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="491,120,469,156,465,154,487,118"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="509,167,568,192"/>
+<area shape="poly" id="edge9_Node000003_Node000009" title=" " alt="" coords="505,118,527,154,523,156,501,120"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="593,167,655,192"/>
+<area shape="poly" id="edge10_Node000003_Node000010" title=" " alt="" coords="518,116,592,157,590,162,515,121"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="679,167,806,192"/>
+<area shape="poly" id="edge11_Node000003_Node000011" title=" " alt="" coords="536,116,690,160,689,165,535,121"/>
+<area shape="rect" id="Node000012" href="$errors_8h.html" title="The exceptions used by pstsdk." alt="" coords="831,167,975,192"/>
+<area shape="poly" id="edge12_Node000003_Node000012" title=" " alt="" coords="560,116,824,162,823,167,559,121"/>
+<area shape="poly" id="edge18_Node000003_Node000014" title=" " alt="" coords="560,104,667,106,794,114,855,122,910,132,956,146,988,165,1000,178,1007,194,1014,226,1009,227,1002,195,995,181,985,169,954,151,909,137,854,127,793,119,667,111,559,109"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1050,167,1118,192"/>
+<area shape="poly" id="edge19_Node000003_Node000017" title=" " alt="" coords="560,110,770,130,1031,164,1037,165,1036,170,1030,169,769,135,559,115"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="815,240,902,265"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="898,194,875,230,871,227,893,191"/>
+<area shape="poly" id="edge14_Node000012_Node000014" title=" " alt="" coords="922,190,984,230,981,235,919,194"/>
+<area shape="poly" id="edge17_Node000014_Node000006" title=" " alt="" coords="939,268,601,320,600,315,938,263"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="869,313,998,339"/>
+<area shape="poly" id="edge15_Node000014_Node000015" title=" " alt="" coords="1001,267,958,306,954,302,998,263"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1022,313,1157,339"/>
+<area shape="poly" id="edge16_Node000014_Node000016" title=" " alt="" coords="1026,263,1068,302,1065,306,1023,267"/>
+</map>

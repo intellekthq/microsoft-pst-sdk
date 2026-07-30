@@ -1,0 +1,7 @@
+<map id="pstsdk::disk::bth_header" name="pstsdk::disk::bth_header">
+<area shape="rect" id="Node000001" title="Describes the BTH, including the size of the keys/values and the heap_id of the root allocation." alt="" coords="16,177,189,243"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,64,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="31,71,29,111,32,132,38,152,46,164,41,167,34,154,27,134,24,112,26,71"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="145,5,196,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="168,71,159,112,144,154,139,164,134,162,139,152,154,110,163,70"/>
+</map>

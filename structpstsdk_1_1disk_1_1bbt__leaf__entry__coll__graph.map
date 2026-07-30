@@ -1,0 +1,7 @@
+<map id="pstsdk::disk::bbt_leaf_entry&lt; T &gt;" name="pstsdk::disk::bbt_leaf_entry&lt; T &gt;">
+<area shape="rect" id="Node000001" title="BBT Leaf Entry." alt="" coords="75,148,228,228"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,161,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,70,129,132,124,134,95,72"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="186,5,253,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="207,72,178,134,174,132,202,70"/>
+</map>

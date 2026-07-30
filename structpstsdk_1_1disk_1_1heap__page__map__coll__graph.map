@@ -1,0 +1,5 @@
+<map id="pstsdk::disk::heap_page_map" name="pstsdk::disk::heap_page_map">
+<area shape="rect" id="Node000001" title="Provides a map of the allocations on a heap block." alt="" coords="5,163,137,243"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="38,5,105,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,71,74,146,69,146,69,71"/>
+</map>

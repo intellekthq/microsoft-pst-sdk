@@ -1,0 +1,5 @@
+<map id="pstsdk::can_not_resize" name="pstsdk::can_not_resize">
+<area shape="rect" id="Node000001" title="A block or node can not satisfy a resize request." alt="" coords="5,119,168,184"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="21,5,152,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,84,89,119,84,119,84,84"/>
+</map>

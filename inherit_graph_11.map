@@ -1,0 +1,73 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classpstsdk_1_1block.html" title="The base class of the block class hierarchy." alt="" coords="51,35,159,60"/>
+<area shape="rect" id="Node000001" href="$classpstsdk_1_1data__block.html" title="A block which represents end user data." alt="" coords="283,35,427,60"/>
+<area shape="poly" id="edge6_Node000000_Node000001" title=" " alt="" coords="173,45,283,45,283,50,173,50"/>
+<area shape="rect" id="Node000015" href="$classpstsdk_1_1subnode__block.html" title="A block which contains information about subnodes." alt="" coords="270,88,441,113"/>
+<area shape="poly" id="edge9_Node000000_Node000015" title=" " alt="" coords="173,59,295,85,294,91,172,64"/>
+<area shape="rect" id="Node000002" href="$classpstsdk_1_1extended__block.html" title="A data block which refers to other data blocks, in order to extend the physical size limit (8k) to a ..." alt="" coords="511,55,687,80"/>
+<area shape="poly" id="edge7_Node000001_Node000002" title=" " alt="" coords="441,52,511,57,510,63,441,57"/>
+<area shape="rect" id="Node000026" href="$classpstsdk_1_1external__block.html" title="Contains actual data." alt="" coords="514,5,683,31"/>
+<area shape="poly" id="edge8_Node000001_Node000026" title=" " alt="" coords="441,34,513,26,514,31,441,40"/>
+<area shape="rect" id="Node000014" href="$classpstsdk_1_1subnode__leaf__block.html" title="Contains the actual subnode information." alt="" coords="519,169,679,209"/>
+<area shape="poly" id="edge10_Node000015_Node000014" title=" " alt="" coords="440,115,460,122,484,138,508,154,535,166,533,171,505,159,481,142,457,127,438,120"/>
+<area shape="rect" id="Node000016" href="$classpstsdk_1_1subnode__nonleaf__block.html" title="Contains references to subnode_leaf_blocks." alt="" coords="507,105,691,145"/>
+<area shape="poly" id="edge11_Node000015_Node000016" title=" " alt="" coords="455,108,507,113,506,118,454,113"/>
+<area shape="rect" id="Node000012" href="$classpstsdk_1_1btree__node.html" title="A BTree Node." alt="" coords="31,463,178,503"/>
+<area shape="rect" id="Node000013" href="$classpstsdk_1_1btree__node__leaf.html" title=" " alt="" coords="264,216,447,271"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="189,460,202,449,217,429,224,409,226,368,227,325,235,304,250,282,265,269,268,273,254,285,240,306,233,326,231,368,230,410,222,432,206,453,192,464"/>
+<area shape="rect" id="Node000017" href="$classpstsdk_1_1btree__node__nonleaf.html" title=" " alt="" coords="252,137,459,192"/>
+<area shape="poly" id="edge14_Node000012_Node000017" title=" " alt="" coords="188,461,202,450,222,419,230,389,230,359,226,328,222,298,222,266,230,234,250,202,262,190,266,194,254,205,235,236,227,267,227,297,231,328,235,358,235,390,227,421,206,453,192,465"/>
+<area shape="rect" id="Node000005" href="$classpstsdk_1_1bt__page.html" title=" " alt="" coords="265,413,446,439"/>
+<area shape="poly" id="edge16_Node000012_Node000005" title=" " alt="" coords="191,461,299,436,300,441,192,466"/>
+<area shape="rect" id="Node000009" href="$classpstsdk_1_1bth__node.html" title="The object which forms the root of the BTH hierarchy." alt="" coords="261,592,450,617"/>
+<area shape="poly" id="edge19_Node000012_Node000009" title=" " alt="" coords="143,510,194,545,253,577,290,589,288,594,251,582,191,549,140,514"/>
+<area shape="rect" id="Node000011" href="$classpstsdk_1_1btree__node__leaf.html" title="Represents a leaf node in a BTree structure." alt="" coords="282,527,429,567"/>
+<area shape="poly" id="edge22_Node000012_Node000011" title=" " alt="" coords="192,503,282,526,281,531,191,508"/>
+<area shape="rect" id="Node000007" href="$classpstsdk_1_1btree__node__nonleaf.html" title="Represents a non&#45;leaf node in a BTree structure." alt="" coords="282,463,429,503"/>
+<area shape="poly" id="edge25_Node000012_Node000007" title=" " alt="" coords="192,481,282,481,282,486,192,486"/>
+<area shape="poly" id="edge13_Node000013_Node000014" title=" " alt="" coords="460,217,518,204,519,209,461,222"/>
+<area shape="poly" id="edge15_Node000017_Node000016" title=" " alt="" coords="472,143,506,137,507,142,473,148"/>
+<area shape="rect" id="Node000004" href="$classpstsdk_1_1bt__leaf__page.html" title="Contains the actual key value pairs of the btree." alt="" coords="520,495,677,535"/>
+<area shape="poly" id="edge17_Node000005_Node000004" title=" " alt="" coords="437,440,460,449,484,465,508,481,535,493,533,498,505,486,481,469,457,454,435,445"/>
+<area shape="rect" id="Node000006" href="$classpstsdk_1_1bt__nonleaf__page.html" title="Contains references to other bt_pages." alt="" coords="527,431,670,471"/>
+<area shape="poly" id="edge18_Node000005_Node000006" title=" " alt="" coords="460,434,527,441,527,447,459,439"/>
+<area shape="rect" id="Node000010" href="$classpstsdk_1_1bth__leaf__node.html" title="Contains the actual key value pairs of the BTH." alt="" coords="516,623,681,663"/>
+<area shape="poly" id="edge20_Node000009_Node000010" title=" " alt="" coords="450,617,516,628,515,633,449,622"/>
+<area shape="rect" id="Node000008" href="$classpstsdk_1_1bth__nonleaf__node.html" title="Contains references to other bth_node allocations." alt="" coords="523,559,674,599"/>
+<area shape="poly" id="edge21_Node000009_Node000008" title=" " alt="" coords="464,591,523,585,523,590,464,596"/>
+<area shape="poly" id="edge23_Node000011_Node000004" title=" " alt="" coords="442,533,519,523,520,528,443,539"/>
+<area shape="poly" id="edge24_Node000011_Node000010" title=" " alt="" coords="440,570,460,578,484,594,508,609,536,621,534,626,505,614,481,598,457,583,438,575"/>
+<area shape="poly" id="edge26_Node000007_Node000006" title=" " alt="" coords="442,469,527,458,528,463,443,475"/>
+<area shape="poly" id="edge27_Node000007_Node000008" title=" " alt="" coords="443,506,460,513,484,529,508,545,535,557,533,562,505,550,481,533,457,518,441,510"/>
+<area shape="rect" id="Node000018" href="$classpstsdk_1_1btree__node.html" title=" " alt="" coords="5,85,204,125"/>
+<area shape="poly" id="edge28_Node000018_Node000015" title=" " alt="" coords="217,100,270,99,270,105,217,106"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="283,295,428,335"/>
+<area shape="poly" id="edge33_Node000003_Node000002" title=" " alt="" coords="439,294,457,280,473,257,480,234,481,211,479,187,478,163,479,139,487,115,505,91,523,78,526,82,509,95,492,117,485,140,483,163,485,187,487,211,485,235,478,259,461,284,442,298"/>
+<area shape="poly" id="edge34_Node000003_Node000026" title=" " alt="" coords="439,295,457,280,476,251,484,221,483,191,479,162,475,131,475,101,484,71,505,40,520,29,523,33,509,44,489,73,481,102,480,131,484,161,489,191,489,222,481,253,461,284,442,299"/>
+<area shape="poly" id="edge37_Node000003_Node000014" title=" " alt="" coords="439,290,457,280,472,265,480,250,489,234,505,219,526,206,529,211,508,223,493,238,485,253,476,268,460,284,442,295"/>
+<area shape="poly" id="edge38_Node000003_Node000016" title=" " alt="" coords="439,293,457,280,469,265,476,250,480,219,485,187,492,171,505,155,521,143,524,147,509,159,496,174,490,189,485,220,481,252,474,268,460,284,442,297"/>
+<area shape="poly" id="edge29_Node000003_Node000004" title=" " alt="" coords="398,342,430,369,461,400,475,423,483,444,492,462,508,481,526,493,524,497,505,485,487,465,478,446,471,426,457,404,426,373,394,346"/>
+<area shape="poly" id="edge30_Node000003_Node000006" title=" " alt="" coords="393,342,446,380,508,417,535,429,532,434,505,422,443,384,390,346"/>
+<area shape="rect" id="Node000024" href="$classpstsdk_1_1db__context.html" title="Database external interface." alt="" coords="526,283,671,308"/>
+<area shape="poly" id="edge31_Node000003_Node000024" title=" " alt="" coords="442,306,525,299,526,304,442,311"/>
+<area shape="rect" id="Node000027" href="$classpstsdk_1_1heap__impl.html" title="The HN implementation." alt="" coords="528,332,669,357"/>
+<area shape="poly" id="edge35_Node000003_Node000027" title=" " alt="" coords="442,323,528,334,527,339,441,328"/>
+<area shape="rect" id="Node000028" href="$classpstsdk_1_1node__impl.html" title="The node implementation." alt="" coords="528,381,669,407"/>
+<area shape="poly" id="edge36_Node000003_Node000028" title=" " alt="" coords="421,338,507,367,547,379,545,384,506,373,420,343"/>
+<area shape="rect" id="Node000029" href="$classpstsdk_1_1table__impl.html" title="Table implementation." alt="" coords="527,233,670,259"/>
+<area shape="poly" id="edge39_Node000003_Node000029" title=" " alt="" coords="434,289,506,267,547,256,549,261,507,273,435,294"/>
+<area shape="rect" id="Node000025" href="$classpstsdk_1_1database__impl.html" title="PST implementation." alt="" coords="739,283,945,308"/>
+<area shape="poly" id="edge32_Node000024_Node000025" title=" " alt="" coords="685,293,739,293,739,298,685,298"/>
+<area shape="rect" id="Node000030" href="$classpstsdk_1_1basic__table.html" title="Implementation of an ANSI TC (64k rows) and a unicode TC." alt="" coords="749,233,935,259"/>
+<area shape="poly" id="edge40_Node000029_Node000030" title=" " alt="" coords="684,243,749,243,749,249,684,249"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="30,665,179,691"/>
+<area shape="poly" id="edge41_Node000019_Node000009" title=" " alt="" coords="154,658,251,627,299,615,300,620,253,633,156,663"/>
+<area shape="rect" id="Node000020" href="$classpstsdk_1_1file.html" title="A generic class to read and write to a file." alt="" coords="309,641,402,667"/>
+<area shape="poly" id="edge42_Node000019_Node000020" title=" " alt="" coords="193,667,308,656,309,661,193,672"/>
+<area shape="rect" id="Node000021" href="$classpstsdk_1_1name__id__map.html" title="A named property map abstraction." alt="" coords="273,691,438,716"/>
+<area shape="poly" id="edge43_Node000019_Node000021" title=" " alt="" coords="193,684,273,692,272,698,192,690"/>
+<area shape="rect" id="Node000022" href="$classpstsdk_1_1pst.html" title="A PST file." alt="" coords="309,740,402,765"/>
+<area shape="poly" id="edge44_Node000019_Node000022" title=" " alt="" coords="154,693,253,726,309,740,308,746,251,731,152,698"/>
+<area shape="rect" id="Node000023" href="$classpstsdk_1_1page.html" title="Generic base class for all page typesA page which forms a node in the NBT or BBT." alt="" coords="52,413,157,439"/>
+<area shape="poly" id="edge45_Node000023_Node000005" title=" " alt="" coords="171,423,265,423,265,429,171,429"/>
+</map>

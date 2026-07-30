@@ -1,0 +1,9 @@
+<map id="pstsdk/ltp/writer.h" name="pstsdk/ltp/writer.h">
+<area shape="rect" id="Node000001" title="In place edits of heaps, BTHs, property contexts and table contexts." alt="" coords="59,5,197,31"/>
+<area shape="rect" id="Node000002" href="$ltp_8h.html" title=" " alt="" coords="5,79,104,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,42,68,80,65,77,104,38"/>
+<area shape="rect" id="Node000003" href="$delete_8h.html" title="Deleting items from a store, in place." alt="" coords="128,79,275,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="152,38,191,77,188,80,148,42"/>
+<area shape="rect" id="Node000004" href="$pst_8h.html" title=" " alt="" coords="151,152,252,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="204,118,204,152,199,152,199,118"/>
+</map>

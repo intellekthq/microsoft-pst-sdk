@@ -1,0 +1,20 @@
+<map id="pstsdk/ltp/table.h" name="pstsdk/ltp/table.h">
+<area shape="rect" id="Node000001" title="Table (or Table Context, or TC) implementation." alt="" coords="145,5,279,31"/>
+<area shape="rect" id="Node000002" href="$ltp_8h.html" title=" " alt="" coords="51,79,149,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,40,120,81,117,76,181,36"/>
+<area shape="rect" id="Node000003" href="$delete_8h.html" title="Deleting items from a store, in place." alt="" coords="5,152,152,177"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="204,44,186,75,163,106,132,134,101,154,98,150,128,129,159,102,182,72,199,42"/>
+<area shape="rect" id="Node000005" href="$folder_8h.html" title="Folder objects." alt="" coords="177,152,319,177"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="221,44,248,151,243,152,216,45"/>
+<area shape="rect" id="Node000007" href="$message_8h.html" title="Message related classes." alt="" coords="275,79,439,104"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="249,34,335,76,332,81,246,39"/>
+<area shape="rect" id="Node000004" href="$pst_8h.html" title=" " alt="" coords="207,299,308,324"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="106,184,245,296,241,301,102,188"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="242,191,235,220,236,250,244,276,254,297,249,300,239,278,231,251,230,219,236,190"/>
+<area shape="rect" id="Node000006" href="$pst_2pst_8h.html" title="PST implementation." alt="" coords="245,225,371,251"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="269,186,300,223,296,227,265,190"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="294,264,268,300,263,297,289,261"/>
+<area shape="poly" id="edge9_Node000007_Node000004" title=" " alt="" coords="373,115,385,144,395,179,397,217,393,235,385,252,370,270,351,284,309,302,307,297,348,279,366,266,380,249,388,233,392,216,390,180,380,146,368,117"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="330,114,267,154,264,150,327,109"/>
+<area shape="poly" id="edge11_Node000007_Node000006" title=" " alt="" coords="353,118,335,178,316,226,311,224,329,176,348,117"/>
+</map>

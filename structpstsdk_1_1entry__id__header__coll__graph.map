@@ -1,0 +1,12 @@
+<map id="pstsdk::entry_id_header" name="pstsdk::entry_id_header">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,276,176,341"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="55,5,121,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,71,89,213,91,259,86,259,84,213,85,71"/>
+<area shape="rect" id="Node000003" href="$structpstsdk_1_1guid.html" title="A Win32 GUID structure." alt="" coords="145,148,239,213"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="105,69,137,122,146,134,142,137,132,126,100,72"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="169,215,128,265,124,261,164,212"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="164,5,231,71"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="199,71,196,132,191,131,193,71"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="255,5,313,71"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="279,72,270,99,256,125,246,138,242,134,251,123,265,97,274,70"/>
+</map>
