@@ -12,6 +12,8 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <cerrno>
 #include <time.h>
 #include <memory>
 #include <string>
@@ -309,9 +311,27 @@ inline std::wstring pstsdk::bytes_to_wstring(const std::vector<byte> &bytes)
     char *outbuf = reinterpret_cast<char *>(&out[0]);
     size_t outbytesleft = out.size() * sizeof(wchar_t);
     size_t result = ::iconv(cd, const_cast<char **>(&inbuf), &inbytesleft, &outbuf, &outbytesleft);
+    const int err = errno;
     ::iconv_close(cd);
     if(result == (size_t)(-1) || inbytesleft > 0 || outbytesleft % sizeof(wchar_t) != 0)
-        throw std::runtime_error("Failed to convert from UTF-16LE to wstring");
+    {
+        // TEMPORARY, for issue #3: macos fails here and linux does not, so say
+        // which bytes and which errno rather than guessing
+        std::string hex;
+        for(size_t i = 0; i < bytes.size() && i < 64; ++i)
+        {
+            char b[4];
+            snprintf(b, sizeof(b), "%02x ", bytes[i]);
+            hex += b;
+        }
+        throw std::runtime_error("Failed to convert from UTF-16LE to wstring"
+            " (errno=" + std::to_string(err) + " " + std::strerror(err) +
+            ", in=" + std::to_string(bytes.size()) +
+            ", inleft=" + std::to_string(inbytesleft) +
+            ", outleft=" + std::to_string(outbytesleft) +
+            ", sizeof(wchar_t)=" + std::to_string(sizeof(wchar_t)) +
+            ", bytes=" + hex + ")");
+    }
 
     out.resize(out.size() - (outbytesleft / sizeof(wchar_t)));
     return out;
